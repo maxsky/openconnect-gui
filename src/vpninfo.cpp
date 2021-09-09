@@ -290,7 +290,7 @@ static int validate_peer_cert(void* privdata, const char* reason)
             vpn->m,
             QObject::tr("You are connecting for the first time to this peer.\n"
                         "You have no guarantee that the server is the computer you think it is.\n\n"
-                        "If the information provided bellow is valid and you trust this host, "
+                        "If the information provided below is valid and you trust this host, "
                         "hit 'Accurate information' to remember it and to carry on connecting.\n"
                         "If you do not trust this host, hit Cancel to abandon the connection."),
             hostInfoStr,

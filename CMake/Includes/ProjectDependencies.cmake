@@ -25,7 +25,7 @@ if(CMAKE_CROSSCOMPILING OR NOT WIN32)
         message(STATUS "Library 'GnuTLS' found at ${GNUTLS_LIBRARIES}")
     include_directories(SYSTEM ${GNUTLS_INCLUDE_DIR})
     else()
-        message(FATAL_ERROR "Library 'GnuTLS' not found! Install it vie e.g. 'brew install gnutls' or 'dnf install gnutls-devel'")
+        message(FATAL_ERROR "Library 'GnuTLS' not found! Install it with e.g. 'brew install gnutls' or 'dnf install gnutls-devel'")
     endif()
 
     find_package(OpenConnect REQUIRED)
@@ -34,7 +34,7 @@ if(CMAKE_CROSSCOMPILING OR NOT WIN32)
         link_directories(${OPENCONNECT_LIBRARY_DIRS})
         include_directories(SYSTEM ${OPENCONNECT_INCLUDE_DIRS})
     else()
-        message(FATAL_ERROR "Libraru 'OpenConnect' not found! Install it vie e.g. 'brew install openconnect or 'dnf install openconnect'")
+        message(FATAL_ERROR "Library 'OpenConnect' not found! Install it with e.g. 'brew install openconnect or 'dnf install openconnect'")
     endif()
 
     # This is optional as the package isn't ubiquitous. We'll pull it

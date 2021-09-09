@@ -39,7 +39,7 @@ StoredServer::StoredServer()
     set_window(nullptr);
 }
 
-// LCA: drop thsi define from whole project...
+// LCA: drop this define from whole project...
 #define PREFIX "server:"
 
 void StoredServer::clear_password()

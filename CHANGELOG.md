@@ -37,7 +37,7 @@ History of user-visible changes.
 - Disconnect section needs to undo Custom Routes (#125)
 - Clarify the minimum macOS version (#182)
 - OpenConnect GUI v1.5.1 compatibility against Windows XP SP3 (#165)
-- accept VPN profile name in command line; connect immediatelly after start
+- accept VPN profile name in command line; connect immediately after start
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.5.1...v1.5.2)
 
@@ -52,7 +52,7 @@ History of user-visible changes.
 
 
 ## [v1.5.0](https://gitlab.com/openconnect/openconnect-gui/-/tags/v1.5.0) (2017-01-29)
-- better Warning message if there is a Name Missmatch (#135)
+- better Warning message if there is a Name Mismatch (#135)
 - update build scripts to Qt 5.8
 - Initial support for experimental Juniper server (#121, #69)
 - New simple profile setup&connect dialog
