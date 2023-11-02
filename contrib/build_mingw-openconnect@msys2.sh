@@ -24,7 +24,7 @@ if [ "$1" == "--head" ]; then
     export OC_TAG=master
     export STOKEN_TAG=master
 else
-    export OC_TAG=v8.10
+    export OC_TAG=v9.12
     export STOKEN_TAG=v0.92
 fi
 
@@ -32,8 +32,12 @@ export OC_URL=https://gitlab.com/openconnect/openconnect.git
 export STOKEN_URL=https://github.com/cernekee/stoken
 
 pacman --needed --noconfirm -S \
+    git \
+    p7zip \
     base-devel \
+    autotools \
     mingw-w64-x86_64-toolchain \
+    mingw-w64-x86_64-jq \
     mingw-w64-${BUILD_ARCH}-gcc \
     mingw-w64-${BUILD_ARCH}-make \
     mingw-w64-${BUILD_ARCH}-gnutls \
@@ -90,7 +94,7 @@ cd ../../
 
 rm -rf pkg
 mkdir -p pkg/nsis && cd pkg/nsis
-cp ${MINGW_PREFIX}/bin/libffi-7.dll .
+cp ${MINGW_PREFIX}/bin/libffi-8.dll .
 cp ${MINGW_PREFIX}/bin/libgcc_*-1.dll .
 cp ${MINGW_PREFIX}/bin/libgmp-10.dll .
 cp ${MINGW_PREFIX}/bin/libgnutls-30.dll .
@@ -106,13 +110,18 @@ cp ${MINGW_PREFIX}/bin/libstoken-1.dll .
 cp ${MINGW_PREFIX}/bin/libproxy-1.dll .
 cp ${MINGW_PREFIX}/bin/liblz4.dll .
 cp ${MINGW_PREFIX}/bin/libiconv-2.dll .
-cp ${MINGW_PREFIX}/bin/libunistring-2.dll .
+cp ${MINGW_PREFIX}/bin/libunistring-5.dll .
 cp ${MINGW_PREFIX}/bin/libidn2-0.dll .
 cp ${MINGW_PREFIX}/bin/libstdc++-6.dll .
 cp ${MINGW_PREFIX}/bin/liblzma-5.dll .
+cp ${MINGW_PREFIX}/bin/libbrotlicommon.dll .
+cp ${MINGW_PREFIX}/bin/libbrotlidec.dll .
+cp ${MINGW_PREFIX}/bin/libzstd.dll .
+cp ${MINGW_PREFIX}/bin/libbrotlienc.dll .
 cp ../../openconnect/build-${BUILD_ARCH}/.libs/libopenconnect-5.dll .
+cp ../../openconnect/build-${BUILD_ARCH}/.libs/wintun.dll .
 cp ../../openconnect/build-${BUILD_ARCH}/.libs/openconnect.exe .
-curl -v -o vpnc-script-win.js https://gitlab.com/openconnect/vpnc-scripts/raw/master/vpnc-script-win.js
+curl    -o vpnc-script-win.js https://gitlab.com/openconnect/vpnc-scripts/-/raw/master/vpnc-script-win.js
 cd ../../
 
 mkdir -p pkg/lib && cd pkg/lib
