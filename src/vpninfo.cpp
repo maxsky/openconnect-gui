@@ -208,7 +208,8 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
 
             if (vpn->form_pass_attempt == 0
                 && vpn->ss->get_password().isEmpty() == false
-                && strcasecmp(opt->name, "password") == 0) {
+                && (strcasecmp(opt->name, "password") == 0 || strcasecmp(opt->name, "credential") == 0)
+               ) {
                 openconnect_set_option_value(opt,
                     vpn->ss->get_password().toLatin1().data());
                 empty = 0;
@@ -226,7 +227,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
                     goto fail;
             } while (text.isEmpty() == true);
 
-            if (strcasecmp(opt->name, "password") == 0
+            if ((strcasecmp(opt->name, "password") == 0 || strcasecmp(opt->name, "credential") == 0)
                 && (vpn->password_set == 0 || vpn->form_pass_attempt != 0)) {
                 vpn->ss->set_password(text);
                 vpn->password_set = 1;
