@@ -104,6 +104,9 @@ public:
 
     QString m_last_err;
 
+    const QString& get_interface_name() const;
+    void set_interface_name(const QString& interface_name);
+
 private:
     bool m_batch_mode;
     bool m_minimize_on_connect;
@@ -124,4 +127,5 @@ private:
     unsigned m_server_hash_algo;
     Cert m_ca_cert;
     KeyPair m_client;
+    QString m_interface_name;
 };
