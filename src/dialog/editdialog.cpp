@@ -158,6 +158,7 @@ EditDialog::EditDialog(QString server, QWidget* parent)
     }
 
     ui->protocolComboBox->setCurrentIndex(ss->get_protocol_id());
+    ui->interfaceNameEdit->setText(ss->get_interface_name());
 
     QString hash;
     ss->get_server_hash(hash);
@@ -255,6 +256,7 @@ void EditDialog::on_buttonBox_accepted()
 
     ss->set_protocol_id(ui->protocolComboBox->currentIndex());
     ss->set_protocol_name(ui->protocolComboBox->currentData(Qt::UserRole + 1).toString());
+    ss->set_interface_name(ui->interfaceNameEdit->text());
 
     ss->save();
     this->accept();
