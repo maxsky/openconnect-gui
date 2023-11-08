@@ -89,7 +89,7 @@ public:
     int get_protocol_id() const;
     void set_protocol_id(const int id);
 
-    const char* get_protocol_name() const;
+    const QString&  get_protocol_name() const;
     void set_protocol_name(const QString name);
 
     unsigned get_server_hash(QByteArray& hash) const;

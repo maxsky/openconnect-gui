@@ -435,10 +435,9 @@ void StoredServer::set_protocol_id(const int id)
     m_protocol_id = id;
 }
 
-const char* StoredServer::get_protocol_name() const
+const QString& StoredServer::get_protocol_name() const
 {
-    QByteArray data{ m_protocol_name.toLatin1() };
-    return data.data();
+    return m_protocol_name;
 }
 
 void StoredServer::set_protocol_name(const QString name)
