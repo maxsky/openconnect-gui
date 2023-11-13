@@ -12,7 +12,7 @@ MinGW32:
   script:
   - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
   - echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
-  - dnf -y install dnf-plugins-core mingw32-qt5-qtbase
+  - dnf -y install dnf-plugins-core mingw32-qt5-qtbase patch
   - mingw32-cmake .
   - make -j4
   tags:
@@ -32,7 +32,7 @@ MinGW64:
   - dnf remove -y wine.i686
   - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
   - echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
-  - dnf -y install dnf-plugins-core mingw64-qt5-qtbase
+  - dnf -y install dnf-plugins-core mingw64-qt5-qtbase patch
   - mingw64-cmake .
   - make -j4
   tags:
