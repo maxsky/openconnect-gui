@@ -16,6 +16,14 @@ if(MINGW)
         message(FATAL_ERROR "Specify 'tap-driver-os'. Must be one of ${tap-driver-os_CHOICES}")
     endif()
     set(tap-driver-TAG 9.24.2)
+
+    if (tap-driver-os STREQUAL "Win10")
+        #tap-windows-9.24.2-I601-Win10.exe
+        set(tap-driver-url-hash "SHA256=1782d56568092e8fba575fe7e11b2e86f04518f40a18a4ce594bd1209e0cb547")
+    else()
+        #tap-windows-9.24.2-I601-Win7.exe.asc
+        set(tap-driver-url-hash "SHA256=35cfa71fe2952192c13cbbd8a2f3f62a6486af406008e654646ea1d823928d46")
+    endif()
 endif()
 
 set(vpnc-scripts-TAG master)

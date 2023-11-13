@@ -13,6 +13,7 @@ ExternalProject_Add(tap-windows
 
     #URL https://swupdate.openvpn.org/community/releases/tap-windows-${tap-driver-TAG}.exe
     URL https://build.openvpn.net/downloads/releases/tap-windows-${tap-driver-TAG}-I601-${tap-driver-os}.exe
+    URL_HASH ${tap-driver-url-hash}
 
     BUILD_IN_SOURCE 1
 
