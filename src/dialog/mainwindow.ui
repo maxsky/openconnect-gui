@@ -385,7 +385,7 @@
     <string>Mi&amp;nimize</string>
    </property>
    <property name="toolTip">
-    <string>Mimimize</string>
+    <string>Minimize</string>
    </property>
   </action>
   <action name="actionRestore">

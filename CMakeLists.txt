@@ -27,7 +27,7 @@ include(ProjectSettings)
 include(ProjectDependencies)
 
 if(MINGW)
-    # FIXME: upgrading CMake from 3.15 to newer vesion fails on packaging
+    # FIXME: upgrading CMake from 3.15 to newer version fails on packaging
     # because objdump.exe is not supported (actually the exe suffix break it)
     # TODO: bundling dependencies use CMake deprecated function; need update..
     find_program(CMAKE_OBJDUMP NAMES objdump.exe)

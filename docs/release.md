@@ -1,13 +1,14 @@
 ### Building release version and create a package 
 
-The project use ['git-flow'](https://github.com/petervanderdoes/gitflow-avh) branching model.
-The main development activities can be find in 'develop', in 'feature/...' or other similar named branch.
+The project uses the ['git-flow'](https://github.com/petervanderdoes/gitflow-avh) branching model.
+The main development activities can be found in 'develop', in 'feature/...' or other similarly named branches.
 The 'master' branch contains release/delivered version and it's not supposed to do there any manual changes.
 
 Note: nice graphical illustration how [gitflow branching work](http://nvie.com/posts/a-successful-git-branching-model/).
 
 #### Version scheme
-Project use git-flow technique i.e. the master contains stable/released versions
+
+The project uses the git-flow technique i.e. the master contains stable/released versions
 and main programming activities are in 'develop' or 'feature/*' branches.
 Version string auto=generated on compilation from Git info into following format:
 
@@ -15,7 +16,7 @@ Version string auto=generated on compilation from Git info into following format
 
 #### Building packages
 
-Always check if you have commited all changes or move work-in-progress work into stash!!
+Always check if you have committed all changes or move work-in-progress work into stash!!
 Following steps illustrate how to create application:
 
     $ git clone https://github.com/openconnect/openconnect-gui
