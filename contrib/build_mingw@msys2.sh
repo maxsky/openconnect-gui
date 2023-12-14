@@ -13,7 +13,7 @@ echo "Starting under $MSYSTEM build environment..."
 if [ "$1" == "--head" ]; then
     export OC_TAG=master
 else
-    export OC_TAG=v8.10
+    export OC_TAG=v9.12
 fi
 
 pacman --needed --noconfirm -S \
