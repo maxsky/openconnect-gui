@@ -10,7 +10,7 @@ Install [Homebrew](https://docs.brew.sh/) system-wide:
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 ```
-or localy:
+or locally:
 ```
 mkdir homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew
 ```

@@ -1,5 +1,5 @@
 #
-# Sample build script & release package preapration for OpenConnect-GUI project
+# Sample build script & release package preparation for OpenConnect-GUI project
 # with MINGW64 on MSYS2 toolchain
 #
 # It should be used only as illustration how to build application
