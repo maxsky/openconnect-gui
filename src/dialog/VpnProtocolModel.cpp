@@ -1,6 +1,6 @@
 #include "VpnProtocolModel.h"
 
-// FIXME: this include should to into <openconnect.h>
+// FIXME: this include should go into <openconnect.h>
 #ifdef _WIN32
 #include <winsock2.h>
 #endif
@@ -39,7 +39,6 @@ QVariant VpnProtocolModel::data(const QModelIndex& index, int role) const
     return QVariant();
 }
 
-#if OPENCONNECT_CHECK_VER(5, 5)
 void VpnProtocolModel::loadProtocols()
 {
     struct oc_vpn_proto* protos = nullptr;
@@ -51,10 +50,3 @@ void VpnProtocolModel::loadProtocols()
         openconnect_free_supported_protocols(protos);
     }
 }
-#else
-void VpnProtocolModel::loadProtocols()
-{
-    m_protocols.append({ "anyconnect", "Cisco AnyConnect", "" });
-    m_protocols.append({ "nc", "Juniper Network Connect", "" });
-}
-#endif
