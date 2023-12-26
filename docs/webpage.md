@@ -2,7 +2,7 @@
 The following steps summarize how to update the OpenConnect-GUI web page,
 both the screenshots and its contents:
 
-1. images/screenshots preaparation:
+1. images/screenshots preparation:
     - prepare desired screenshots (common width is 650px)
     - checkout project into 'gh-pages' branch
     - create or upload images to e.g. screenshots folder

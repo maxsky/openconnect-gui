@@ -391,7 +391,7 @@ void MainWindow::updateStats(const struct oc_stats* stats, QString dtls)
         dtls);
 }
 
-#define PREFIX "server:" // LCA: remot this...
+#define PREFIX "server:" // LCA: remove this...
 void MainWindow::reload_settings()
 {
     ui->serverList->clear();
