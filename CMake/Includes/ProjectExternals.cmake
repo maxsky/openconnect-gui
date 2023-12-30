@@ -26,7 +26,7 @@ if(MINGW)
     endif()
 endif()
 
-set(vpnc-scripts-TAG master)
+set(vpnc-scripts-TAG ee45e3cd)
 set(qt-solutions-TAG master)
 
 if(CMAKE_CROSSCOMPILING AND MINGW)
