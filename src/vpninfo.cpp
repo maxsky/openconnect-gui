@@ -368,9 +368,9 @@ static void setup_tun_vfn(void* privdata)
     VpnInfo* vpn = static_cast<VpnInfo*>(privdata);
 
     QByteArray vpncScriptFullPath;
-    vpncScriptFullPath.append(QCoreApplication::applicationDirPath());
-    vpncScriptFullPath.append(QDir::separator());
-    vpncScriptFullPath.append(DEFAULT_VPNC_SCRIPT);
+    vpncScriptFullPath.append(QCoreApplication::applicationDirPath().toUtf8());
+    vpncScriptFullPath.append(QString(QDir::separator()).toUtf8());
+    vpncScriptFullPath.append(DEFAULT_VPNC_SCRIPT); // usually ASCII
     int ret = openconnect_setup_tun_device(vpn->vpninfo, vpncScriptFullPath.constData(), NULL);
     if (ret != 0) {
         vpn->last_err = QObject::tr("Error setting up the TUN device");
