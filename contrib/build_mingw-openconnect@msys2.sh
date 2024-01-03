@@ -52,6 +52,14 @@ pacman --needed --noconfirm -S \
     mingw-w64-${BUILD_ARCH}-lz4 \
     mingw-w64-${BUILD_ARCH}-libproxy
 
+#openconnect compilation is broken on recent versions (>=2.12) of libxml2 because of header reorg
+#(see https://gitlab.com/openconnect/openconnect/-/issues/685)
+#
+#use latest 2.11 version until openconnect is fixed
+#TODO remove the following line after bumping OC_TAG (hopefully to v9.13)
+pacman --needed --noconfirm -U https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libxml2-2.11.6-1-any.pkg.tar.zst
+#pacman --needed --noconfirm -U https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libxml2-2.10.3-1-any.pkg.tar.zst
+
 
 [ -d build-oc-$MSYSTEM ] || mkdir build-oc-$MSYSTEM
 cd build-oc-$MSYSTEM
