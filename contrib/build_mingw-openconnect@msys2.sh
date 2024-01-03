@@ -58,7 +58,6 @@ pacman --needed --noconfirm -S \
 #use latest 2.11 version until openconnect is fixed
 #TODO remove the following line after bumping OC_TAG (hopefully to v9.13)
 pacman --needed --noconfirm -U https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libxml2-2.11.6-1-any.pkg.tar.zst
-#pacman --needed --noconfirm -U https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libxml2-2.10.3-1-any.pkg.tar.zst
 
 
 [ -d build-oc-$MSYSTEM ] || mkdir build-oc-$MSYSTEM
@@ -90,7 +89,11 @@ git rev-parse --short HEAD | tee ../openconnect-${OC_TAG}_$MSYSTEM.hash
 ./autogen.sh
 [ -d build-${BUILD_ARCH} ] || mkdir build-${BUILD_ARCH}
 cd build-${BUILD_ARCH}
-../configure --disable-dependency-tracking --with-gnutls --without-openssl --without-libpskc --with-vpnc-script=vpnc-script-win.js
+
+#disable libproxy since libproxy >= 0.5 has a lot of dependencies that expand the attack surface
+#see https://gitlab.com/openconnect/openconnect-gui/-/merge_requests/259#note_1713843295
+#also libproxy is probably not used by openconnect-gui
+../configure --disable-dependency-tracking --with-gnutls --without-openssl --without-libpskc --without-libproxy --with-vpnc-script=vpnc-script-win.js
 mingw32-make -j${CORES}
 cd ../../
 
@@ -115,12 +118,10 @@ cp ${MINGW_PREFIX}/bin/libwinpthread-1.dll .
 cp ${MINGW_PREFIX}/bin/libxml2-2.dll .
 cp ${MINGW_PREFIX}/bin/zlib1.dll .
 cp ${MINGW_PREFIX}/bin/libstoken-1.dll .
-cp ${MINGW_PREFIX}/bin/libproxy-1.dll .
 cp ${MINGW_PREFIX}/bin/liblz4.dll .
 cp ${MINGW_PREFIX}/bin/libiconv-2.dll .
 cp ${MINGW_PREFIX}/bin/libunistring-5.dll .
 cp ${MINGW_PREFIX}/bin/libidn2-0.dll .
-cp ${MINGW_PREFIX}/bin/libstdc++-6.dll .
 cp ${MINGW_PREFIX}/bin/liblzma-5.dll .
 cp ${MINGW_PREFIX}/bin/libbrotlicommon.dll .
 cp ${MINGW_PREFIX}/bin/libbrotlidec.dll .
@@ -141,7 +142,6 @@ cp ${MINGW_PREFIX}/lib/libp11-kit.dll.a .
 cp ${MINGW_PREFIX}/lib/libxml2.dll.a .
 cp ${MINGW_PREFIX}/lib/libz.dll.a .
 cp ${MINGW_PREFIX}/lib/libstoken.dll.a .
-cp ${MINGW_PREFIX}/lib/libproxy.dll.a .
 cp ${MINGW_PREFIX}/lib/liblz4.dll.a .
 cp ${MINGW_PREFIX}/lib/libiconv.dll.a .
 cp ${MINGW_PREFIX}/lib/libunistring.dll.a .
