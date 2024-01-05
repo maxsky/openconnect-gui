@@ -33,6 +33,7 @@ export STOKEN_URL=https://github.com/cernekee/stoken
 
 pacman --needed --noconfirm -S \
     git \
+    unzip \
     p7zip \
     base-devel \
     autotools \
