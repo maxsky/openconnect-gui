@@ -974,5 +974,5 @@ void MainWindow::on_actionAboutQt_triggered()
 
 void MainWindow::on_actionWebSite_triggered()
 {
-    QDesktopServices::openUrl(QUrl("https://gui.openconnect-vpn.net"));
+    QDesktopServices::openUrl(QUrl(CMAKE_PROJECT_HOMEPAGE_URL));
 }

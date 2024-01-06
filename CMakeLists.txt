@@ -8,6 +8,7 @@ endif()
 
 project(openconnect-gui
     VERSION 1.6.1
+    HOMEPAGE_URL https://gui.openconnect-vpn.net/
     LANGUAGES CXX
 )
 
