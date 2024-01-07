@@ -32,6 +32,8 @@ build_script:
 
     cd .\build
 
+    c:\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where ..\contrib\ -c "./build_mingw-openconnect@msys2.sh"
+
     cmake -G %GENERATOR% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% ..
 
     cmake --build . --config %BUILD_TYPE% --target %TARGET%
