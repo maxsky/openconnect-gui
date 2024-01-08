@@ -3,7 +3,7 @@
 - extract downloaded both mingw32 openconnect archives (develop package content into cloned project root and binary package content into 'nsis' folder)
 - update project submodules
 - optionally initialize [git-flow](http://danielkummer.github.io/git-flow-cheatsheet/) developmenet scheme if you like
-- and switch to 'develop' branch
+- and switch to 'main' branch
 - start QtCreator
 - create/select a session if make sense
 - open CMakeLists.txt from project root

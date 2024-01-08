@@ -1,15 +1,10 @@
 ### Building release version and create a package 
 
-The project uses the ['git-flow'](https://github.com/petervanderdoes/gitflow-avh) branching model.
-The main development activities can be found in 'develop', in 'feature/...' or other similarly named branches.
-The 'master' branch contains release/delivered version and it's not supposed to do there any manual changes.
-
-Note: nice graphical illustration how [gitflow branching work](http://nvie.com/posts/a-successful-git-branching-model/).
+The main development activities can be found in 'main', in 'feature/...' or other similarly named branches.
 
 #### Version scheme
 
-The project uses the git-flow technique i.e. the master contains stable/released versions
-and main programming activities are in 'develop' or 'feature/*' branches.
+and main programming activities are in 'main' or 'feature/*' branches.
 Version string auto=generated on compilation from Git info into following format:
 
     <major>.<minor>.<patch>[-rev_count-sha1][-dirty]
@@ -21,18 +16,14 @@ Following steps illustrate how to create application:
 
     $ git clone https://gitlab.com/openconnect/openconnect-gui
     $ cd openconnect-gui
-    $ git flow init -d
 
-To build a release package, start a release process with target tag:
+To build a release package, review released changes in `CHANGELOG.md`,
+update planned release version in `CMakeLists.txt` and start a release
+process with target tag:
 
-    $ git flow release start X.Y.Z
-
-Now review released changes in `CHANGELOG.md`, update planned release version in `CMakeLists.txt`
-and commit all changes. If all is done, continue with:
-
-    $ git flow release finish X.Y.Z
-    $ git checkout master
-    $ git push master
+    $ git checkout main
+    $ git tag vX.Y.Z
+    $ git push main
     $ git push --tags
 
 And then, continue with compilation process:
