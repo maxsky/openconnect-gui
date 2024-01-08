@@ -19,7 +19,7 @@ Version string auto=generated on compilation from Git info into following format
 Always check if you have committed all changes or move work-in-progress work into stash!!
 Following steps illustrate how to create application:
 
-    $ git clone https://github.com/openconnect/openconnect-gui
+    $ git clone https://gitlab.com/openconnect/openconnect-gui
     $ cd openconnect-gui
     $ git flow init -d
 

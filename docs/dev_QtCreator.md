@@ -1,5 +1,5 @@
 ### Development with QtCreator
-- checkout project from [GitHub](https://github.com/openconnect/openconnect-gui)
+- [checkout project](https://gitlab.com/openconnect/openconnect-gui)
 - extract downloaded both mingw32 openconnect archives (develop package content into cloned project root and binary package content into 'nsis' folder)
 - update project submodules
 - optionally initialize [git-flow](http://danielkummer.github.io/git-flow-cheatsheet/) developmenet scheme if you like

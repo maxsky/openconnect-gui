@@ -13,12 +13,12 @@
 Name:		mingw-openconnect-gui
 Version:	%{tagver}%{?snapver}
 Release:	0%{?dist}
-Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
+Summary:	OpenConnect VPN graphical client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2
-URL:		http://www.infradead.org/openconnect-gui.html
+URL:		https://gitlab.com/openconnect/openconnect-gui/
 %if 0%{?gitsnapshot}
-Source0:        https://github.com/openconnect-gui/%{name}/archive/%{snapcommit}/openconnect-gui-%{shortcommit}.tar.gz
+Source0:        https://gitlab.com/api/v4/projects/12274423/repository/archive.tar.gz?sha=%{snapcommit}
 %else
 Source0:        ftp://ftp.infradead.org/pub/%{name}/openconnect-gui-%{version}.tar.gz
 %endif

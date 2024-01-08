@@ -7,17 +7,17 @@ if(APPLE)
 endif()
 
 project(openconnect-gui
-    VERSION 1.5.3
+    VERSION 1.5.4
     LANGUAGES CXX
 )
 
 message(STATUS "Building ${PROJECT_NAME} v${PROJECT_VERSION} [cmake]")
 
 set(PRODUCT_NAME_SHORT "OpenConnect-GUI")
-set(PRODUCT_NAME_LONG "OpenConnect-GUI VPN client")
+set(PRODUCT_NAME_LONG "OpenConnect VPN graphical client")
 set(PRODUCT_NAME_COMPANY "OpenConnect-GUI Team")
-set(PRODUCT_NAME_COMPANY_DOMAIN "openconnect.github.io")
-set(PRODUCT_NAME_COPYRIGHT_SHORT "Copyright (C) 2016-2021 OpenConnect-GUI Team")
+set(PRODUCT_NAME_COMPANY_DOMAIN "gui.openconnect-vpn.net")
+set(PRODUCT_NAME_COPYRIGHT_SHORT "Copyright (C) 2016-2024 OpenConnect-GUI Team")
 set(PRODUCT_NAME_COPYRIGHT_FULL "Copyright (C) 2014-2015 Red Hat Inc.<br>${PRODUCT_NAME_COPYRIGHT_SHORT}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
