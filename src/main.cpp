@@ -123,6 +123,8 @@ int pin_callback(void* userdata, int attempt, const char* token_url,
 
 int main(int argc, char* argv[])
 {
+    bool haveTray = false;
+
     qputenv("LOG2FILE", "1");
 
 #if !defined(Q_OS_MACOS)
@@ -155,6 +157,10 @@ int main(int argc, char* argv[])
     }
     app.setApplicationDisplayName(appDescriptionLong);
     app.setQuitOnLastWindowClosed(false);
+
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+        haveTray=true;
+    }
 
 #if defined(Q_OS_MACOS) && defined(PROJ_ADMIN_PRIV_ELEVATION)
     if (geteuid() != 0) {
@@ -196,7 +202,7 @@ int main(int argc, char* argv[])
     parser.process(app);
 
     const QString profileName{ parser.value(QLatin1String("server")) };
-    MainWindow mainWindow(nullptr, profileName);
+    MainWindow mainWindow(nullptr, haveTray, profileName);
     app.setActivationWindow(&mainWindow);
 #ifdef PROJ_PKCS11
     gnutls_pkcs11_set_pin_function(pin_callback, &mainWindow);

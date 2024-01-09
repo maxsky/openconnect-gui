@@ -63,7 +63,7 @@ extern "C" {
 #define pipe_write(x, y, z) write(x, y, z)
 #endif
 
-MainWindow::MainWindow(QWidget* parent, const QString profileName)
+MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -106,7 +106,7 @@ MainWindow::MainWindow(QWidget* parent, const QString profileName)
     ui->iconLabel->setPixmap(OFF_ICON);
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 
-    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+    if (useTray) {
         createTrayIcon();
 
         connect(m_trayIcon, &QSystemTrayIcon::activated,
@@ -130,9 +130,11 @@ MainWindow::MainWindow(QWidget* parent, const QString profileName)
     s1_noProfiles->assignProperty(ui->actionEditSelectedProfile, "enabled", false);
     s1_noProfiles->assignProperty(ui->actionRemoveSelectedProfile, "enabled", false);
 
-    s1_noProfiles->assignProperty(m_trayIconMenuConnections, "title", tr("(no servers to connect)"));
-    s1_noProfiles->assignProperty(m_trayIconMenuConnections, "enabled", false);
-    s1_noProfiles->assignProperty(m_disconnectAction, "enabled", false);
+    if (m_trayIcon) {
+        s1_noProfiles->assignProperty(m_trayIconMenuConnections, "title", tr("(no servers to connect)"));
+        s1_noProfiles->assignProperty(m_trayIconMenuConnections, "enabled", false);
+        s1_noProfiles->assignProperty(m_disconnectAction, "enabled", false);
+    }
     machine->addState(s1_noProfiles);
 
     QState* s2_connectionReady = new QState();
@@ -141,8 +143,10 @@ MainWindow::MainWindow(QWidget* parent, const QString profileName)
     s2_connectionReady->assignProperty(ui->actionEditSelectedProfile, "enabled", true);
     s2_connectionReady->assignProperty(ui->actionRemoveSelectedProfile, "enabled", true);
 
-    s2_connectionReady->assignProperty(m_trayIconMenuConnections, "title", tr("Connect to..."));
-    s2_connectionReady->assignProperty(m_trayIconMenuConnections, "enabled", true);
+    if (m_trayIcon) {
+        s2_connectionReady->assignProperty(m_trayIconMenuConnections, "title", tr("Connect to..."));
+        s2_connectionReady->assignProperty(m_trayIconMenuConnections, "enabled", true);
+    }
     machine->addState(s2_connectionReady);
 
     class ServerListTransition : public QSignalTransition {
@@ -395,7 +399,9 @@ void MainWindow::updateStats(const struct oc_stats* stats, QString dtls)
 void MainWindow::reload_settings()
 {
     ui->serverList->clear();
-    m_trayIconMenuConnections->clear();
+    if (m_trayIcon) {
+        m_trayIconMenuConnections->clear();
+    }
 
     QSettings settings;
     for (const auto& key : settings.allKeys()) {
@@ -405,14 +411,16 @@ void MainWindow::reload_settings()
             str.remove(str.size() - 7, 7); /* remove /server suffix */
             ui->serverList->addItem(str);
 
-            QAction* act = m_trayIconMenuConnections->addAction(str);
-            connect(act, &QAction::triggered, [act, this]() {
-                int idx = ui->serverList->findText(act->text());
-                if (idx != -1) {
-                    ui->serverList->setCurrentIndex(idx);
-                    on_connectClicked();
-                }
-            });
+            if (m_trayIcon) {
+                QAction* act = m_trayIconMenuConnections->addAction(str);
+                connect(act, &QAction::triggered, [act, this]() {
+                    int idx = ui->serverList->findText(act->text());
+                    if (idx != -1) {
+                        ui->serverList->setCurrentIndex(idx);
+                        on_connectClicked();
+                    }
+                });
+            }
         }
     }
 }
@@ -437,17 +445,21 @@ void MainWindow::changeStatus(int val)
 
         ui->serverList->setEnabled(false);
 
-        m_trayIconMenuConnections->setEnabled(false);
-        m_disconnectAction->setEnabled(true);
+        if (m_trayIcon) {
+            m_trayIconMenuConnections->setEnabled(false);
+            m_disconnectAction->setEnabled(true);
+        }
 
         ui->iconLabel->setPixmap(ON_ICON);
         ui->connectionButton->setIcon(QIcon(":/images/process-stop.png"));
         ui->connectionButton->setText(tr("Disconnect"));
 
         QFileSelector selector;
-        QIcon icon(selector.select(QStringLiteral(":/images/network-connected.png")));
-        icon.setIsMask(true);
-        m_trayIcon->setIcon(icon);
+        if (m_trayIcon) {
+            QIcon icon(selector.select(QStringLiteral(":/images/network-connected.png")));
+            icon.setIsMask(true);
+            m_trayIcon->setIcon(icon);
+        }
 
         this->ui->ipV4Label->setText(ip);
         this->ui->ipV6Label->setText(ip6);
@@ -478,8 +490,10 @@ void MainWindow::changeStatus(int val)
 
         ui->serverList->setEnabled(false);
 
-        m_trayIconMenuConnections->setEnabled(false);
-        m_disconnectAction->setEnabled(true);
+        if (m_trayIcon) {
+            m_trayIconMenuConnections->setEnabled(false);
+            m_disconnectAction->setEnabled(true);
+        }
 
         ui->iconLabel->setPixmap(CONNECTING_ICON);
         ui->connectionButton->setIcon(QIcon(":/images/process-stop.png"));
@@ -509,8 +523,10 @@ void MainWindow::changeStatus(int val)
 
         ui->serverList->setEnabled(true);
 
-        m_trayIconMenuConnections->setEnabled(true);
-        m_disconnectAction->setEnabled(false);
+        if (m_trayIcon) {
+            m_trayIconMenuConnections->setEnabled(true);
+            m_disconnectAction->setEnabled(false);
+        }
 
         ui->iconLabel->setPixmap(OFF_ICON);
         ui->connectionButton->setEnabled(true);
@@ -723,7 +739,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
     } else {
         event->accept();
 
-        if (m_disconnectAction->isEnabled()) {
+        if (m_trayIcon && m_disconnectAction->isEnabled()) {
             connect(this, &MainWindow::readyToShutdown,
                 qApp, &QApplication::quit);
             on_disconnectClicked();
