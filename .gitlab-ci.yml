@@ -5,7 +5,23 @@ variables:
   MINGW64_BUILD: openconnect-cli-mingw64
 
 
-image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
+
+Fedora:
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
+  script:
+  - dnf -y install dnf-plugins-core qt5-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
+  - cmake .
+  - make -j4
+  tags:
+  - shared
+  except:
+  - tags
+  - schedules
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - bin/openconnect-gui
 
 MinGW32:
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$MINGW32_BUILD

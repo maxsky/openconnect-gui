@@ -57,7 +57,7 @@ enum status_t {
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget* parent = 0, const QString profileName = {});
+    explicit MainWindow(QWidget* parent = 0, bool useTray = false, const QString profileName = {});
     ~MainWindow();
 
     void updateStats(const struct oc_stats* stats, QString dtls);
@@ -128,7 +128,7 @@ private:
 
     QStateMachine* m_appWindowStateMachine;
     QSystemTrayIcon* m_trayIcon;
-    QMenu* m_trayIconMenu;
+    QMenu* m_trayIconMenu = nullptr;
     QMenu* m_trayIconMenuConnections;
     QAction* m_disconnectAction;
     QAction* m_minimizeAction;
