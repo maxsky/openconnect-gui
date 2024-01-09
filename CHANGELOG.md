@@ -1,6 +1,6 @@
 History of user-visible changes.
 
-## [v1.5.4](https://gitlab.com/openconnect/openconnect-gui/-/tree/develop) (unreleased)
+## [v1.6.0](https://gitlab.com/openconnect/openconnect-gui/-/tree/develop) (unreleased)
 - send correct/default OpenConnect's User-Agent string (#245)
 - allow unset certificate/key from CertStore (#131)
 - VPN protocol selection on quick profile setup dialog
