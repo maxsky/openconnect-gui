@@ -609,11 +609,6 @@ static void main_loop(VpnInfo* vpninfo, MainWindow* m)
 
     } while (retry == true);
 
-    ret = vpninfo->dtls_connect();
-    if (ret != 0) {
-        Logger::instance().addMessage(vpninfo->last_err);
-    }
-
     vpninfo->get_info(dns, ip, ip6);
     vpninfo->get_cipher_info(cstp, dtls);
     m->vpn_status_changed(STATUS_CONNECTED, dns, ip, ip6, cstp, dtls);

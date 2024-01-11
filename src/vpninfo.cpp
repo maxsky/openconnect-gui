@@ -448,6 +448,15 @@ int VpnInfo::connect()
     QString cert_file, key_file;
     QString ca_file;
 
+    //disable DTLS early on if specified on profile
+    if (this->ss->get_disable_udp() == true) {
+        ret = openconnect_disable_dtls(vpninfo);
+        if (ret != 0) {
+            this->last_err = QObject::tr("Error disabling DTLS (%1)").arg(ret);
+            return ret;
+        }
+    }
+
     cert_file = ss->get_cert_file();
     ca_file = ss->get_ca_cert_file();
     key_file = ss->get_key_file();
@@ -490,16 +499,20 @@ int VpnInfo::connect()
         return ret;
     }
 
-    return 0;
-}
-
-int VpnInfo::dtls_connect()
-{
     if (this->ss->get_disable_udp() != true) {
-        int ret = openconnect_setup_dtls(vpninfo,
-            ss->get_dtls_reconnect_timeout());
+        ret = openconnect_setup_dtls(vpninfo, ss->get_dtls_reconnect_timeout());
+
         if (ret != 0) {
             this->last_err = QObject::tr("Error setting up DTLS (%1)").arg(ret);
+
+            //FIXME: this call we possibly fail since CSTP is already connected, but will try it anyway and fail if we can't
+            //we don't have any other way in the openconnect library to disable it at this stage
+            ret = openconnect_disable_dtls(vpninfo);
+
+            if (ret != 0) {
+                this->last_err += QObject::tr(". Cannot disable it (%1)").arg(ret);
+            }
+
             return ret;
         }
     }
