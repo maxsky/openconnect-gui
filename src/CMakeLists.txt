@@ -1,3 +1,4 @@
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set_property(SOURCE ${PROJECT_NAME}.cpp PROPERTY SKIP_AUTOGEN ON)
 set_property(SOURCE timestamp.cpp PROPERTY SKIP_AUTOGEN ON)
@@ -81,7 +82,7 @@ if(MINGW)
 
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_BINARY_DIR}/external/vpnc-script.js $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMENT "Deploying vpnc script..."
+        COMMENT "Deploying vpnc-script..."
         VERBATIM
     )
 
@@ -104,6 +105,7 @@ if(WIN32 AND NOT CMAKE_CROSSCOMPILING)
         openconnect-devel-${openconnect-TAG}
         openconnect-${openconnect-TAG}
     )
+
     target_link_libraries (${PROJECT_NAME}
         # 3rd party dependencies
         openconnect::gmp
@@ -230,6 +232,15 @@ elseif(APPLE)
     )
 else()
     message(STATUS "Nothing to bundle...")
+endif()
+
+if(MINGW)
+    #wintun
+    install(FILES
+        ${CMAKE_BINARY_DIR}/bin/wintun.dll
+        DESTINATION .
+        COMPONENT App
+    )
 endif()
 
 install(CODE "
