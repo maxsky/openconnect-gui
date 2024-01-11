@@ -26,8 +26,8 @@ if(WIN32 AND MINGW)
 
     set(CPACK_NSIS_INSTALLED_ICON_NAME "${PROJECT_NAME}.exe")
     set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-    set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\github.com\\\\openconnect\\\\openconnect-gui\\\\wiki\\\\FAQ")
-    set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\openconnect.github.io\\\\openconnect-gui")
+    set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\gitlab.com\\\\openconnect\\\\openconnect-gui\\\\-\\\\wikis\\\\FAQ")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\gui.openconnect-vpn.net")
     set(CPACK_NSIS_COMPRESSOR "/SOLID lzma")
     set(CPACK_NSIS_MODIFY_PATH ON)
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL OFF)
@@ -43,9 +43,9 @@ if(WIN32 AND MINGW)
     set(CPACK_NSIS_MUI_FINISHPAGE_RUN "${PROJECT_NAME}.exe")
 
     set(CPACK_NSIS_MENU_LINKS
-        "https://openconnect.github.io/openconnect-gui/" "Homepage"
-        "https://github.com/openconnect/openconnect-gui/issues" "Issues"
-        "https://github.com/openconnect/openconnect-gui/wiki/FAQ" "FAQ"
+        "https://gui.openconnect-vpn.net" "Homepage"
+        "https://gitlab.com/openconnect/openconnect-gui/issues" "Issues"
+        "https://gitlab.com/openconnect/openconnect-gui/-/wikis/FAQ" "FAQ"
     )
 
     # NSIS'es list of all components
