@@ -51,6 +51,7 @@ pacman --needed --noconfirm -S \
     mingw-w64-${BUILD_ARCH}-libxml2 \
     mingw-w64-${BUILD_ARCH}-zlib \
     mingw-w64-${BUILD_ARCH}-lz4 \
+    mingw-w64-${BUILD_ARCH}-nsis \
     mingw-w64-${BUILD_ARCH}-libproxy
 
 #openconnect compilation is broken on recent versions (>=2.12) of libxml2 because of header reorg

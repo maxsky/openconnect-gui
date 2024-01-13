@@ -4,8 +4,6 @@ variables:
   MINGW32_BUILD: openconnect-cli-mingw32
   MINGW64_BUILD: openconnect-cli-mingw64
 
-
-
 Fedora:
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
   script:
@@ -62,3 +60,32 @@ MinGW64:
     paths:
       - bin/openconnect-gui.exe
 
+WindowsNative:
+  tags:
+  - shared-windows
+  - windows
+  - windows-1809
+  script:
+    - choco install msys2 patch qt5-default -y --no-progress
+    - $Env:TARGET = "package"
+    - $Env:BUILD_TYPE = "Debug"
+    - $Env:GENERATOR = '"MinGW Makefiles"'
+    - $Env:NSIS = 'C:\tools\msys64\mingw64\bin'
+    - $Env:QT5 = 'C:\Qt\5.15.2\mingw81_64'
+    - $Env:MINGW = 'C:\Qt\5.15.2\mingw81_64'
+    - md -p build
+    - cd build
+    - $Env:PATH += "C:\tools\msys64\;C:\Program Files\Git\usr\bin;${Env:QT5}\bin;${Env:NSIS}"
+    - cmd.exe /c c:\tools\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where ..\contrib\ -c "./build_mingw-openconnect@msys2.sh"
+    - cmake -G "$Env:GENERATOR" -DCMAKE_BUILD_TYPE="$Env:BUILD_TYPE" ..
+    - cmake --build . --config "$Env:BUILD_TYPE" --target "$Env:TARGET"
+  except:
+  - schedules
+  - tags
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/openconnect-gui*.exe
+      - build/openconnect-gui*.exe.sha512
+      - build/CMakeFiles/*.log
