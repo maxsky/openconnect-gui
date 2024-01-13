@@ -88,6 +88,15 @@ git reset --hard
 git checkout -f -b ${OC_TAG} ${OC_TAG}
 echo "hash:"
 git rev-parse --short HEAD | tee ../openconnect-${OC_TAG}_$MSYSTEM.hash
+
+# For openconnect we need wintun in /opt to avoid downloading
+# which is unreliable.
+WINTUNFILE=$(cat Makefile.am|grep ^WINTUNDRIVER |cut -d '=' -f 2|sed 's/^\s//')
+echo "Copying ${WINTUNFILE} for openconnect"
+set -e
+cp ../../../wintun/${WINTUNFILE} .
+set +e
+
 ./autogen.sh
 [ -d build-${BUILD_ARCH} ] || mkdir build-${BUILD_ARCH}
 cd build-${BUILD_ARCH}
@@ -107,6 +116,9 @@ cd ../../
 
 rm -rf pkg
 mkdir -p pkg/nsis && cd pkg/nsis
+
+set -e
+
 cp ${MINGW_PREFIX}/bin/libffi-8.dll .
 cp ${MINGW_PREFIX}/bin/libgcc_*-1.dll .
 cp ${MINGW_PREFIX}/bin/libgmp-10.dll .
@@ -133,9 +145,13 @@ cp ../../openconnect/build-${BUILD_ARCH}/.libs/libopenconnect-5.dll .
 cp ../../openconnect/build-${BUILD_ARCH}/.libs/wintun.dll .
 cp ../../openconnect/build-${BUILD_ARCH}/.libs/openconnect.exe .
 curl    -o vpnc-script-win.js https://gitlab.com/openconnect/vpnc-scripts/-/raw/master/vpnc-script-win.js
+
+set +e
+
 cd ../../
 
 mkdir -p pkg/lib && cd pkg/lib
+set -e
 cp ${MINGW_PREFIX}/lib/libgmp.dll.a .
 cp ${MINGW_PREFIX}/lib/libgnutls.dll.a .
 cp ${MINGW_PREFIX}/lib/libhogweed.dll.a .
@@ -150,6 +166,8 @@ cp ${MINGW_PREFIX}/lib/libunistring.dll.a .
 cp ${MINGW_PREFIX}/lib/libidn2.dll.a .
 cp ${MINGW_PREFIX}/lib/liblzma.dll.a .
 cp ../../openconnect/build-${BUILD_ARCH}/.libs/libopenconnect.dll.a .
+set +e
+
 cd ../../
 
 mkdir -p pkg/lib/pkgconfig && cd pkg/lib/pkgconfig
