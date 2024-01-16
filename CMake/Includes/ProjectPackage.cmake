@@ -49,7 +49,7 @@ if(WIN32 AND MINGW)
     )
 
     # NSIS'es list of all components
-    set(CPACK_COMPONENTS_ALL App App_Console vpnc_script TAP_drivers VcRedist_libs)
+    set(CPACK_COMPONENTS_ALL App App_Console vpnc_script VcRedist_libs)
 
     set(CPACK_COMPONENT_APP_REQUIRED on)
     set(CPACK_COMPONENT_APP_DISPLAY_NAME "GUI")
@@ -62,13 +62,6 @@ if(WIN32 AND MINGW)
     set(CPACK_COMPONENT_VPNC_SCRIPT_DESCRIPTION "vpnc helper script to set the routing and name service up")
     set(CPACK_COMPONENT_VPNC_SCRIPT_GROUP "Application")
     set(CPACK_COMPONENT_VPNC_SCRIPT_INSTALL_TYPES Full AppOnly Standard)
-
-    set(CPACK_COMPONENT_TAP_DRIVERS_REQUIRED off)
-    set(CPACK_COMPONENT_TAP_DRIVERS_DISPLAY_NAME "TAP driver")
-    set(CPACK_COMPONENT_TAP_DRIVERS_DESCRIPTION "NDIS 6 driver for Windows (in case you're installing on Windows XP, \
-    disable this option and install NDIS 5 drivers manually from https://openvpn.net)")
-    set(CPACK_COMPONENT_TAP_DRIVERS_GROUP "Drivers")
-    set(CPACK_COMPONENT_TAP_DRIVERS_INSTALL_TYPES Full Standard)
 
     set(CPACK_COMPONENT_VCREDIST_LIBS_REQUIRED off)
     set(CPACK_COMPONENT_VCREDIST_LIBS_DISPLAY_NAME "vcredist")
@@ -86,7 +79,6 @@ if(WIN32 AND MINGW)
     # custom install command to populate vcredist & NDIS drivers
     # vcredis: http://asawicki.info/news_1597_installing_visual_c_redistributable_package_from_command_line.html
     list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " ExecWait '\\\"$INSTDIR\\\\Drivers\\\\vcredist_x86.exe\\\" /install /quiet /norestart'")
-    list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " ExecWait '\\\"$INSTDIR\\\\Drivers\\\\tap-windows.exe\\\" /S /norestart'")
     string(REPLACE ";" "\n" CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${CPACK_NSIS_EXTRA_INSTALL_COMMANDS}")
 
     # NSIS'es Runtime-group

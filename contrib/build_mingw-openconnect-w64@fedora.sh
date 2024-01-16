@@ -77,6 +77,7 @@ cp ${MINGW_PREFIX}/bin/zlib1.dll .
 cp ${MINGW_PREFIX}/bin/libstoken-1.dll .
 cp ../../openconnect/build64/.libs/libopenconnect-5.dll .
 cp ../../openconnect/build64/.libs/openconnect.exe .
+cp ../../openconnect/build64/.libs/wintun.dll .
 curl -v -o vpnc-script-win.js https://gitlab.com/openconnect/vpnc-scripts/-/raw/master/vpnc-script-win.js
 cd ../../
 

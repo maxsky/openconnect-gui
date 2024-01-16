@@ -28,13 +28,13 @@ ExternalProject_Add(openconnect-devel-${openconnect-TAG}
 )
 ExternalProject_Add_Step(openconnect-devel-${openconnect-TAG} deploy_headers
     COMMAND ${CMAKE_COMMAND} -E copy_directory include <INSTALL_DIR>/include
-    COMMENT "...deploing openconnect-${openconnect-TAG} headers"
+    COMMENT "...deploying openconnect-${openconnect-TAG} headers"
     WORKING_DIRECTORY <SOURCE_DIR>
     DEPENDEES install
 )
 ExternalProject_Add_Step(openconnect-devel-${openconnect-TAG} deploy_libraries
     COMMAND ${CMAKE_COMMAND} -E copy_directory lib <INSTALL_DIR>/lib
-    COMMENT "...deploing openconnect-${openconnect-TAG} libraries"
+    COMMENT "...deploying openconnect-${openconnect-TAG} libraries"
     WORKING_DIRECTORY <SOURCE_DIR>
     DEPENDEES install
     ALWAYS 0
@@ -64,7 +64,7 @@ ExternalProject_Add(openconnect-${openconnect-TAG}
 )
 ExternalProject_Add_Step(openconnect-${openconnect-TAG} deploy_libs
     COMMAND ${CMAKE_COMMAND} -E copy_directory . <INSTALL_DIR>
-    COMMENT "...deploing openconnect-${openconnect-TAG} libraries"
+    COMMENT "...deploying openconnect-${openconnect-TAG} libraries"
     WORKING_DIRECTORY <SOURCE_DIR>
     DEPENDEES install
 )
@@ -104,6 +104,8 @@ add_library(openconnect::xml2 SHARED IMPORTED)
 set_property(TARGET openconnect::xml2 PROPERTY IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/bin/libxml2-2.dll)
 set_property(TARGET openconnect::xml2 PROPERTY IMPORTED_IMPLIB ${CMAKE_BINARY_DIR}/external/lib/libxml2.dll.a)
 
+add_library(openconnect::wintun SHARED IMPORTED)
+set_property(TARGET openconnect::wintun PROPERTY IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/bin/wintun.dll)
 
 install(
     FILES
