@@ -33,8 +33,8 @@ if(MINGW)
     find_program(CMAKE_OBJDUMP NAMES objdump.exe)
     string(REGEX REPLACE "\\.exe$" "" CMAKE_OBJDUMP ${CMAKE_OBJDUMP})
 
-    add_subdirectory(nsis)
 endif()
+
 add_subdirectory(src)
 
 install(FILES LICENSE.txt

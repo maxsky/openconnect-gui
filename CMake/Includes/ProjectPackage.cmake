@@ -49,7 +49,7 @@ if(WIN32 AND MINGW)
     )
 
     # NSIS'es list of all components
-    set(CPACK_COMPONENTS_ALL App App_Console vpnc_script VcRedist_libs)
+    set(CPACK_COMPONENTS_ALL App App_Console vpnc_script)
 
     set(CPACK_COMPONENT_APP_REQUIRED on)
     set(CPACK_COMPONENT_APP_DISPLAY_NAME "GUI")
@@ -63,12 +63,6 @@ if(WIN32 AND MINGW)
     set(CPACK_COMPONENT_VPNC_SCRIPT_GROUP "Application")
     set(CPACK_COMPONENT_VPNC_SCRIPT_INSTALL_TYPES Full AppOnly Standard)
 
-    set(CPACK_COMPONENT_VCREDIST_LIBS_REQUIRED off)
-    set(CPACK_COMPONENT_VCREDIST_LIBS_DISPLAY_NAME "vcredist")
-    set(CPACK_COMPONENT_VCREDIST_LIBS_DESCRIPTION "Visual C++ Redistributable Package for Visual Studio 2015")
-    set(CPACK_COMPONENT_VCREDIST_LIBS_GROUP "Drivers")
-    set(CPACK_COMPONENT_VCREDIST_LIBS_INSTALL_TYPES Full Standard)
-
     set(CPACK_COMPONENT_APP_CONSOLE_DISABLED on)
     set(CPACK_COMPONENT_APP_CONSOLE_REQUIRED off)
     set(CPACK_COMPONENT_APP_CONSOLE_DISPLAY_NAME "console")
@@ -76,16 +70,9 @@ if(WIN32 AND MINGW)
     set(CPACK_COMPONENT_APP_CONSOLE_GROUP "Application")
     set(CPACK_COMPONENT_APP_CONSOLE_INSTALL_TYPES Full)
 
-    # custom install command to populate vcredist & NDIS drivers
-    # vcredis: http://asawicki.info/news_1597_installing_visual_c_redistributable_package_from_command_line.html
-    list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " ExecWait '\\\"$INSTDIR\\\\Drivers\\\\vcredist_x86.exe\\\" /install /quiet /norestart'")
-    string(REPLACE ";" "\n" CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${CPACK_NSIS_EXTRA_INSTALL_COMMANDS}")
-
     # NSIS'es Runtime-group
     set(CPACK_COMPONENT_GROUP_APPLICATION_DESCRIPTION "Main application and network configuration script")
     set(CPACK_COMPONENT_GROUP_APPLICATION_EXPANDED on)
-    set(CPACK_COMPONENT_GROUP_DRIVERS_DESCRIPTION "Drivers")
-    set(CPACK_COMPONENT_GROUP_DRIVERS_EXPANDED on)
 
     # NSIS'es install types lists
     set(CPACK_ALL_INSTALL_TYPES Full)
