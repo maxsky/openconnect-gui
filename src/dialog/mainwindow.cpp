@@ -963,5 +963,5 @@ void MainWindow::on_actionAboutQt_triggered()
 
 void MainWindow::on_actionWebSite_triggered()
 {
-    QDesktopServices::openUrl(QUrl("https://openconnect.github.io/openconnect-gui"));
+    QDesktopServices::openUrl(QUrl("https://gui.openconnect-vpn.net"));
 }

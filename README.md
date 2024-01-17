@@ -4,7 +4,7 @@ This is the GUI client for openconnect VPN.
 This client is in beta testing phase. It cannot be assumed to provide
 the required security.
 
-Look to [OpenConnect-GUI](http://openconnect.github.io/openconnect-gui/) project webpage for detailed description, screen shots and other related projects.
+Look to [OpenConnect-GUI](https://gui.openconnect-vpn.net/) project pages for detailed description, screen shots and other related projects.
 
 ## Supported Platforms
 - Microsoft Windows 7 and newer
