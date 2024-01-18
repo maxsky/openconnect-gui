@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
     parser.setApplicationDescription(
         QObject::tr("OpenConnect is a VPN client, that utilizes TLS and DTLS "
                     "for secure session establishment, and is compatible "
-                    "with the CISCO AnyConnect SSL VPN protocol."));
+                    "with many VPN protocols."));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption({ { "s", "server" },
