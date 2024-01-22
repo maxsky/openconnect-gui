@@ -60,7 +60,7 @@ MinGW64:
     paths:
       - bin/openconnect-gui.exe
 
-WindowsNative:
+.WindowsTemplate:
   tags:
   - shared-windows
   - windows
@@ -68,7 +68,6 @@ WindowsNative:
   script:
     - choco install msys2 patch qt5-default -y --no-progress
     - $Env:TARGET = "package"
-    - $Env:BUILD_TYPE = "Debug"
     - $Env:GENERATOR = '"MinGW Makefiles"'
     - $Env:NSIS = 'C:\tools\msys64\mingw64\bin'
     - $Env:QT5 = 'C:\Qt\5.15.2\mingw81_64'
@@ -79,6 +78,17 @@ WindowsNative:
     - cmd.exe /c c:\tools\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where ..\contrib\ -c "./build_mingw-openconnect@msys2.sh"
     - cmake -G "$Env:GENERATOR" -DCMAKE_BUILD_TYPE="$Env:BUILD_TYPE" ..
     - cmake --build . --config "$Env:BUILD_TYPE" --target "$Env:TARGET"
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/openconnect-gui*.exe
+      - build/openconnect-gui*.exe.sha512
+
+WindowsNative:
+  extends: .WindowsTemplate
+  variables:
+    BUILD_TYPE: "Debug"
   except:
   - schedules
   - tags
@@ -86,6 +96,12 @@ WindowsNative:
     expire_in: 1 week
     when: always
     paths:
-      - build/openconnect-gui*.exe
-      - build/openconnect-gui*.exe.sha512
       - build/CMakeFiles/*.log
+
+WindowsRelease:
+  extends: .WindowsTemplate
+  variables:
+    BUILD_TYPE: "Release"
+  only:
+  - tags
+
