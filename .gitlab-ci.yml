@@ -3,6 +3,7 @@ variables:
   FEDORA_BUILD: openconnect-cli-fedora39
   MINGW32_BUILD: openconnect-cli-mingw32
   MINGW64_BUILD: openconnect-cli-mingw64
+  MACOS14_BUILD: macos-14-xcode-15
 
 Signoff:
   script:
@@ -114,3 +115,29 @@ WindowsRelease:
     paths:
       - build/openconnect-gui*.exe
       - build/openconnect-gui*.exe.sha512
+
+# https://docs.gitlab.com/ee/ci/runners/saas/macos/environment.html
+MacOS14:
+  when: manual
+  image: $MACOS14_BUILD
+  tags: [ saas-macos-medium-m1 ]
+  variables:
+    HOMEBREW_NO_AUTO_UPDATE: 1
+    HOMEBREW_NO_INSTALL_UPGRADE: 1
+    HOMEBREW_NO_INSTALL_CLEANUP: 1
+    HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+    BUILD_TYPE: "Debug"
+  before_script:
+  - brew --env
+  - brew config
+  - brew install cmake pkg-config qt@5 openconnect
+  script:
+  - mkdir -p build
+  - cd build
+  - cmake .. -DQt5_DIR=$(brew --prefix qt5)/lib/cmake/Qt5
+  - cmake --build . --config "$BUILD_TYPE"
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/bin/
