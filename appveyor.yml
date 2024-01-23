@@ -48,16 +48,4 @@ artifacts:
   name: 'Installer'
 - path: openconnect-gui*.exe.sha512
   name: 'Installer - sha512 hash'
-deploy:
-- provider: GitHub
-  tag: $(APPVEYOR_REPO_TAG_NAME)
-  release: $(APPVEYOR_REPO_TAG_NAME)
-  description: TBD...
-  auth_token:
-    secure: x7ZSG2iQyNioIlyguchg7/Tzl5NzY521hr8Op0H4EQt/kPIndb2KHe/OlGiX+GSK
-  artifact: /openconnect-gui-.*\.exe.*/
-  draft: true
-  force_update: true
-  on:
-    appveyor_repo_tag: true
 
