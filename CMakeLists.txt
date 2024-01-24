@@ -7,12 +7,14 @@ if(APPLE)
 endif()
 
 project(openconnect-gui
-    VERSION 1.6.0
+    VERSION 1.6.1
     LANGUAGES CXX
 )
 
 message(STATUS "Building ${PROJECT_NAME} v${PROJECT_VERSION} [cmake]")
 
+# Do not change the SHORT and COMPANY names as they affect the installation directory
+# as well as the application settings location.
 set(PRODUCT_NAME_SHORT "OpenConnect-GUI")
 set(PRODUCT_NAME_LONG "OpenConnect VPN graphical client")
 set(PRODUCT_NAME_COMPANY "OpenConnect-GUI Team")
