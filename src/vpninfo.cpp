@@ -371,8 +371,11 @@ static void setup_tun_vfn(void* privdata)
     QByteArray vpncScriptFullPath;
     QByteArray  interface_name;
     const char * ifname = NULL;
-    vpncScriptFullPath.append(QCoreApplication::applicationDirPath().toUtf8());
-    vpncScriptFullPath.append(QString(QDir::separator()).toUtf8());
+
+    if (DEFAULT_VPNC_SCRIPT[0] != '/') {
+        vpncScriptFullPath.append(QCoreApplication::applicationDirPath().toUtf8());
+        vpncScriptFullPath.append(QString(QDir::separator()).toUtf8());
+    }
     vpncScriptFullPath.append(DEFAULT_VPNC_SCRIPT); // usually ASCII
 
     if (! vpn->ss->get_interface_name().isEmpty()) {
