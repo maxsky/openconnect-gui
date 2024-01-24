@@ -5,6 +5,9 @@ variables:
   MINGW64_BUILD: openconnect-cli-mingw64
 
 Signoff:
+  except:
+  - tags
+  - schedules
   script:
   # Quoted to work around https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20177
   - 'echo "Checking for new commits without Signed-off-by: tags as described in https://www.infradead.org/openconnect/contribute.html"'
