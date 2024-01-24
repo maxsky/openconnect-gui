@@ -64,8 +64,10 @@ echo "Building completed"
 # Download
 OUTFILE=$(mktemp)
 set -e
-curl -s --header "PRIVATE-TOKEN: $TOKEN" "https://gitlab.com/api/v4/projects/52384625/jobs/artifacts/${TAG}/download?job=WindowsRelease" --max-redirs 3 --location -o ${OUTFILE}
+curl -s --header "PRIVATE-TOKEN: $TOKEN" "https://gitlab.com/api/v4/projects/${PROJECT}/jobs/artifacts/${TAG}/download?job=WindowsRelease" --max-redirs 3 --location -o ${OUTFILE}
 set +e
+
+echo "Downloaded ${OUTFILE}"
 
 unzip ${OUTFILE} && rm -f ${OUTFILE}
 
