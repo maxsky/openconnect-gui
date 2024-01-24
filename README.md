@@ -1,10 +1,9 @@
 # OpenConnect GUI
 
 This is the GUI client for openconnect VPN.
-This client is in beta testing phase. It cannot be assumed to provide
-the required security.
 
-Look to [OpenConnect-GUI](https://gui.openconnect-vpn.net/) project pages for detailed description, screen shots and other related projects.
+Look to [OpenConnect VPN GUI](https://gui.openconnect-vpn.net/) project
+pages for detailed description, screen shots and other related projects.
 
 ## Supported Platforms
 - Microsoft Windows 7 and newer
@@ -18,9 +17,9 @@ Look to [OpenConnect-GUI](https://gui.openconnect-vpn.net/) project pages for de
 ## Other
 - [Creating release package](docs/release.md)
 - [OpenConnect library compilation and dependencies](docs/openconnect.md)
-- [Web page maintenance](docs/webpage.md)
+- [Web page maintenance](https://gitlab.com/openconnect/openconnect-gui-web)
 - [Snapshot builds](docs/snapshots.md)
-- [AppVeyor CI builds](https://ci.appveyor.com/project/horar/openconnect-gui/history)
+- [AppVeyor CI builds](https://ci.appveyor.com/project/nmav/openconnect-gui/history)
 
 # License
 The content of this project itself is licensed under the [GNU General Public License v2](LICENSE.txt)
