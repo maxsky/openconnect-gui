@@ -107,6 +107,9 @@ public:
     const QString& get_interface_name() const;
     void set_interface_name(const QString& interface_name);
 
+    const QString& get_vpnc_script_filename() const;
+    void set_vpnc_script_filename(const QString& vpnc_script_filename);
+
 private:
     bool m_batch_mode;
     bool m_minimize_on_connect;
@@ -128,4 +131,5 @@ private:
     Cert m_ca_cert;
     KeyPair m_client;
     QString m_interface_name;
+    QString m_vpnc_script_filename;
 };
