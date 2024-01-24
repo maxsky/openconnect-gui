@@ -453,7 +453,7 @@ Leave blank for default (usually the server name when using wintun).</string>
          <height>48</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QToolButton" name="loadWinCert">
           <property name="enabled">
@@ -481,9 +481,9 @@ Leave blank for default (usually the server name when using wintun).</string>
    </item>
    <item>
     <widget class="QGroupBox" name="settingsGroupBox">
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <layout class="QFormLayout" name="formLayout_3">
+       <layout class="QFormLayout" name="formLayout_4">
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::ExpandingFieldsGrow</enum>
         </property>
