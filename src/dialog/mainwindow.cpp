@@ -479,6 +479,10 @@ void MainWindow::changeStatus(int val)
                 this->setWindowState(Qt::WindowMinimized);
             }
         }
+
+        if (m_trayIcon) {
+            m_trayIcon->setToolTip(QLatin1String("Connected to ") + ui->serverList->currentText());
+        }
     } else if (val == STATUS_CONNECTING) {
 
         if (m_trayIcon) {
@@ -486,6 +490,7 @@ void MainWindow::changeStatus(int val)
             QIcon icon(selector.select(QStringLiteral(":/images/network-disconnected.png")));
             icon.setIsMask(true);
             m_trayIcon->setIcon(icon);
+            m_trayIcon->setToolTip(QLatin1String("Connecting to ") + ui->serverList->currentText());
         }
 
         ui->serverList->setEnabled(false);
@@ -543,6 +548,8 @@ void MainWindow::changeStatus(int val)
                 m_trayIcon->showMessage(QLatin1String("Disconnected"), QLatin1String("You were disconnected from the VPN"),
                     QSystemTrayIcon::Warning,
                     10000);
+
+            m_trayIcon->setToolTip(QLatin1String("Disconnected"));
         }
         disconnect(ui->connectionButton, &QPushButton::clicked,
             this, &MainWindow::on_disconnectClicked);
@@ -556,6 +563,9 @@ void MainWindow::changeStatus(int val)
         ui->connectionButton->setIcon(QIcon(":/images/process-stop.png"));
         ui->connectionButton->setEnabled(false);
         blink_timer->start(1500);
+
+        if (m_trayIcon)
+            m_trayIcon->setToolTip(QLatin1String("Disconnecting from ") + ui->serverList->currentText());
     } else {
         qDebug() << "TODO: was is das?";
     }
@@ -850,6 +860,7 @@ void MainWindow::createTrayIcon()
 
     m_trayIcon = new QSystemTrayIcon(this);
     m_trayIcon->setContextMenu(m_trayIconMenu);
+    m_trayIcon->setToolTip(QLatin1String("Disconnected"));
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
