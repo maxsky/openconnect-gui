@@ -223,6 +223,8 @@ int StoredServer::load(QString& name)
     m_protocol_id = settings.value("protocol-id", 0).toInt();
     m_protocol_name = settings.value("protocol-name").toString();
 
+    m_interface_name = settings.value("interface-name").toString();
+
     settings.endGroup();
     return rval;
 }
@@ -266,6 +268,8 @@ int StoredServer::save()
 
     settings.setValue("protocol-id", m_protocol_id);
     settings.setValue("protocol-name", m_protocol_name);
+
+    settings.setValue("interface-name", m_interface_name);
 
     settings.endGroup();
     return 0;
@@ -431,10 +435,9 @@ void StoredServer::set_protocol_id(const int id)
     m_protocol_id = id;
 }
 
-const char* StoredServer::get_protocol_name() const
+const QString& StoredServer::get_protocol_name() const
 {
-    QByteArray data{ m_protocol_name.toLatin1() };
-    return data.data();
+    return m_protocol_name;
 }
 
 void StoredServer::set_protocol_name(const QString name)
@@ -453,3 +456,14 @@ unsigned StoredServer::get_server_hash(QByteArray& hash) const
     hash = this->m_server_hash;
     return this->m_server_hash_algo;
 }
+
+const QString& StoredServer::get_interface_name() const
+{
+    return this->m_interface_name;
+}
+
+void StoredServer::set_interface_name(const QString& interface_name)
+{
+    this->m_interface_name = interface_name;
+}
+

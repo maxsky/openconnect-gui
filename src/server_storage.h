@@ -89,7 +89,7 @@ public:
     int get_protocol_id() const;
     void set_protocol_id(const int id);
 
-    const char* get_protocol_name() const;
+    const QString&  get_protocol_name() const;
     void set_protocol_name(const QString name);
 
     unsigned get_server_hash(QByteArray& hash) const;
@@ -103,6 +103,9 @@ public:
     int set_client_key(const QString& filename);
 
     QString m_last_err;
+
+    const QString& get_interface_name() const;
+    void set_interface_name(const QString& interface_name);
 
 private:
     bool m_batch_mode;
@@ -124,4 +127,5 @@ private:
     unsigned m_server_hash_algo;
     Cert m_ca_cert;
     KeyPair m_client;
+    QString m_interface_name;
 };

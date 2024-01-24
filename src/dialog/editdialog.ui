@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>405</width>
-    <height>563</height>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -284,6 +284,28 @@
        </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="interfaceNameLabel">
+       <property name="text">
+        <string>Interface Name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLineEdit" name="interfaceNameEdit">
+       <property name="toolTip">
+        <string>Override default interface name.
+
+This can be useful in advanced scenarios, e.g. for setting up firewall 
+or routing rules.
+
+Leave blank for default (usually the server name when using wintun).</string>
+       </property>
+       <property name="placeholderText">
+        <string>(Optional) Override default interface name</string>
        </property>
       </widget>
      </item>
