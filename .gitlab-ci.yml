@@ -86,12 +86,6 @@ MinGW64:
     - cmd.exe /c c:\tools\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where ..\contrib\ -c "./build_mingw-openconnect@msys2.sh"
     - cmake -G "$Env:GENERATOR" -DCMAKE_BUILD_TYPE="$Env:BUILD_TYPE" ..
     - cmake --build . --config "$Env:BUILD_TYPE" --target "$Env:TARGET"
-  artifacts:
-    expire_in: 1 week
-    when: always
-    paths:
-      - build/openconnect-gui*.exe
-      - build/openconnect-gui*.exe.sha512
 
 WindowsNative:
   extends: .WindowsTemplate
@@ -105,6 +99,8 @@ WindowsNative:
     when: always
     paths:
       - build/CMakeFiles/*.log
+      - build/openconnect-gui*.exe
+      - build/openconnect-gui*.exe.sha512
 
 WindowsRelease:
   extends: .WindowsTemplate
@@ -112,4 +108,9 @@ WindowsRelease:
     BUILD_TYPE: "Release"
   only:
   - tags
-
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/openconnect-gui*.exe
+      - build/openconnect-gui*.exe.sha512
