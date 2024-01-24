@@ -1,12 +1,15 @@
 History of user-visible changes.
 
 ## [v1.6.0](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
-- use wintun for networking instead of the legacy TAP driver
-- send correct/default OpenConnect's User-Agent string (#245)
-- allow unset certificate/key from CertStore (#131)
+- Use wintun for networking instead of the legacy TAP driver
+- Disable DTLS prior to connection if instructed to do so (#339)
+- Send correct/default OpenConnect's User-Agent string (#245)
+- Allow unset certificate/key from CertStore (#131)
 - VPN protocol selection on quick profile setup dialog
-- don't forget to set all default vpn profile settings on quick connect setup
-- dynamically load VPN protocol list; add GlobalProtect protocol (#158)
+- Don't forget to set all default vpn profile settings on quick connect setup
+- Dynamically load VPN protocol list; add GlobalProtect protocol (#158)
+- The VPN interface name can be set (#344)
+
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.5.3...main)
 
