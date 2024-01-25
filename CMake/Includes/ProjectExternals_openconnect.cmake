@@ -9,9 +9,16 @@ endif()
 # --------------------------------------------------------------------------------------------------
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/external/openconnect-devel-${openconnect-TAG}_${MINGW_VARIANT}.zip)
     set(OPENCONNECT_DEV_URL https://github.com/horar/openconnect/releases/download/${openconnect-TAG})
+    set(OPENCONNECT_DEV_URL_HASH "")
 else()
     message(STATUS "Using local openconnect-devel packages... (${MINGW_VARIANT})")
     set(OPENCONNECT_DEV_URL ${CMAKE_SOURCE_DIR}/external)
+
+    #get the hash for local zip
+    file(STRINGS ${OPENCONNECT_DEV_URL}/openconnect-devel-${openconnect-TAG}_${MINGW_VARIANT}.zip.sha512 TESTURLHASH)
+    string(REPLACE " " ";" TESTURLHASH ${TESTURLHASH} )
+    list(GET TESTURLHASH 0 OPENCONNECT_DEV_URL_HASH)
+    set(OPENCONNECT_DEV_URL_HASH "SHA512=${OPENCONNECT_DEV_URL_HASH}")
 endif()
 
 ExternalProject_Add(openconnect-devel-${openconnect-TAG}
@@ -21,6 +28,7 @@ ExternalProject_Add(openconnect-devel-${openconnect-TAG}
     DOWNLOAD_NO_PROGRESS 1
     
     URL ${OPENCONNECT_DEV_URL}/openconnect-devel-${openconnect-TAG}_${MINGW_VARIANT}.zip
+    URL_HASH ${OPENCONNECT_DEV_URL_HASH}
 
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
@@ -45,9 +53,16 @@ ExternalProject_Add_Step(openconnect-devel-${openconnect-TAG} deploy_libraries
 # --------------------------------------------------------------------------------------------------
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/external/openconnect-${openconnect-TAG}_${MINGW_VARIANT}.zip)
     set(OPENCONNECT_URL https://github.com/horar/openconnect/releases/download/${openconnect-TAG})
+    set(OPENCONNECT_URL_HASH "")
 else()
     message(STATUS "Using local openconnect packages... ${MINGW_VARIANT}")
     set(OPENCONNECT_URL ${CMAKE_SOURCE_DIR}/external)
+
+    #get the hash for local zip
+    file(STRINGS ${OPENCONNECT_URL}/openconnect-${openconnect-TAG}_${MINGW_VARIANT}.zip.sha512 TESTURLHASH)
+    string(REPLACE " " ";" TESTURLHASH ${TESTURLHASH} )
+    list(GET TESTURLHASH 0 OPENCONNECT_URL_HASH)
+    set(OPENCONNECT_URL_HASH "SHA512=${OPENCONNECT_URL_HASH}")
 endif()
 
 ExternalProject_Add(openconnect-${openconnect-TAG}
@@ -57,6 +72,7 @@ ExternalProject_Add(openconnect-${openconnect-TAG}
     DOWNLOAD_NO_PROGRESS 1
 
     URL ${OPENCONNECT_URL}/openconnect-${openconnect-TAG}_${MINGW_VARIANT}.zip
+    URL_HASH ${OPENCONNECT_URL_HASH}
 
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
