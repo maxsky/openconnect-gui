@@ -159,15 +159,21 @@ void StoredServer::get_server_pin(QString& hash) const
     }
 }
 
+// Returns: < 0 on error to load
+//          0 if no entry existed
+//          1 if an entry existed
 int StoredServer::load(QString& name)
 {
     this->m_label = name;
     OcSettings settings;
+    int rval = 1;
+
     settings.beginGroup(PREFIX + name);
 
     this->m_servername = settings.value("server").toString();
     if (this->m_servername.isEmpty() == true) {
         this->m_servername = name;
+        rval = 0;
     }
 
     this->m_username = settings.value("username").toString();
@@ -179,7 +185,6 @@ int StoredServer::load(QString& name)
     this->m_dtls_attempt_period = settings.value("dtls_attempt_period", 25).toInt();
 
     bool ret = false;
-    int rval = 0;
 
     if (this->m_batch_mode == true) {
         this->m_groupname = settings.value("groupname").toString();

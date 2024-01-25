@@ -111,7 +111,11 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="serverList"/>
+               <widget class="QComboBox" name="serverList">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QToolButton" name="serverListControl">
@@ -569,4 +573,7 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>on_connectClicked()</slot>
+ </slots>
 </ui>

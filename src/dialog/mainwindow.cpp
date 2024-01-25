@@ -19,6 +19,7 @@
 
 #include "mainwindow.h"
 #include "NewProfileDialog.h"
+#include "NewProfilePopup.h"
 #include "config.h"
 #include "editdialog.h"
 #include "logdialog.h"
@@ -92,6 +93,9 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
     connect(timer, &QTimer::timeout,
         this, &MainWindow::request_update_stats,
         Qt::QueuedConnection);
+    connect(ui->serverList->lineEdit(), &QLineEdit::returnPressed,
+        this, &MainWindow::on_connectClicked,
+        Qt::QueuedConnection);
     connect(this, &MainWindow::vpn_status_changed_sig,
         this, &MainWindow::changeStatus,
         Qt::QueuedConnection);
@@ -125,7 +129,7 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
     QStateMachine* machine = new QStateMachine(this);
     QState* s1_noProfiles = new QState();
     s1_noProfiles->assignProperty(ui->connectionButton, "enabled", false);
-    s1_noProfiles->assignProperty(ui->serverList, "enabled", false);
+    s1_noProfiles->assignProperty(ui->serverList, "enabled", true);
     s1_noProfiles->assignProperty(ui->actionEditSelectedProfile, "enabled", false);
     s1_noProfiles->assignProperty(ui->actionRemoveSelectedProfile, "enabled", false);
 
@@ -650,6 +654,7 @@ void MainWindow::on_connectClicked()
     QList<QNetworkProxy> proxies;
     QUrl turl;
     QNetworkProxyQuery query;
+    int rval;
 
     if (this->cmd_fd != INVALID_SOCKET) {
         QMessageBox::information(this,
@@ -675,7 +680,34 @@ void MainWindow::on_connectClicked()
     ss = new StoredServer();
 
     name = ui->serverList->currentText();
-    ss->load(name);
+    rval = ss->load(name);
+    if (rval == 0) { // new entry
+        // eliminate http?:// from string
+        name.replace("https://", "").replace("http://", "");;
+        if (name.compare(ui->serverList->currentText()) != 0) {
+            // user typed https:// to a new entry. Remove the duplicate
+            // https://server.domain entry, and select the server.domain
+            // entry instead.
+            ui->serverList->removeItem(ui->serverList->currentIndex());
+            ui->serverList->setCurrentText(name);
+            rval = ss->load(name);
+        }
+
+        if (rval == 0) { // if a new server ask and set the protocol
+            NewProfilePopup dialog(this);
+
+            dialog.setName(name);
+            if (dialog.exec() != QDialog::Accepted) {
+                return;
+            }
+
+            // FIXME: Setting both an index and name. We should set only one of the two
+            ss->set_protocol_id(dialog.getProtocolIndex());
+            ss->set_protocol_name(dialog.getProtocol());
+            Logger::instance().addMessage(tr("Selected protocol \"") + ss->get_protocol_name() +
+                                          tr("\" (") + QString::number(dialog.getProtocolIndex()) + tr(") for ") + name);
+        }
+    }
     turl.setUrl("https://" + ss->get_servername());
     query.setUrl(turl);
 
