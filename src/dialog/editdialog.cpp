@@ -59,9 +59,9 @@ static int token_tab(int mode)
 
 static int token_rtab[] = {
     // keep in sync with the indices of the QComboBox items in src/dialog/editdialog.ui
-    OC_TOKEN_MODE_HOTP,
-    OC_TOKEN_MODE_TOTP,
-    OC_TOKEN_MODE_STOKEN
+    OC_TOKEN_MODE_HOTP,  // [0]
+    OC_TOKEN_MODE_TOTP,  // [1]
+    OC_TOKEN_MODE_STOKEN // [2]
 };
 
 void EditDialog::load_win_certs()
