@@ -720,9 +720,13 @@ void MainWindow::on_connectClicked()
                 if (proxies.at(0).port() != 0) {
                     str += ":" + QString::number(proxies.at(0).port());
                 }
+
                 Logger::instance().addMessage(tr("Setting proxy to: %1").arg(str));
-                // FIXME: ...
+
                 int ret = openconnect_set_http_proxy(vpninfo->vpninfo, str.toLatin1().data());
+                if (ret != 0) {
+                    Logger::instance().addMessage(tr("Unexpected error setting proxy"));
+                }
             }
         }
     }
