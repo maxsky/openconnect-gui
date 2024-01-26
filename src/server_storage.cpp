@@ -224,6 +224,7 @@ int StoredServer::load(QString& name)
     m_protocol_name = settings.value("protocol-name").toString();
 
     m_interface_name = settings.value("interface-name").toString();
+    m_vpnc_script_filename = settings.value("vpnc-script").toString();
 
     settings.endGroup();
     return rval;
@@ -270,6 +271,7 @@ int StoredServer::save()
     settings.setValue("protocol-name", m_protocol_name);
 
     settings.setValue("interface-name", m_interface_name);
+    settings.setValue("vpnc-script", m_vpnc_script_filename);
 
     settings.endGroup();
     return 0;
@@ -467,3 +469,12 @@ void StoredServer::set_interface_name(const QString& interface_name)
     this->m_interface_name = interface_name;
 }
 
+const QString& StoredServer::get_vpnc_script_filename() const
+{
+    return this->m_vpnc_script_filename;
+}
+
+void StoredServer::set_vpnc_script_filename(const QString& vpnc_script_filename)
+{
+    this->m_vpnc_script_filename = vpnc_script_filename;
+}
