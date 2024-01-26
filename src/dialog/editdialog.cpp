@@ -257,7 +257,7 @@ void EditDialog::on_buttonBox_accepted()
         ss->set_token_type(-1);
     }
 
-    ss->set_protocol_name(ui->protocolComboBox->currentData(Qt::UserRole + 1).toString());
+    ss->set_protocol_name(ui->protocolComboBox->currentData(ROLE_PROTOCOL_NAME).toString());
     ss->set_interface_name(ui->interfaceNameEdit->text());
     ss->set_vpnc_script_filename(ui->vpncScriptEdit->text());
 

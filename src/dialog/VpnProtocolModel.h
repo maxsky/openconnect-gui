@@ -4,6 +4,8 @@
 
 #include <QAbstractListModel>
 
+#define ROLE_PROTOCOL_NAME (Qt::UserRole + 1)
+
 class VpnProtocolModel : public QAbstractListModel {
     Q_OBJECT
 

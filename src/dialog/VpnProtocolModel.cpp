@@ -34,7 +34,7 @@ QVariant VpnProtocolModel::data(const QModelIndex& index, int role) const
         return QVariant{ protocol.prettyName };
     case Qt::ToolTipRole:
         return QVariant{ protocol.description };
-    case Qt::UserRole + 1:
+    case ROLE_PROTOCOL_NAME:
         return QVariant{ protocol.name };
     }
 

@@ -56,7 +56,7 @@ void NewProfilePopup::on_buttonBox_clicked(QAbstractButton* button)
 void NewProfilePopup::on_buttonBox_accepted()
 {
     this->selected_index = ui->protocolComboBox->currentIndex();
-    this->selected_protocol = ui->protocolComboBox->currentData(Qt::UserRole + 1).toString();
+    this->selected_protocol = ui->protocolComboBox->currentData(ROLE_PROTOCOL_NAME).toString();
 
     accept();
 }
