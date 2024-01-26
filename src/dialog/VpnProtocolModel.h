@@ -14,6 +14,9 @@ public:
     //    QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
+    // Returns the index of the provided name or zero (default)
+    unsigned findIndex(const QString name);
+
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
 private:

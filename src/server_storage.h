@@ -86,9 +86,6 @@ public:
     int get_token_type();
     void set_token_type(const int type);
 
-    int get_protocol_id() const;
-    void set_protocol_id(const int id);
-
     const QString&  get_protocol_name() const;
     void set_protocol_name(const QString name);
 
@@ -125,7 +122,6 @@ private:
     QString m_token_string;
     QString m_label;
     int m_token_type;
-    int m_protocol_id;
     QString m_protocol_name;
     QByteArray m_server_pin;
     unsigned m_server_pin_algo;

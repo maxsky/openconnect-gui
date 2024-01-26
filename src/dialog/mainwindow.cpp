@@ -702,10 +702,9 @@ void MainWindow::on_connectClicked()
             }
 
             // FIXME: Setting both an index and name. We should set only one of the two
-            ss->set_protocol_id(dialog.getProtocolIndex());
             ss->set_protocol_name(dialog.getProtocol());
             Logger::instance().addMessage(tr("Selected protocol \"") + ss->get_protocol_name() +
-                                          tr("\" (") + QString::number(dialog.getProtocolIndex()) + tr(") for ") + name);
+                                          tr("\" for ") + name);
         }
     }
     turl.setUrl("https://" + ss->get_servername());
