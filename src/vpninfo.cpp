@@ -216,16 +216,14 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
                 continue;
             }
 
-            do {
-                MyInputDialog dialog(vpn->m, QLatin1String(opt->name),
-                    QLatin1String(opt->label),
-                    QLineEdit::Password);
-                dialog.show();
-                ok = dialog.result(text);
+            MyInputDialog dialog(vpn->m, QLatin1String(opt->name),
+                QLatin1String(opt->label),
+                QLineEdit::Password);
+            dialog.show();
+            ok = dialog.result(text);
 
-                if (!ok)
-                    goto fail;
-            } while (text.isEmpty() == true);
+            if (!ok)
+                goto fail;
 
             if ((strcasecmp(opt->name, "password") == 0 || strcasecmp(opt->name, "credential") == 0)
                 && (vpn->password_set == 0 || vpn->form_pass_attempt != 0)) {
