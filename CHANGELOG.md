@@ -2,7 +2,7 @@ History of user-visible changes.
 
 ## [v1.6.1](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
 - Alternative vpnc-script can be specified (#350)
-
+- Fixed issue with certificates on MacOS BigSur (#275)
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.0..main)
 
