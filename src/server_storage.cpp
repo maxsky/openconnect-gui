@@ -22,6 +22,15 @@
 #include <OcSettings.h>
 #include <cstdio>
 
+// FIXME: this include should to into <openconnect.h>
+#ifdef _WIN32
+#include <winsock2.h>
+#endif
+
+extern "C" {
+#include <openconnect.h>
+}
+
 StoredServer::~StoredServer(void)
 {
 }
@@ -34,6 +43,7 @@ StoredServer::StoredServer()
     , m_reconnect_timeout{ 300 }
     , m_dtls_attempt_period{ 25 }
     , m_server_pin_algo(0)
+    , m_log_level (PRG_INFO)
 {
     set_window(nullptr);
 }
@@ -242,6 +252,8 @@ int StoredServer::load(QString& name)
     m_interface_name = settings.value("interface-name").toString();
     m_vpnc_script_filename = settings.value("vpnc-script").toString();
 
+    m_log_level = settings.value("log-level", PRG_INFO).toInt();
+
     settings.endGroup();
     return rval;
 }
@@ -287,6 +299,7 @@ int StoredServer::save()
 
     settings.setValue("interface-name", m_interface_name);
     settings.setValue("vpnc-script", m_vpnc_script_filename);
+    settings.setValue("log-level", m_log_level);
 
     settings.endGroup();
     return 0;
@@ -486,3 +499,14 @@ void StoredServer::set_vpnc_script_filename(const QString& vpnc_script_filename)
 {
     this->m_vpnc_script_filename = vpnc_script_filename;
 }
+
+int StoredServer::get_log_level()
+{
+    return this->m_log_level;
+}
+
+void StoredServer::set_log_level(const int log_level)
+{
+    this->m_log_level = log_level;
+}
+

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>559</width>
-    <height>713</height>
+    <height>762</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -346,6 +346,49 @@ Leave blank for default.</string>
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="12" column="1">
+      <widget class="QComboBox" name="loglevelBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <property name="maxVisibleItems">
+        <number>4</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>Error</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Info</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Debug</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Trace</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="logLevelLabel">
+       <property name="text">
+        <string>Log Level</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

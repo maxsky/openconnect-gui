@@ -446,6 +446,8 @@ VpnInfo::VpnInfo(QString name, StoredServer* ss, MainWindow* m)
         throw std::runtime_error("initial setup fails");
     }
 
+    openconnect_set_loglevel(vpninfo, ss->get_log_level());
+
     this->cmd_fd = openconnect_setup_cmd_pipe(vpninfo);
     if (this->cmd_fd == INVALID_SOCKET) {
         Logger::instance().addMessage(QObject::tr("invalid socket"));

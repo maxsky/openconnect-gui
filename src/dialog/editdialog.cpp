@@ -64,6 +64,31 @@ static int token_rtab[] = {
     OC_TOKEN_MODE_STOKEN // [2]
 };
 
+static int loglevel_tab(int mode)
+{
+    // keep in sync with the indices of the QComboBox items in src/dialog/editdialog.ui
+    switch (mode) {
+    case PRG_ERR:
+        return 0;
+    case PRG_INFO:
+        return 1;
+    case PRG_DEBUG:
+        return 2;
+    case PRG_TRACE:
+        return 3;
+    default:
+        return -1;
+    }
+}
+
+static int loglevel_rtab[] = {
+    // keep in sync with the indices of the QComboBox items in src/dialog/editdialog.ui
+    PRG_ERR,   // [0]
+    PRG_INFO,  // [1]
+    PRG_DEBUG, // [2]
+    PRG_TRACE  // [3]
+};
+
 void EditDialog::load_win_certs()
 {
 #ifdef USE_SYSTEM_KEYS
@@ -163,6 +188,11 @@ EditDialog::EditDialog(QString server, QWidget* parent)
     ui->interfaceNameEdit->setText(ss->get_interface_name());
     ui->vpncScriptEdit->setText(ss->get_vpnc_script_filename());
 
+    type = loglevel_tab(ss->get_log_level());
+    if (type != -1) {
+        ui->loglevelBox->setCurrentIndex(type);
+    }
+
     QString hash;
     ss->get_server_pin(hash);
     ui->serverCertHash->setText(hash);
@@ -260,6 +290,12 @@ void EditDialog::on_buttonBox_accepted()
     ss->set_protocol_name(ui->protocolComboBox->currentData(ROLE_PROTOCOL_NAME).toString());
     ss->set_interface_name(ui->interfaceNameEdit->text());
     ss->set_vpnc_script_filename(ui->vpncScriptEdit->text());
+
+    type = ui->loglevelBox->currentIndex();
+    if (type == -1) {
+        type = PRG_INFO; //sensible default
+    }
+    ss->set_log_level(loglevel_rtab[type]);
 
     ss->save();
     this->accept();
