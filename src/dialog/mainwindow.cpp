@@ -576,6 +576,7 @@ static void main_loop(VpnInfo* vpninfo, MainWindow* m)
     m->vpn_status_changed(STATUS_CONNECTING);
 
     bool pass_was_empty;
+    bool reset_password = false;
     pass_was_empty = vpninfo->ss->get_password().isEmpty();
 
     QString ip, ip6, dns, cstp, dtls;
@@ -591,7 +592,6 @@ static void main_loop(VpnInfo* vpninfo, MainWindow* m)
                 goto fail;
 
             QString oldpass, oldgroup;
-            bool reset_password = false;
             if (pass_was_empty != true) {
                 /* authentication failed in batch mode? switch to non
                  * batch and retry */
