@@ -1,3 +1,7 @@
+stages:
+ - preliminaries  # signoff / static analysis
+ - testing
+
 variables:
   BUILD_IMAGES_PROJECT: openconnect/build-images
   FEDORA_BUILD: openconnect-cli-fedora39
@@ -6,6 +10,7 @@ variables:
   MACOS14_BUILD: macos-14-xcode-15
 
 Signoff:
+  stage: preliminaries
   except:
   - tags
   - schedules
@@ -17,6 +22,7 @@ Signoff:
   - echo "None (good)"
 
 Fedora:
+  stage: testing
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
   script:
   - dnf -y install dnf-plugins-core qt5-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
@@ -33,7 +39,26 @@ Fedora:
     paths:
       - bin/openconnect-gui
 
+static-analyzer/Fedora:
+  stage: preliminaries
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
+  script:
+  - dnf -y install dnf-plugins-core qt5-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
+  - scan-build cmake .
+  - scan-build --status-bugs -o scan-build-src make -j4
+  tags:
+  - shared
+  except:
+  - tags
+  - schedules
+  artifacts:
+    expire_in: 1 week
+    when: on_failure
+    paths:
+      - scan-build-src/*
+
 MinGW32:
+  stage: testing
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$MINGW32_BUILD
   script:
   - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
@@ -53,6 +78,7 @@ MinGW32:
       - bin/openconnect-gui.exe
 
 MinGW64:
+  stage: testing
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$MINGW64_BUILD
   script:
   - dnf remove -y wine.i686
@@ -92,6 +118,7 @@ MinGW64:
     - cmake --build . --config "$Env:BUILD_TYPE" --target "$Env:TARGET"
 
 WindowsNative:
+  stage: testing
   extends: .WindowsTemplate
   variables:
     BUILD_TYPE: "Debug"
@@ -107,6 +134,7 @@ WindowsNative:
       - build/openconnect-gui*.exe.sha512
 
 WindowsRelease:
+  stage: testing
   extends: .WindowsTemplate
   variables:
     BUILD_TYPE: "Release"
@@ -121,6 +149,7 @@ WindowsRelease:
 
 # https://docs.gitlab.com/ee/ci/runners/saas/macos/environment.html
 MacOS14:
+  stage: testing
   when: manual
   image: $MACOS14_BUILD
   tags: [ saas-macos-medium-m1 ]
