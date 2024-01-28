@@ -322,7 +322,7 @@ static void term_thread(MainWindow* m, SOCKET* fd)
         m->vpn_status_changed(STATUS_DISCONNECTING);
         int ret = pipe_write(*fd, &cmd, 1);
         if (ret < 0) {
-            Logger::instance().addMessage(QObject::tr("term_thread: IPC error: ") + QString::number(net_errno));
+            Logger::instance().addMessage(QObject::tr("term_thread: IPC error: %1").arg(net_errno));
         }
         *fd = INVALID_SOCKET;
         ms_sleep(200);
@@ -683,7 +683,7 @@ void MainWindow::on_connectClicked()
     } catch (std::exception& ex) {
         QMessageBox::information(this,
             qApp->applicationName(),
-            tr("There was an issue initializing the VPN ") + "(" + ex.what() + ").");
+            tr("There was an issue initializing the VPN (%1).").arg(ex.what()));
         goto fail;
     }
 
@@ -718,7 +718,7 @@ void MainWindow::on_connectClicked()
                 if (proxies.at(0).port() != 0) {
                     str += ":" + QString::number(proxies.at(0).port());
                 }
-                Logger::instance().addMessage(tr("Setting proxy to: ") + str);
+                Logger::instance().addMessage(tr("Setting proxy to: %1").arg(str));
                 // FIXME: ...
                 int ret = openconnect_set_http_proxy(vpninfo->vpninfo, str.toLatin1().data());
             }
@@ -761,7 +761,7 @@ void MainWindow::request_update_stats()
     if (this->cmd_fd != INVALID_SOCKET) {
         int ret = pipe_write(this->cmd_fd, &cmd, 1);
         if (ret < 0) {
-            Logger::instance().addMessage(QObject::tr("update_stats: IPC error: ") + QString::number(net_errno));
+            Logger::instance().addMessage(QObject::tr("update_stats: IPC error: %1").arg(net_errno));
             if (this->timer->isActive())
                 this->timer->stop();
         }
@@ -952,7 +952,7 @@ void MainWindow::on_actionAbout_triggered()
 {
     QString txt = QLatin1String("<h2>") + QLatin1String(appDescriptionLong) + QLatin1String("</h2>");
     txt += tr("Version <i>%1</i> (%2 bit)").arg(appVersion).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
-    txt += tr("<br><br>Built on ") + QLatin1String("<i>") + QLatin1String(appBuildOn) + QLatin1String("</i>");
+    txt += tr("<br><br>Built on <i>%1</i>").arg(QLatin1String(appBuildOn));
     txt += tr("<br>Based on");
     txt += tr("<br>- <a href=\"https://www.infradead.org/openconnect\">OpenConnect</a> ") + QLatin1String(openconnect_get_version());
     txt += tr("<br>- <a href=\"https://www.gnutls.org\">GnuTLS</a> v") + QLatin1String(gnutls_check_version(nullptr));
