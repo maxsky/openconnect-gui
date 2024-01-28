@@ -196,7 +196,7 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
             } else {
                 QMessageBox::warning(this,
                     tr("Connection failed"),
-                    tr("Selected VPN profile '<b>%1</b>' does not exists.").arg(profileName));
+                    tr("Selected VPN profile '<b>%1</b>' does not exist.").arg(profileName));
             }
         }
 
