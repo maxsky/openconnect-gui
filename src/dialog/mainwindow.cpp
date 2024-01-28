@@ -731,9 +731,7 @@ void MainWindow::on_connectClicked()
 
     return;
 fail: // LCA: remote 'fail' label :/
-    if (vpninfo != nullptr)
-        delete vpninfo;
-    return;
+    delete vpninfo;
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
