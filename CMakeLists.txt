@@ -20,13 +20,16 @@ set(PRODUCT_NAME_SHORT "OpenConnect-GUI")
 set(PRODUCT_NAME_COMPANY "OpenConnect-GUI Team")
 set(PRODUCT_NAME_COMPANY_DOMAIN "gui.openconnect-vpn.net")
 
-# The long name is used as the window title, installer description
+# The long name is used as the installer description
 # and About screen description.
 set(PRODUCT_NAME_LONG "OpenConnect VPN graphical client")
 
 # Printed in the About screen
 set(PRODUCT_NAME_COPYRIGHT_SHORT "Copyright (C) 2016-2024 OpenConnect-GUI Team")
 set(PRODUCT_NAME_COPYRIGHT_FULL "Copyright (C) 2014-2015 Red Hat Inc.<br>${PRODUCT_NAME_COPYRIGHT_SHORT}")
+
+# The application name / main window title
+set(APP_NAME "OpenConnect VPN")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Includes/")
