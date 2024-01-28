@@ -952,7 +952,7 @@ void MainWindow::on_actionAbout_triggered()
 {
     QString txt = QLatin1String("<h2>") + QLatin1String(appDescriptionLong) + QLatin1String("</h2>");
     txt += tr("Version <i>%1</i> (%2 bit)").arg(appVersion).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
-    txt += tr("<br><br>Build on ") + QLatin1String("<i>") + QLatin1String(appBuildOn) + QLatin1String("</i>");
+    txt += tr("<br><br>Built on ") + QLatin1String("<i>") + QLatin1String(appBuildOn) + QLatin1String("</i>");
     txt += tr("<br>Based on");
     txt += tr("<br>- <a href=\"https://www.infradead.org/openconnect\">OpenConnect</a> ") + QLatin1String(openconnect_get_version());
     txt += tr("<br>- <a href=\"https://www.gnutls.org\">GnuTLS</a> v") + QLatin1String(gnutls_check_version(nullptr));
