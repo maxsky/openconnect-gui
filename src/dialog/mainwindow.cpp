@@ -644,7 +644,7 @@ void MainWindow::on_disconnectClicked()
 void MainWindow::on_connectClicked()
 {
     VpnInfo* vpninfo = nullptr;
-    StoredServer* ss = new StoredServer();
+    StoredServer* ss = nullptr;
     QFuture<void> future;
     QString name, url;
     QList<QNetworkProxy> proxies;
@@ -671,6 +671,8 @@ void MainWindow::on_connectClicked()
             tr("You need to specify a gateway. e.g. vpn.example.com:443"));
         return;
     }
+
+    ss = new StoredServer();
 
     name = ui->serverList->currentText();
     ss->load(name);
