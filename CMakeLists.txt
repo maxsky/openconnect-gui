@@ -14,12 +14,17 @@ project(openconnect-gui
 
 message(STATUS "Building ${PROJECT_NAME} v${PROJECT_VERSION} [cmake]")
 
-# Do not change the SHORT and COMPANY names as they affect the installation directory
-# as well as the application settings location.
+# The SHORT and COMPANY names affect the installation directory
+# as well as the application Settings.
 set(PRODUCT_NAME_SHORT "OpenConnect-GUI")
-set(PRODUCT_NAME_LONG "OpenConnect VPN graphical client")
 set(PRODUCT_NAME_COMPANY "OpenConnect-GUI Team")
 set(PRODUCT_NAME_COMPANY_DOMAIN "gui.openconnect-vpn.net")
+
+# The long name is used as the window title, installer description
+# and About screen description.
+set(PRODUCT_NAME_LONG "OpenConnect VPN graphical client")
+
+# Printed in the About screen
 set(PRODUCT_NAME_COPYRIGHT_SHORT "Copyright (C) 2016-2024 OpenConnect-GUI Team")
 set(PRODUCT_NAME_COPYRIGHT_FULL "Copyright (C) 2014-2015 Red Hat Inc.<br>${PRODUCT_NAME_COPYRIGHT_SHORT}")
 
