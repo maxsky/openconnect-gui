@@ -28,7 +28,7 @@ set(PRODUCT_NAME_LONG "OpenConnect VPN graphical client")
 set(PRODUCT_NAME_COPYRIGHT_SHORT "Copyright (C) 2016-2024 OpenConnect-GUI Team")
 set(PRODUCT_NAME_COPYRIGHT_FULL "Copyright (C) 2014-2015 Red Hat Inc.<br>${PRODUCT_NAME_COPYRIGHT_SHORT}")
 
-# The application name / main window title
+# The application name / main window title / installer app name
 set(APP_NAME "OpenConnect VPN")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
