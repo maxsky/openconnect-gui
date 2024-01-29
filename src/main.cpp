@@ -99,7 +99,7 @@ int pin_callback(void* userdata, int attempt, const char* token_url,
         type = QObject::tr("security officer");
     }
 
-    QString outtext = QObject::tr("Please enter the ") + type + QObject::tr(" PIN for ") + QLatin1String(token_label) + ".";
+    QString outtext = QObject::tr("Please enter the %1 PIN for %2.").arg(type).arg(token_label);
     if (flags & GNUTLS_PKCS11_PIN_FINAL_TRY) {
         outtext += QObject::tr(" This is the FINAL try!");
     }

@@ -304,14 +304,12 @@ static int validate_peer_cert(void* privdata, const char* reason)
     } else if (ret == GNUTLS_E_CERTIFICATE_KEY_MISMATCH) {
         Logger::instance().addMessage(QObject::tr("peer's key has changed!"));
 
-        QString str = QObject::tr("Host: ") + vpn->ss->get_servername() + QObject::tr("\n") + hash;
-
         MyCertMsgBox msgBox(vpn->m,
             QObject::tr("This peer is known and associated with a different key."
                         "It may be that the server has multiple keys "
                         "or you are (or were in the past) under attack. "
                         "Do you want to proceed?"),
-            str,
+            QObject::tr("Host: %1\n%2").arg(vpn->ss->get_servername()).arg(hash),
             QObject::tr("The key was changed by the administrator"),
             dstr);
         msgBox.show();
@@ -332,8 +330,7 @@ static int validate_peer_cert(void* privdata, const char* reason)
         ret = gnutls_store_pubkey(reinterpret_cast<const char*>(&tdb), tdb.tdb,
             "", "", GNUTLS_CRT_X509, &raw, 0, 0);
         if (ret < 0) {
-            QString str = QObject::tr("Could not store certificate: ");
-            str += gnutls_strerror(ret);
+            QString str = QObject::tr("Could not store certificate: %1").arg(gnutls_strerror(ret));
             Logger::instance().addMessage(str);
         } else {
             vpn->ss->save();

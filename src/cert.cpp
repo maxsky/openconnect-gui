@@ -207,7 +207,7 @@ QString Cert::sha1_hash()
     QByteArray array;
     array.append((const char*)id, len);
     QByteArray hex = array.toHex();
-    QString s = QObject::tr("SHA1:") + hex;
+    QString s = QObject::tr("SHA1: %1").arg(QString(hex));
     return s;
 }
 
