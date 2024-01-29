@@ -370,7 +370,6 @@ static void setup_tun_vfn(void* privdata)
     QByteArray  interface_name;
     const char * ifname = NULL;
 
-    vpncScriptFullPath.append(DEFAULT_VPNC_SCRIPT); // usually ASCII
     if (! vpn->ss->get_vpnc_script_filename().isEmpty())
         vpncScriptFullPath = vpn->ss->get_vpnc_script_filename().toUtf8();
     else {
