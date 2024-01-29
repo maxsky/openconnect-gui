@@ -143,9 +143,9 @@ int main(int argc, char* argv[])
     QApplication::setSetuidAllowed(true);
 #endif
     QCoreApplication::setApplicationName(APP_NAME);
-    QCoreApplication::setApplicationVersion(appVersion);
-    QCoreApplication::setOrganizationName(appOrganizationName);
-    QCoreApplication::setOrganizationDomain(appOrganizationDomain);
+    QCoreApplication::setApplicationVersion(PROJECT_VERSION);
+    QCoreApplication::setOrganizationName(PRODUCT_NAME_COMPANY);
+    QCoreApplication::setOrganizationDomain(PRODUCT_NAME_COMPANY_DOMAIN);
 
     QtSingleApplication app(argc, argv);
     if (app.isRunning()) {
