@@ -576,6 +576,7 @@ static void main_loop(VpnInfo* vpninfo, MainWindow* m)
     m->vpn_status_changed(STATUS_CONNECTING);
 
     bool pass_was_empty;
+    bool reset_password = false;
     pass_was_empty = vpninfo->ss->get_password().isEmpty();
 
     QString ip, ip6, dns, cstp, dtls;
@@ -591,7 +592,6 @@ static void main_loop(VpnInfo* vpninfo, MainWindow* m)
                 goto fail;
 
             QString oldpass, oldgroup;
-            bool reset_password = false;
             if (pass_was_empty != true) {
                 /* authentication failed in batch mode? switch to non
                  * batch and retry */
@@ -644,7 +644,7 @@ void MainWindow::on_disconnectClicked()
 void MainWindow::on_connectClicked()
 {
     VpnInfo* vpninfo = nullptr;
-    StoredServer* ss = new StoredServer();
+    StoredServer* ss = nullptr;
     QFuture<void> future;
     QString name, url;
     QList<QNetworkProxy> proxies;
@@ -671,6 +671,8 @@ void MainWindow::on_connectClicked()
             tr("You need to specify a gateway. e.g. vpn.example.com:443"));
         return;
     }
+
+    ss = new StoredServer();
 
     name = ui->serverList->currentText();
     ss->load(name);
@@ -718,9 +720,13 @@ void MainWindow::on_connectClicked()
                 if (proxies.at(0).port() != 0) {
                     str += ":" + QString::number(proxies.at(0).port());
                 }
+
                 Logger::instance().addMessage(tr("Setting proxy to: %1").arg(str));
-                // FIXME: ...
+
                 int ret = openconnect_set_http_proxy(vpninfo->vpninfo, str.toLatin1().data());
+                if (ret != 0) {
+                    Logger::instance().addMessage(tr("Unexpected error setting proxy"));
+                }
             }
         }
     }
