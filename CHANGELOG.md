@@ -4,6 +4,7 @@ History of user-visible changes.
 - Allow empty passwords (#288)
 - Alternative vpnc-script can be specified (#350)
 - Fixed issue with certificates on MacOS BigSur (#275)
+- Set the window title on Linux systems
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.0..main)
 

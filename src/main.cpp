@@ -142,10 +142,10 @@ int main(int argc, char* argv[])
     /* Re-launching with root privs on OS X needs Qt to allow setsuid */
     QApplication::setSetuidAllowed(true);
 #endif
-    QCoreApplication::setApplicationName(appDescription);
-    QCoreApplication::setApplicationVersion(appVersion);
-    QCoreApplication::setOrganizationName(appOrganizationName);
-    QCoreApplication::setOrganizationDomain(appOrganizationDomain);
+    QCoreApplication::setApplicationName(APP_NAME);
+    QCoreApplication::setApplicationVersion(PROJECT_VERSION);
+    QCoreApplication::setOrganizationName(PRODUCT_NAME_COMPANY);
+    QCoreApplication::setOrganizationDomain(PRODUCT_NAME_COMPANY_DOMAIN);
 
     QtSingleApplication app(argc, argv);
     if (app.isRunning()) {
@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
             return 0;
         }
     }
-    app.setApplicationDisplayName(appDescriptionLong);
+    app.setApplicationDisplayName(APP_NAME);
     app.setQuitOnLastWindowClosed(false);
 
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
@@ -213,6 +213,8 @@ int main(int argc, char* argv[])
 #endif
 
     mainWindow.show();
+    mainWindow.setWindowTitle(APP_NAME);
+
     QObject::connect(&app, &QtSingleApplication::messageReceived,
         [&mainWindow](const QString& message) {
             Logger::instance().addMessage(message);

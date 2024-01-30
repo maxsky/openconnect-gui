@@ -196,7 +196,7 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
             } else {
                 QMessageBox::warning(this,
                     tr("Connection failed"),
-                    tr("Selected VPN profile '<b>%1</b>' does not exists.").arg(profileName));
+                    tr("Selected VPN profile '<b>%1</b>' does not exist.").arg(profileName));
             }
         }
 
@@ -950,19 +950,19 @@ void MainWindow::on_actionRemoveSelectedProfile_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QString txt = QLatin1String("<h2>") + QLatin1String(appDescriptionLong) + QLatin1String("</h2>");
-    txt += tr("Version <i>%1</i> (%2 bit)").arg(appVersion).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
+    QString txt = QLatin1String("<h2>") + QLatin1String(PRODUCT_NAME_LONG) + QLatin1String("</h2>");
+    txt += tr("Version <i>%1</i> (%2 bit)").arg(PROJECT_VERSION).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
     txt += tr("<br><br>Built on <i>%1</i>").arg(QLatin1String(appBuildOn));
     txt += tr("<br>Based on");
     txt += tr("<br>- <a href=\"https://www.infradead.org/openconnect\">OpenConnect</a> ") + QLatin1String(openconnect_get_version());
     txt += tr("<br>- <a href=\"https://www.gnutls.org\">GnuTLS</a> v") + QLatin1String(gnutls_check_version(nullptr));
     txt += tr("<br>- <a href=\"https://github.com/gabime/spdlog\">spdlog</a> v%1.%2.%3").arg(QString::number(SPDLOG_VER_MAJOR)).arg(QString::number(SPDLOG_VER_MINOR)).arg(QString::number(SPDLOG_VER_PATCH));
     txt += tr("<br>- <a href=\"https://www.qt.io\">Qt</a> v%1").arg(QT_VERSION_STR);
-    txt += tr("<br><br>%1<br>").arg(appCopyright);
+    txt += tr("<br><br>%1<br>").arg(PRODUCT_NAME_COPYRIGHT_FULL);
     txt += tr("<br><i>%1</i> comes with ABSOLUTELY NO WARRANTY. This is free software, "
               "and you are welcome to redistribute it under the conditions "
               "of the GNU General Public License version 2.")
-               .arg(appDescriptionLong);
+               .arg(PRODUCT_NAME_LONG);
 
     QMessageBox::about(this, "", txt);
 }
