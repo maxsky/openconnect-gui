@@ -11,12 +11,13 @@ environment:
   MINGW: C:\Qt\Tools\mingw810_64
   NSIS: C:\Program Files (x86)\NSIS
   matrix:
-#  - GENERATOR: '"MinGW Makefiles"'
-#    BUILD_TYPE: Debug
-#    TARGET: all
   - GENERATOR: '"MinGW Makefiles"'
-    BUILD_TYPE: Release
+    BUILD_TYPE: Debug
     TARGET: package
+#    TARGET: all
+#  - GENERATOR: '"MinGW Makefiles"'
+#    BUILD_TYPE: Release
+#    TARGET: package
 cache: .\build -> appveyor.yml
 build_script:
 - cmd: >-

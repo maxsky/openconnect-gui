@@ -22,12 +22,14 @@ Signoff:
   - echo "None (good)"
 
 Fedora:
+  variables:
+    BUILD_TYPE: "Debug"
   stage: testing
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
   script:
   - dnf -y install dnf-plugins-core qt5-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
-  - cmake .
-  - make -j4
+  - cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - cmake --build . --config $BUILD_TYPE
   tags:
   - shared
   except:
@@ -40,12 +42,14 @@ Fedora:
       - bin/openconnect-gui
 
 static-analyzer/Fedora:
+  variables:
+    BUILD_TYPE: "Debug"
   stage: preliminaries
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
   script:
   - dnf -y install dnf-plugins-core qt5-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
-  - scan-build cmake .
-  - scan-build --status-bugs -o scan-build-src make -j4
+  - scan-build cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - scan-build --status-bugs -o scan-build-src cmake --build . --config $BUILD_TYPE
   tags:
   - shared
   except:
@@ -58,14 +62,16 @@ static-analyzer/Fedora:
       - scan-build-src/*
 
 MinGW32:
+  variables:
+    BUILD_TYPE: "Debug"
   stage: testing
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$MINGW32_BUILD
   script:
   - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
   - echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
   - dnf -y install dnf-plugins-core mingw32-qt5-qtbase patch
-  - mingw32-cmake .
-  - make -j4
+  - mingw32-cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - cmake --build . --config $BUILD_TYPE
   tags:
   - shared
   except:
@@ -78,6 +84,8 @@ MinGW32:
       - bin/openconnect-gui.exe
 
 MinGW64:
+  variables:
+    BUILD_TYPE: "Debug"
   stage: testing
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$MINGW64_BUILD
   script:
@@ -85,8 +93,8 @@ MinGW64:
   - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
   - echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
   - dnf -y install dnf-plugins-core mingw64-qt5-qtbase patch
-  - mingw64-cmake .
-  - make -j4
+  - mingw64-cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - cmake --build . --config $BUILD_TYPE
   tags:
   - shared
   except:
@@ -166,7 +174,7 @@ MacOS14:
   script:
   - mkdir -p build
   - cd build
-  - cmake .. -DQt5_DIR=$(brew --prefix qt5)/lib/cmake/Qt5
+  - cmake .. -DQt5_DIR=$(brew --prefix qt5)/lib/cmake/Qt5 -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
   - cmake --build . --config "$BUILD_TYPE"
   artifacts:
     expire_in: 1 week
