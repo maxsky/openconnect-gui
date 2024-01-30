@@ -23,7 +23,10 @@ add_compile_options("-Wall")
 add_compile_options("-Wextra")
 add_compile_options("-Wpedantic")
 #add_compile_options("-Weffc++")
-#add_compile_options("-Werror")
+add_compile_options("-Wno-unused-parameter")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options("-Werror")
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
