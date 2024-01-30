@@ -6,6 +6,7 @@ History of user-visible changes.
 - Use sha256 to PIN certificates
 - Fixed issue with certificates on MacOS BigSur (#275)
 - Set the window title on Linux systems
+- Print any banners provided by the server in the password prompt (#302)
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.0..main)
 
