@@ -38,7 +38,7 @@ if(CMAKE_CROSSCOMPILING OR NOT WIN32)
 					ERROR_VARIABLE output
 				)
 				string(STRIP ${output} output)
-				set(OPENCONNECT_VPNC_SCRIPT "${output}/../etc/vpnc-script")
+				set(OPENCONNECT_VPNC_SCRIPT "${output}/../etc/vpnc/vpnc-script")
 			else()
 				execute_process(
 					COMMAND ${OPENCONNECT_EXECUTABLE} -help
