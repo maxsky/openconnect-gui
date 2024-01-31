@@ -44,7 +44,7 @@ extern "C" {
 #include <QFutureWatcher>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QSettings>
+#include <OcSettings.h>
 #include <QSignalTransition>
 #include <QStateMachine>
 #include <QUrl>
@@ -200,7 +200,7 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
             }
         }
 
-        QSettings settings;
+        OcSettings settings;
         const int currentIndex = settings.value("Profiles/currentIndex", -1).toInt();
         if (currentIndex != -1 && currentIndex < ui->serverList->count()) {
             ui->serverList->setCurrentIndex(currentIndex);
@@ -403,7 +403,7 @@ void MainWindow::reload_settings()
         m_trayIconMenuConnections->clear();
     }
 
-    QSettings settings;
+    OcSettings settings;
     for (const auto& key : settings.allKeys()) {
         if (key.startsWith(PREFIX) && key.endsWith("/server")) {
             QString str{ key };
@@ -780,7 +780,7 @@ void MainWindow::request_update_stats()
 
 void MainWindow::readSettings()
 {
-    QSettings settings;
+    OcSettings settings;
     settings.beginGroup("MainWindow");
     resize(settings.value("size").toSize());
     if (settings.contains("pos")) {
@@ -794,7 +794,7 @@ void MainWindow::readSettings()
     ui->actionStartMinimized->setChecked(settings.value("startMinimized", false).toBool());
     ui->actionSingleInstanceMode->setChecked(settings.value("singleInstanceMode", true).toBool());
     connect(ui->actionSingleInstanceMode, &QAction::toggled, [](bool checked) {
-        QSettings settings;
+        OcSettings settings;
         settings.setValue("Settings/singleInstanceMode", checked);
     });
     settings.endGroup();
@@ -802,7 +802,7 @@ void MainWindow::readSettings()
 
 void MainWindow::writeSettings()
 {
-    QSettings settings;
+    OcSettings settings;
     settings.beginGroup("MainWindow");
     settings.setValue("size", size());
     settings.setValue("pos", pos());
@@ -941,7 +941,7 @@ void MainWindow::on_actionRemoveSelectedProfile_triggered()
     mbox.setDefaultButton(QMessageBox::Cancel);
     mbox.setButtonText(QMessageBox::Ok, tr("Remove"));
     if (mbox.exec() == QMessageBox::Ok) {
-        QSettings settings;
+        OcSettings settings;
         QString prefix = PREFIX;
         for (const auto& key : settings.allKeys()) {
             //qDebug() << key << ":" << QString(prefix + ui->serverList->currentText());

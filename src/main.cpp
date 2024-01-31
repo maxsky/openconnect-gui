@@ -37,7 +37,7 @@ extern "C" {
 #include <QMessageBox>
 #endif
 #include <QCommandLineParser>
-#include <QSettings>
+#include <OcSettings.h>
 #include <QtSingleApplication>
 
 #ifdef __MACH__
@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
 
     QtSingleApplication app(argc, argv);
     if (app.isRunning()) {
-        QSettings settings;
+        OcSettings settings;
         if (settings.value(QLatin1Literal("Settings/singleInstanceMode"), true).toBool()) {
             app.sendMessage("Wake up!");
             return 0;

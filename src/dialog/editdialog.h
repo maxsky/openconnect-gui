@@ -22,7 +22,7 @@
 #include <QDialog>
 
 class StoredServer;
-class QSettings;
+class OcSettings;
 
 namespace Ui {
 class EditDialog;

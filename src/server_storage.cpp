@@ -19,7 +19,7 @@
 
 #include "server_storage.h"
 #include "cryptdata.h"
-#include <QSettings>
+#include <OcSettings.h>
 #include <cstdio>
 
 StoredServer::~StoredServer(void)
@@ -149,7 +149,7 @@ void StoredServer::get_server_hash(QString& hash) const
 int StoredServer::load(QString& name)
 {
     this->m_label = name;
-    QSettings settings;
+    OcSettings settings;
     settings.beginGroup(PREFIX + name);
 
     this->m_servername = settings.value("server").toString();
@@ -232,7 +232,7 @@ int StoredServer::load(QString& name)
 
 int StoredServer::save()
 {
-    QSettings settings;
+    OcSettings settings;
     settings.beginGroup(PREFIX + this->m_label);
     settings.setValue("server", this->m_servername);
     settings.setValue("batch", this->m_batch_mode);
