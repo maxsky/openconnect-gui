@@ -21,6 +21,7 @@ Signoff:
   - 'git log 7abb6359ce8be9952f768b643f96094e057f8a07.. --grep "(^Signed-off-by)|(^Merge branch)|(^This reverts commit)" --extended-regexp --invert-grep --exit-code'
   - echo "None (good)"
 
+# This tests intentionally an out-of-tree build
 Fedora:
   variables:
     BUILD_TYPE: "Debug"
@@ -28,7 +29,8 @@ Fedora:
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
   script:
   - dnf -y install dnf-plugins-core qt5-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
-  - cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - mkdir -p build && cd build
+  - cmake -S .. -B . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - cmake --build . --config $BUILD_TYPE
   tags:
   - shared
