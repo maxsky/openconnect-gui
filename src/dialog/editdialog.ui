@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>405</width>
-    <height>642</height>
+    <width>559</width>
+    <height>713</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -164,6 +164,11 @@
       <layout class="QHBoxLayout" name="serverCertificateLayout">
        <item>
         <widget class="QLineEdit" name="serverCertHash">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="styleSheet">
           <string notr="true">background-color:&quot;transparent&quot;</string>
          </property>
@@ -482,8 +487,8 @@ Leave blank for default.</string>
         <rect>
          <x>331</x>
          <y>35</y>
-         <width>45</width>
-         <height>48</height>
+         <width>58</width>
+         <height>58</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
