@@ -324,6 +324,7 @@ void EditDialog::on_caCertClear_clicked()
 void EditDialog::on_serverCertClear_clicked()
 {
     ss->clear_server_pin();
+    ui->serverCertHash->clear();
 }
 
 void EditDialog::on_tokenClear_clicked()
