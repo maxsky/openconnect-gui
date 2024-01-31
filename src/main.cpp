@@ -134,10 +134,6 @@ int main(int argc, char* argv[])
 
     qRegisterMetaType<Logger::Message>();
 
-#ifdef PROJ_INI_SETTINGS
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-#endif
-
 #if defined(Q_OS_MACOS) && defined(PROJ_ADMIN_PRIV_ELEVATION)
     /* Re-launching with root privs on OS X needs Qt to allow setsuid */
     QApplication::setSetuidAllowed(true);
