@@ -92,6 +92,7 @@ public:
     const QString&  get_protocol_name() const;
     void set_protocol_name(const QString name);
 
+    bool server_pin_algo_is_legacy(void);
     unsigned get_server_pin(QByteArray& hash) const;
     void get_server_pin(QString& hash) const;
     void set_server_pin(const unsigned algo, const QByteArray& hash);

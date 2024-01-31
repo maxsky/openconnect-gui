@@ -135,6 +135,14 @@ int StoredServer::set_client_key(const QString& filename)
     return ret;
 }
 
+bool StoredServer::server_pin_algo_is_legacy(void)
+{
+    if (this->m_server_pin_algo != GNUTLS_DIG_SHA256)
+        return true;
+    else
+        return false;
+}
+
 void StoredServer::get_server_pin(QString& hash) const
 {
     if (this->m_server_pin_algo == 0) {
