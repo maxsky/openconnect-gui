@@ -111,7 +111,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
         } else {
             {
                 MyInputDialog dialog(vpn->m,
-                    QLatin1String(select_opt->form.name),
+                    QLatin1String("Auth group selection"),
                     QLatin1String(select_opt->form.label),
                     ditems);
                 dialog.show();
@@ -159,7 +159,8 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
             }
 
             {
-                MyInputDialog dialog(vpn->m, QString::fromUtf8(opt->name),
+                MyInputDialog dialog(vpn->m,
+                    QLatin1String("Form selection"),
                     QString::fromUtf8(opt->label), items);
 
                 dialog.set_banner(QString::fromUtf8(form->banner), QString::fromUtf8(form->message));
@@ -189,7 +190,8 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
             }
 
             do {
-                MyInputDialog dialog(vpn->m, QString::fromUtf8(opt->name),
+                MyInputDialog dialog(vpn->m,
+                    QLatin1String("Username input"),
                     QString::fromUtf8(opt->label),
                     QLineEdit::Normal);
 
@@ -221,7 +223,8 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
                 continue;
             }
 
-            MyInputDialog dialog(vpn->m, QString::fromUtf8(opt->name),
+            MyInputDialog dialog(vpn->m,
+                QLatin1String("Password input"),
                 QString::fromUtf8(opt->label),
                 QLineEdit::Password);
 
