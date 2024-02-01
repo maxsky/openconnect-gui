@@ -1,9 +1,8 @@
 # OpenConnect GUI
 
-This is the GUI client for openconnect VPN.
-
-Look to [OpenConnect VPN GUI](https://gui.openconnect-vpn.net/) project
-pages for detailed description, screen shots and other related projects.
+This is the development space of OpenConnect VPN graphical client (GUI).
+See the [OpenConnect VPN GUI web site](https://gui.openconnect-vpn.net/)
+for detailed description, screen shots and other related projects.
 
 ## Supported Platforms
 - Microsoft Windows 7 and newer
