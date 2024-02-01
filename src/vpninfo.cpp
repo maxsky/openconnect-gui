@@ -48,9 +48,10 @@ static void stats_vfn(void* privdata, const struct oc_stats* stats)
     vpn->m->updateStats(stats, dtls);
 }
 
+// privdata is set by the caller to be of type VpnInfo
+// Access as: VpnInfo* vpn = static_cast<VpnInfo*>(privdata);
 static void progress_vfn(void* privdata, int level, const char* fmt, ...)
 {
-    VpnInfo* vpn = static_cast<VpnInfo*>(privdata);
     char buf[512];
     size_t len;
     va_list args;
