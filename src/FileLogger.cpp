@@ -21,9 +21,9 @@ FileLogger::FileLogger(QObject* parent, const QString& logPath, const size_t log
     try {
         m_logger = spd::rotating_logger_mt("openconnect-logger",
 #ifdef Q_OS_WIN
-            QString("%1/%2").arg(m_logPath).arg(qApp->applicationName()).toStdWString(),
+            QString("%1/%2.log").arg(m_logPath).arg(qApp->applicationName()).toStdWString(),
 #else
-            QString("%1/%2").arg(m_logPath).arg(qApp->applicationName()).toStdString(),
+            QString("%1/%2.log").arg(m_logPath).arg(qApp->applicationName()).toStdString(),
 #endif
             logSize,
             logCount);
