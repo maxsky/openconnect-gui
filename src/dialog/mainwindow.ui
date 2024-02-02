@@ -332,7 +332,6 @@
     <addaction name="actionWebSite"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
-    <addaction name="actionAboutQt"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -370,14 +369,6 @@
    </property>
    <property name="statusTip">
     <string>Show the application's About info</string>
-   </property>
-  </action>
-  <action name="actionAboutQt">
-   <property name="text">
-    <string>About &amp;Qt</string>
-   </property>
-   <property name="statusTip">
-    <string>Show the Qt library's About info</string>
    </property>
   </action>
   <action name="actionMinimize">

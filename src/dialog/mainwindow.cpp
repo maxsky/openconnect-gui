@@ -973,11 +973,6 @@ void MainWindow::on_actionAbout_triggered()
     QMessageBox::about(this, "", txt);
 }
 
-void MainWindow::on_actionAboutQt_triggered()
-{
-    qApp->aboutQt();
-}
-
 void MainWindow::on_actionWebSite_triggered()
 {
     QDesktopServices::openUrl(QUrl(CMAKE_PROJECT_HOMEPAGE_URL));
