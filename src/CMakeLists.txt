@@ -33,6 +33,7 @@ set(${PROJECT_NAME}_SRCS
     logger.cpp
 
     FileLogger.cpp
+    OcSettings.h
 )
 
 set_source_files_properties(

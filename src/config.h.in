@@ -22,7 +22,6 @@
 
 #cmakedefine PROJ_ADMIN_PRIV_ELEVATION
 #cmakedefine PROJ_GNUTLS_DEBUG
-#cmakedefine PROJ_INI_SETTINGS
 #cmakedefine PROJ_PKCS11
 
 #cmakedefine APP_NAME "@APP_NAME@"

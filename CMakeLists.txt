@@ -14,8 +14,7 @@ project(openconnect-gui
 
 message(STATUS "Building ${PROJECT_NAME} v${PROJECT_VERSION} [cmake]")
 
-# The SHORT and COMPANY names affect the installation directory
-# as well as the application Settings.
+# The SHORT and COMPANY names affect the installation directory.
 set(PRODUCT_NAME_SHORT "OpenConnect-GUI")
 set(PRODUCT_NAME_COMPANY "OpenConnect-GUI Team")
 set(PRODUCT_NAME_COMPANY_DOMAIN "gui.openconnect-vpn.net")

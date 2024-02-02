@@ -6,7 +6,7 @@
 #include "server_storage.h"
 
 #include <QPushButton>
-#include <QSettings>
+#include <OcSettings.h>
 #include <QUrl>
 
 #include <memory>
@@ -86,7 +86,7 @@ void NewProfileDialog::updateButtons()
         enableButtons = true;
 
         // TODO: refactor this too :/
-        QSettings settings;
+        OcSettings settings;
         for (const auto& key : settings.allKeys()) {
             if (key.startsWith(PREFIX) && key.endsWith("/server")) {
                 QString str{ key };

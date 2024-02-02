@@ -37,7 +37,7 @@ extern "C" {
 #include <QMessageBox>
 #endif
 #include <QCommandLineParser>
-#include <QSettings>
+#include <OcSettings.h>
 #include <QtSingleApplication>
 
 #ifdef __MACH__
@@ -134,10 +134,6 @@ int main(int argc, char* argv[])
 
     qRegisterMetaType<Logger::Message>();
 
-#ifdef PROJ_INI_SETTINGS
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-#endif
-
 #if defined(Q_OS_MACOS) && defined(PROJ_ADMIN_PRIV_ELEVATION)
     /* Re-launching with root privs on OS X needs Qt to allow setsuid */
     QApplication::setSetuidAllowed(true);
@@ -149,7 +145,7 @@ int main(int argc, char* argv[])
 
     QtSingleApplication app(argc, argv);
     if (app.isRunning()) {
-        QSettings settings;
+        OcSettings settings;
         if (settings.value(QLatin1Literal("Settings/singleInstanceMode"), true).toBool()) {
             app.sendMessage("Wake up!");
             return 0;
