@@ -18,6 +18,7 @@ message(STATUS "Building ${PROJECT_NAME} v${PROJECT_VERSION} [cmake]")
 set(PRODUCT_NAME_SHORT "OpenConnect-GUI")
 set(PRODUCT_NAME_COMPANY "OpenConnect-GUI Team")
 set(PRODUCT_NAME_COMPANY_DOMAIN "gui.openconnect-vpn.net")
+set(INTERNAL_PROJECT_VERSION "${PROJECT_VERSION}")
 
 # The long name is used as the installer description
 # and About screen description.
@@ -29,6 +30,8 @@ set(PRODUCT_NAME_COPYRIGHT_FULL "Copyright (C) 2014-2015 Red Hat Inc.<br>${PRODU
 
 # The application name / main window title / installer app name
 set(APP_NAME "OpenConnect VPN")
+
+set(APP_ISSUES_URL "https://gitlab.com/openconnect/openconnect-gui/-/issues")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Includes/")

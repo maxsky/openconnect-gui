@@ -20,6 +20,7 @@
 #pragma once
 
 #include "common.h"
+#include "OcSettings.h"
 
 #include <QCoreApplication>
 #include <QFutureWatcher>
@@ -92,6 +93,8 @@ public slots:
     void on_actionEditSelectedProfile_triggered();
     void on_actionRemoveSelectedProfile_triggered();
 
+    void on_actionLicense_triggered();
+    void on_actionReport_an_issue_triggered();
     void on_actionWebSite_triggered();
 
 signals:

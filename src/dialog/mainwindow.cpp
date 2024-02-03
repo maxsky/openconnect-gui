@@ -27,7 +27,6 @@
 #include "timestamp.h"
 #include "ui_mainwindow.h"
 #include "vpninfo.h"
-
 #include "logger.h"
 
 extern "C" {
@@ -423,6 +422,7 @@ void MainWindow::reload_settings()
             }
         }
     }
+
 }
 
 void MainWindow::blink_ui()
@@ -957,23 +957,46 @@ void MainWindow::on_actionRemoveSelectedProfile_triggered()
 void MainWindow::on_actionAbout_triggered()
 {
     QString txt = QLatin1String("<h2>") + QLatin1String(PRODUCT_NAME_LONG) + QLatin1String("</h2>");
-    txt += tr("Version <i>%1</i> (%2 bit)").arg(PROJECT_VERSION).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
-    txt += tr("<br><br>Built on <i>%1</i>").arg(QLatin1String(appBuildOn));
+
+    if (QLatin1String(PROJECT_VERSION).contains(QLatin1String("-g"))) {
+        txt += tr("Development snapshot <i>%1</i> (%2 bit)<br>").arg(PROJECT_VERSION).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
+        txt += tr("Built at <i>%1</i><br>").arg(QLatin1String(appBuildOn));
+    } else {
+        txt += tr("Version <i>%1</i> (%2 bit)<br>").arg(PROJECT_VERSION).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
+    }
+
+    txt += tr("<br><i>%1</i> is free software developed by the OpenConnect GUI project community. See the license for more information.<br>").arg(APP_NAME);
+
+    txt += tr("<br>Visit <a href=\"%1\">our community web site</a> for more information, to contribute, file a bug or suggest a new feature.<br>").arg(CMAKE_PROJECT_HOMEPAGE_URL);
+
+    QMessageBox::about(this, QLatin1String("About"), txt);
+}
+
+void MainWindow::on_actionLicense_triggered()
+{
+    QString txt = QLatin1String("<h2>") + QLatin1String(PRODUCT_NAME_LONG) + QLatin1String("</h2>");
+
     txt += tr("<br><br>Based on");
     txt += tr("<br>- <a href=\"https://www.infradead.org/openconnect\">OpenConnect</a> ") + QLatin1String(openconnect_get_version());
     txt += tr("<br>- <a href=\"https://www.gnutls.org\">GnuTLS</a> v") + QLatin1String(gnutls_check_version(nullptr));
     txt += tr("<br>- <a href=\"https://github.com/gabime/spdlog\">spdlog</a> v%1.%2.%3").arg(QString::number(SPDLOG_VER_MAJOR)).arg(QString::number(SPDLOG_VER_MINOR)).arg(QString::number(SPDLOG_VER_PATCH));
     txt += tr("<br>- <a href=\"https://www.qt.io\">Qt</a> v%1").arg(QT_VERSION_STR);
+
     txt += tr("<br><br>%1<br>").arg(PRODUCT_NAME_COPYRIGHT_FULL);
     txt += tr("<br><i>%1</i> comes with ABSOLUTELY NO WARRANTY. This is free software, "
               "and you are welcome to redistribute it under the conditions "
-              "of the GNU General Public License version 2.")
-               .arg(PRODUCT_NAME_LONG);
+              "of the GNU General Public License version 2.<br>")
+               .arg(APP_NAME);
 
-    QMessageBox::about(this, "", txt);
+    QMessageBox::information(this, QLatin1String("License"), txt);
 }
 
 void MainWindow::on_actionWebSite_triggered()
 {
     QDesktopServices::openUrl(QUrl(CMAKE_PROJECT_HOMEPAGE_URL));
+}
+
+void MainWindow::on_actionReport_an_issue_triggered()
+{
+    QDesktopServices::openUrl(QUrl(APP_ISSUES_URL));
 }

@@ -305,7 +305,7 @@
      <x>0</x>
      <y>0</y>
      <width>436</width>
-     <height>20</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -330,6 +330,8 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionWebSite"/>
+    <addaction name="actionReport_an_issue"/>
+    <addaction name="actionLicense"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
@@ -467,10 +469,18 @@
   </action>
   <action name="actionWebSite">
    <property name="text">
-    <string>&amp;Web site...</string>
+    <string>&amp;Web site</string>
    </property>
    <property name="statusTip">
-    <string>Open the browser and go to product site</string>
+    <string>Opens the browser and go to OpenConnect VPN site</string>
+   </property>
+  </action>
+  <action name="actionLicense">
+   <property name="text">
+    <string>&amp;License info</string>
+   </property>
+   <property name="statusTip">
+    <string>Information about license and build</string>
    </property>
   </action>
   <action name="actionSingleInstanceMode">
@@ -497,6 +507,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="actionReport_an_issue">
+   <property name="text">
+    <string>Report an issue</string>
    </property>
   </action>
  </widget>

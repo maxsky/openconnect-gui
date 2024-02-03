@@ -44,7 +44,7 @@ if(WIN32 AND MINGW)
 
     set(CPACK_NSIS_MENU_LINKS
         "${CMAKE_PROJECT_HOMEPAGE_URL}" "Homepage"
-        "https://gitlab.com/openconnect/openconnect-gui/issues" "Issues"
+        "${APP_ISSUES_URL}" "Issues"
         "${CPACK_NSIS_HELP_LINK}" "FAQ"
     )
 
