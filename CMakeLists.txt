@@ -25,8 +25,8 @@ set(INTERNAL_PROJECT_VERSION "${PROJECT_VERSION}")
 set(PRODUCT_NAME_LONG "OpenConnect VPN graphical client")
 
 # Printed in the About screen
-set(PRODUCT_NAME_COPYRIGHT_SHORT "Copyright (C) 2016-2024 OpenConnect-GUI Team")
-set(PRODUCT_NAME_COPYRIGHT_FULL "Copyright (C) 2014-2015 Red Hat Inc.<br>${PRODUCT_NAME_COPYRIGHT_SHORT}")
+set(PRODUCT_NAME_COPYRIGHT_SHORT "Copyright © 2016-2024 Red Hat Inc., Nikos Mavrogiannopoulos, Ľubomír Carik and others")
+set(PRODUCT_NAME_COPYRIGHT_FULL "Copyright © 2014-2015 Red Hat Inc.<br>Copyright © 2016-2024 Nikos Mavrogiannopoulos<br>Copyright © 2016-2024 Ľubomír Carik<br>Copyright © 2020-2024 David Woodhouse<br>Copyright © 2021-2024 Dimitri Papadopoulos Orfanos<br>Copyright © 2023-2024 Marios Paouris")
 
 # The application name / main window title / installer app name
 set(APP_NAME "OpenConnect VPN")
