@@ -4,11 +4,11 @@ pull_requests:
 branches:
   except:
   - gh-pages
-image: Visual Studio 2019
+image: Visual Studio 2022
 clone_depth: 200
 environment:
-  QT5: C:\Qt\5.15.2\mingw81_64
-  MINGW: C:\Qt\Tools\mingw810_64
+  QT6: C:\Qt\6.5.3\mingw_64
+  MINGW: C:\msys64\mingw64
   NSIS: C:\Program Files (x86)\NSIS
   matrix:
   - GENERATOR: '"MinGW Makefiles"'
@@ -26,7 +26,7 @@ build_script:
 
     set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
 
-    set PATH=%MINGW%\bin;%QT5%\bin;%PATH%
+    set PATH=%MINGW%\bin;%QT6%\bin;%PATH%
 
     set PATH="%NSIS%";%PATH%
 

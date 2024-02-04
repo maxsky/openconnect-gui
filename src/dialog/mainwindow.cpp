@@ -757,7 +757,7 @@ void MainWindow::on_connectClicked()
             if (url.isEmpty() == false) {
 
                 QString str;
-                if (proxies.at(0).user() != 0) {
+                if (proxies.at(0).user().isEmpty() != true) {
                     str = proxies.at(0).user() + ":" + proxies.at(0).password() + "@";
                 }
                 str += proxies.at(0).hostName();
@@ -983,7 +983,8 @@ void MainWindow::on_actionRemoveSelectedProfile_triggered()
     mbox.setText(tr("Are you sure you want to remove '%1' host?").arg(ui->serverList->currentText()));
     mbox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
     mbox.setDefaultButton(QMessageBox::Cancel);
-    mbox.setButtonText(QMessageBox::Ok, tr("Remove"));
+    mbox.addButton(tr("Remove"), QMessageBox::DestructiveRole);
+
     if (mbox.exec() == QMessageBox::Ok) {
         OcSettings settings;
         QString prefix = PREFIX;
