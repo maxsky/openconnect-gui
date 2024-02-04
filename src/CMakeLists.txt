@@ -154,7 +154,6 @@ target_link_libraries (${PROJECT_NAME}
     Qt6::Widgets
     Qt6::Network
     Qt6::StateMachine
-    #??? Qt6::QMacStylePlugin
 )
 
 if(UNIX)
@@ -188,6 +187,12 @@ if(MINGW)
     install(FILES
         ${_qwindows_dll}
         DESTINATION plugins/platforms
+        COMPONENT App
+    )
+    # Qt schannel plugin
+    install(FILES
+        ${_schannel_dll}
+        DESTINATION plugins/tls
         COMPONENT App
     )
     install(FILES

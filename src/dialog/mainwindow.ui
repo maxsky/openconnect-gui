@@ -337,6 +337,8 @@
     <addaction name="actionReport_an_issue"/>
     <addaction name="actionLicense"/>
     <addaction name="separator"/>
+    <addaction name="actionCheckForUpdates"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -367,6 +369,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionCheckForUpdates">
+   <property name="text">
+    <string>Check for &amp;Updates</string>
    </property>
   </action>
   <action name="actionAbout">

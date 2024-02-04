@@ -9,6 +9,8 @@ if(MINGW)
     if(NOT Qt6Core_VERSION STRLESS "6.0")
         get_target_property(_qwinstyle_dylib Qt6::QWindowsVistaStylePlugin LOCATION)
     endif()
+
+    get_target_property(_schannel_dll Qt6::QSchannelBackendPlugin LOCATION)
 endif()
 if(APPLE)
     get_target_property(_qcocoa_dylib Qt6::QCocoaIntegrationPlugin LOCATION)
