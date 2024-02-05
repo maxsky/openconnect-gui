@@ -34,7 +34,7 @@ StoredServer::StoredServer()
     , m_reconnect_timeout{ 300 }
     , m_dtls_attempt_period{ 25 }
     , m_protocol_id(0)
-    , m_server_hash_algo(0)
+    , m_server_pin_algo(0)
 {
     set_window(nullptr);
 }
@@ -67,10 +67,10 @@ void StoredServer::clear_ca()
     this->m_ca_cert.clear();
 }
 
-void StoredServer::clear_server_hash()
+void StoredServer::clear_server_pin()
 {
-    this->m_server_hash.clear();
-    this->m_server_hash_algo = 0;
+    this->m_server_pin.clear();
+    this->m_server_pin_algo = 0;
 }
 
 QString StoredServer::get_cert_file()
@@ -135,14 +135,27 @@ int StoredServer::set_client_key(const QString& filename)
     return ret;
 }
 
-void StoredServer::get_server_hash(QString& hash) const
+bool StoredServer::server_pin_algo_is_legacy(void)
 {
-    if (this->m_server_hash_algo == 0) {
+    if (this->m_server_pin_algo != GNUTLS_DIG_SHA256)
+        return true;
+    else
+        return false;
+}
+
+void StoredServer::get_server_pin(QString& hash) const
+{
+    if (this->m_server_pin_algo == 0) {
         hash = "";
     } else {
-        hash = gnutls_mac_get_name((gnutls_mac_algorithm_t)this->m_server_hash_algo);
-        hash += ":";
-        hash += this->m_server_hash.toHex();
+        if (this->m_server_pin_algo == GNUTLS_DIG_SHA256) {
+            hash = "pin-sha256:";
+            hash += this->m_server_pin.toBase64();
+        } else {
+            hash = gnutls_mac_get_name((gnutls_mac_algorithm_t)this->m_server_pin_algo);
+            hash += ":";
+            hash += this->m_server_pin.toHex();
+        }
     }
 }
 
@@ -207,8 +220,8 @@ int StoredServer::load(QString& name)
         this->m_client.key.import_pem(data);
     }
 
-    this->m_server_hash = settings.value("server-hash").toByteArray();
-    this->m_server_hash_algo = settings.value("server-hash-algo").toInt();
+    this->m_server_pin = settings.value("server-hash").toByteArray();
+    this->m_server_pin_algo = settings.value("server-hash-algo").toInt();
 
     ret = CryptData::decode(this->m_servername,
         settings.value("token-str").toByteArray(),
@@ -260,8 +273,8 @@ int StoredServer::save()
     QString str = QString::fromLatin1(data);
     settings.setValue("client-key", CryptData::encode(this->m_servername, str));
 
-    settings.setValue("server-hash", this->m_server_hash);
-    settings.setValue("server-hash-algo", this->m_server_hash_algo);
+    settings.setValue("server-hash", this->m_server_pin);
+    settings.setValue("server-hash-algo", this->m_server_pin_algo);
 
     settings.setValue("token-str",
         CryptData::encode(this->m_servername, this->m_token_string));
@@ -337,14 +350,14 @@ bool StoredServer::get_disable_udp() const
     return this->m_disable_udp;
 }
 
-QString StoredServer::get_client_cert_hash()
+QString StoredServer::get_client_cert_pin()
 {
-    return m_client.cert.sha1_hash();
+    return m_client.cert.cert_pin();
 }
 
-QString StoredServer::get_ca_cert_hash()
+QString StoredServer::get_ca_cert_pin()
 {
-    return m_ca_cert.sha1_hash();
+    return m_ca_cert.cert_pin();
 }
 
 void StoredServer::set_window(QWidget* w)
@@ -447,16 +460,19 @@ void StoredServer::set_protocol_name(const QString name)
     m_protocol_name = name;
 }
 
-void StoredServer::set_server_hash(const unsigned algo, const QByteArray& hash)
+void StoredServer::set_server_pin(const unsigned algo, const QByteArray& hash)
 {
-    this->m_server_hash_algo = algo;
-    this->m_server_hash = hash;
+    this->m_server_pin_algo = algo;
+    if (algo != GNUTLS_DIG_SHA256) {
+        throw std::runtime_error("sha256 is the expected certificate algorithm pin");
+    }
+    this->m_server_pin = hash;
 }
 
-unsigned StoredServer::get_server_hash(QByteArray& hash) const
+unsigned StoredServer::get_server_pin(QByteArray& hash) const
 {
-    hash = this->m_server_hash;
-    return this->m_server_hash_algo;
+    hash = this->m_server_pin;
+    return this->m_server_pin_algo;
 }
 
 const QString& StoredServer::get_interface_name() const

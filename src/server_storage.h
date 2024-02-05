@@ -57,12 +57,12 @@ public:
     void clear_ca();
     void clear_password();
     void clear_groupname();
-    void clear_server_hash();
+    void clear_server_pin();
 
-    QString get_client_cert_hash();
+    QString get_client_cert_pin();
     int set_client_cert(const QString& filename);
 
-    QString get_ca_cert_hash();
+    QString get_ca_cert_pin();
     int set_ca_cert(const QString& filename);
 
     bool get_batch_mode() const;
@@ -92,9 +92,10 @@ public:
     const QString&  get_protocol_name() const;
     void set_protocol_name(const QString name);
 
-    unsigned get_server_hash(QByteArray& hash) const;
-    void get_server_hash(QString& hash) const;
-    void set_server_hash(const unsigned algo, const QByteArray& hash);
+    bool server_pin_algo_is_legacy(void);
+    unsigned get_server_pin(QByteArray& hash) const;
+    void get_server_pin(QString& hash) const;
+    void set_server_pin(const unsigned algo, const QByteArray& hash);
 
     bool client_is_complete() const;
 
@@ -126,8 +127,8 @@ private:
     int m_token_type;
     int m_protocol_id;
     QString m_protocol_name;
-    QByteArray m_server_hash;
-    unsigned m_server_hash_algo;
+    QByteArray m_server_pin;
+    unsigned m_server_pin_algo;
     Cert m_ca_cert;
     KeyPair m_client;
     QString m_interface_name;

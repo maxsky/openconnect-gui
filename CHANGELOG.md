@@ -3,6 +3,7 @@ History of user-visible changes.
 ## [v1.6.1](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
 - Allow empty passwords (#288)
 - Alternative vpnc-script can be specified (#350)
+- Use sha256 to PIN certificates
 - Fixed issue with certificates on MacOS BigSur (#275)
 - Set the window title on Linux systems
 

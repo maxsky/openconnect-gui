@@ -141,8 +141,8 @@ EditDialog::EditDialog(QString server, QWidget* parent)
     ui->groupnameEdit->setText(ss->get_groupname());
     ui->usernameEdit->setText(ss->get_username());
     ui->gatewayEdit->setText(ss->get_servername());
-    ui->userCertHash->setText(ss->get_client_cert_hash());
-    ui->caCertHash->setText(ss->get_ca_cert_hash());
+    ui->userCertHash->setText(ss->get_client_cert_pin());
+    ui->caCertHash->setText(ss->get_ca_cert_pin());
     ui->batchModeBox->setChecked(ss->get_batch_mode());
     ui->minimizeBox->setChecked(ss->get_minimize());
     ui->useProxyBox->setChecked(ss->get_proxy());
@@ -164,7 +164,7 @@ EditDialog::EditDialog(QString server, QWidget* parent)
     ui->vpncScriptEdit->setText(ss->get_vpnc_script_filename());
 
     QString hash;
-    ss->get_server_hash(hash);
+    ss->get_server_pin(hash);
     ui->serverCertHash->setText(hash);
 }
 
@@ -204,7 +204,7 @@ void EditDialog::on_buttonBox_accepted()
             mbox.exec();
             return;
         } else {
-            ui->caCertHash->setText(ss->get_ca_cert_hash());
+            ui->caCertHash->setText(ss->get_ca_cert_pin());
         }
     }
 
@@ -228,7 +228,7 @@ void EditDialog::on_buttonBox_accepted()
             mbox.exec();
             return;
         } else {
-            ui->userCertHash->setText(ss->get_client_cert_hash());
+            ui->userCertHash->setText(ss->get_client_cert_pin());
         }
     }
 
@@ -323,7 +323,8 @@ void EditDialog::on_caCertClear_clicked()
 
 void EditDialog::on_serverCertClear_clicked()
 {
-    ss->clear_server_hash();
+    ss->clear_server_pin();
+    ui->serverCertHash->clear();
 }
 
 void EditDialog::on_tokenClear_clicked()

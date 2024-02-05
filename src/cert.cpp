@@ -190,7 +190,7 @@ int Cert::tmpfile_export(QString& filename)
     return 0;
 }
 
-QString Cert::sha1_hash()
+QString Cert::cert_pin()
 {
     if (imported == false) {
         return "";
@@ -198,7 +198,7 @@ QString Cert::sha1_hash()
 
     unsigned char id[32];
     size_t len = sizeof(id);
-    int ret = gnutls_x509_crt_get_key_id(this->crt, 0, id, &len);
+    int ret = gnutls_x509_crt_get_key_id(this->crt, GNUTLS_KEYID_USE_SHA256, id, &len);
     if (ret < 0) {
         this->last_err = gnutls_strerror(ret);
         return "";
@@ -206,8 +206,8 @@ QString Cert::sha1_hash()
 
     QByteArray array;
     array.append((const char*)id, len);
-    QByteArray hex = array.toHex();
-    QString s = QObject::tr("SHA1: %1").arg(QString(hex));
+    QByteArray b64 = array.toBase64();
+    QString s = QObject::tr("pin-sha256:%1").arg(QString(b64));
     return s;
 }
 

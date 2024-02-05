@@ -282,6 +282,12 @@ static int validate_peer_cert(void* privdata, const char* reason)
     }
 
     bool save = false;
+
+    // If the existing server PIN uses an older algorithm than the current
+    // we use, force save to update it to the latest.
+    if (vpn->ss->server_pin_algo_is_legacy() == true)
+        save = true;
+
     if (ret == GNUTLS_E_NO_CERTIFICATE_FOUND) {
         Logger::instance().addMessage(QObject::tr("peer is unknown"));
 

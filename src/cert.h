@@ -36,7 +36,7 @@ public:
     void set(gnutls_x509_crt_t crt);
     int data_export(QByteArray& data);
     int tmpfile_export(QString& File);
-    QString sha1_hash();
+    QString cert_pin();
 
     bool is_ok() const;
     void clear();
