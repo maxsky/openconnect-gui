@@ -120,10 +120,10 @@ MinGW64:
     - $Env:NSIS = 'C:\tools\msys64\mingw64\bin'
     - $Env:QT5 = 'C:\Qt\5.15.2\mingw81_64'
     - $Env:MINGW = 'C:\Qt\5.15.2\mingw81_64'
+    - $Env:PATH += "C:\tools\msys64\;C:\Program Files\Git\usr\bin;${Env:QT5}\bin;${Env:NSIS}"
+    - cmd.exe /c c:\tools\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where . -c "./contrib/build_deps_mingw@msys2.sh"
     - md -p build
     - cd build
-    - $Env:PATH += "C:\tools\msys64\;C:\Program Files\Git\usr\bin;${Env:QT5}\bin;${Env:NSIS}"
-    - cmd.exe /c c:\tools\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where ..\contrib\ -c "./build_mingw-openconnect@msys2.sh"
     - cmake -G "$Env:GENERATOR" -DCMAKE_BUILD_TYPE="$Env:BUILD_TYPE" ..
     - cmake --build . --config "$Env:BUILD_TYPE" --target "$Env:TARGET"
 

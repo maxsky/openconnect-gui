@@ -8,6 +8,10 @@
 # (c) 2016-2021, Lubomir Carik
 #
 
+BUILD_TYPE="${BUILD_TYPE:-Debug}"
+BUILD_DIR="${BUILD_DIR:-build-$MSYSTEM}"
+ROOT_DIR=$(pwd)
+
 echo "Starting under $MSYSTEM build environment..."
 
 if [ "$1" == "--head" ]; then
@@ -16,54 +20,33 @@ else
     export OC_TAG=v9.12
 fi
 
-pacman --needed --noconfirm -S \
-    mingw-w64-x86_64-cmake \
-    mingw-w64-x86_64-nsis \
-    mingw-w64-x86_64-qt5
+if [ -z "$QT5" ];then
+    pacman --needed --noconfirm -S \
+        mingw-w64-x86_64-cmake \
+        mingw-w64-x86_64-nsis \
+        mingw-w64-x86_64-qt5
+fi
 
 echo "======================================================================="
 echo " Preparing sandbox..."
 echo "======================================================================="
-[ -d build-ocg-$MSYSTEM ] || mkdir -pv build-ocg-$MSYSTEM
-cd build-ocg-$MSYSTEM
+[ -d "${BUILD_DIR}" ] || mkdir "${BUILD_DIR}"
+cd "${BUILD_DIR}"
+
+set -e
 
 echo "======================================================================="
 echo " Generating project..."
 echo "======================================================================="
 cmake -G "MinGW Makefiles" \
-    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
     -Dopenconnect-TAG=${OC_TAG} \
-    ../..
+    -S .. -B .
 
 echo "======================================================================="
 echo " Compiling..."
 echo "======================================================================="
 CORES=$(getconf _NPROCESSORS_ONLN)
-cmake --build . -- -j${CORES}
-
-# echo "======================================================================="
-# echo " LC: Bundling... (dynamic Qt only)"
-# echo "======================================================================="
-# rd /s /q out
-# md out
-# windeployqt ^
-#   src\openconnect-gui.exe ^
-#   --verbose 1 ^
-#   --compiler-runtime ^
-#   --release ^
-#   --force ^
-#   --no-webkit2 ^
-#   --no-quick-import ^
-#   --no-translations
-
-echo "======================================================================="
-echo " Packaging..."
-echo "======================================================================="
-cmake .
-cmake --build . --target package -- VERBOSE=1
-# make package_source VERBOSE=1
-
-mv -vf *.exe ../..
-mv -vf *.exe.sha512 ../..
+cmake --build . --config "$BUILD_TYPE" --target package -- -j${CORES}
 
 cd ..
