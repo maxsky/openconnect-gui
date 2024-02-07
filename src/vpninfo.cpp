@@ -111,7 +111,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
         } else {
             {
                 MyInputDialog dialog(vpn->m,
-                    QLatin1String(select_opt->form.name),
+                    QLatin1String("Auth group selection"),
                     QLatin1String(select_opt->form.label),
                     ditems);
                 dialog.show();
@@ -148,7 +148,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
             QStringList items;
             struct oc_form_opt_select* select_opt = reinterpret_cast<oc_form_opt_select*>(opt);
 
-            Logger::instance().addMessage(QLatin1String("Select form: ") + QLatin1String(opt->name));
+            Logger::instance().addMessage(QString::fromUtf8("Select form: ") + QString::fromUtf8(opt->name));
 
             if (select_opt == form->authgroup_opt) {
                 continue;
@@ -159,8 +159,11 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
             }
 
             {
-                MyInputDialog dialog(vpn->m, QLatin1String(opt->name),
-                    QLatin1String(opt->label), items);
+                MyInputDialog dialog(vpn->m,
+                    QLatin1String("Form selection"),
+                    QString::fromUtf8(opt->label), items);
+
+                dialog.set_banner(QString::fromUtf8(form->banner), QString::fromUtf8(form->message));
                 dialog.show();
                 ok = dialog.result(text);
             }
@@ -175,21 +178,24 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
             openconnect_set_option_value(opt, select_opt->choices[idx]->name);
             empty = 0;
         } else if (opt->type == OC_FORM_OPT_TEXT) {
-            Logger::instance().addMessage(QLatin1String("Text form: ") + QLatin1String(opt->name));
+            Logger::instance().addMessage(QString::fromUtf8("Text form: ") + QString::fromUtf8(opt->name));
 
             if (vpn->form_attempt == 0
                 && vpn->ss->get_username().isEmpty() == false
                 && strcasecmp(opt->name, "username") == 0) {
                 openconnect_set_option_value(opt,
-                    vpn->ss->get_username().toLatin1().data());
+                    vpn->ss->get_username().toUtf8().data());
                 empty = 0;
                 continue;
             }
 
             do {
-                MyInputDialog dialog(vpn->m, QLatin1String(opt->name),
-                    QLatin1String(opt->label),
+                MyInputDialog dialog(vpn->m,
+                    QLatin1String("Username input"),
+                    QString::fromUtf8(opt->label),
                     QLineEdit::Normal);
+
+                dialog.set_banner(QString::fromUtf8(form->banner), QString::fromUtf8(form->message));
                 dialog.show();
                 ok = dialog.result(text);
 
@@ -201,25 +207,28 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
                 vpn->ss->set_username(text);
             }
 
-            openconnect_set_option_value(opt, text.toLatin1().data());
+            openconnect_set_option_value(opt, text.toUtf8().data());
             vpn->form_attempt++;
             empty = 0;
         } else if (opt->type == OC_FORM_OPT_PASSWORD) {
-            Logger::instance().addMessage(QLatin1String("Password form: ") + QLatin1String(opt->name));
+            Logger::instance().addMessage(QString::fromUtf8("Password form: ") + QString::fromUtf8(opt->name));
 
             if (vpn->form_pass_attempt == 0
                 && vpn->ss->get_password().isEmpty() == false
                 && (strcasecmp(opt->name, "password") == 0 || strcasecmp(opt->name, "credential") == 0)
                ) {
                 openconnect_set_option_value(opt,
-                    vpn->ss->get_password().toLatin1().data());
+                    vpn->ss->get_password().toUtf8().data());
                 empty = 0;
                 continue;
             }
 
-            MyInputDialog dialog(vpn->m, QLatin1String(opt->name),
-                QLatin1String(opt->label),
+            MyInputDialog dialog(vpn->m,
+                QLatin1String("Password input"),
+                QString::fromUtf8(opt->label),
                 QLineEdit::Password);
+
+            dialog.set_banner(QString::fromUtf8(form->banner), QString::fromUtf8(form->message));
             dialog.show();
             ok = dialog.result(text);
 
@@ -231,7 +240,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
                 vpn->ss->set_password(text);
                 vpn->password_set = 1;
             }
-            openconnect_set_option_value(opt, text.toLatin1().data());
+            openconnect_set_option_value(opt, text.toUtf8().data());
             vpn->form_pass_attempt++;
             empty = 0;
         } else {
