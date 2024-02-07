@@ -29,7 +29,7 @@ else
 fi
 
 export OC_URL=https://gitlab.com/openconnect/openconnect.git
-export STOKEN_URL=https://github.com/cernekee/stoken
+export STOKEN_URL=https://github.com/stoken-dev/stoken
 
 pacman --needed --noconfirm -S \
     git \
