@@ -1,31 +1,17 @@
 ### Compilation & package preparation
 
 Hints related to command line compilation and package preparation
-may be found in [shell script](../contrib/build_mingw@win.cmd) in project root.
+on various systems are to be found in [.gitlab-ci.yml](../.gitlab-ci.yml).
 
-#### Hints For macOS
+In essence what is needed to compile are:
 
-Install [Homebrew](https://docs.brew.sh/) system-wide:
-```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+ 1. Download dependencies by running:
 
-```
-or locally:
-```
-mkdir homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew
-```
-and continue:
+    contrib/build_deps_mingw@msys2.sh
 
-```
-# Install dependencies
-brew install qt5
-brew install openconnect
+ 2. Build the application by running:
 
-cd openconnect-gui
+    contrib/build_mingw@msys2.sh
 
-# Build it
-mkdir build-release
-cd build-release
-Qt5_DIR=/usr/local/opt/qt5/lib/cmake/Qt5 cmake -DCMAKE_BUILD_TYPE=Release ..
-make
-```
+ 3. The generated binaries are in the build directory
+
