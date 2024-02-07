@@ -20,12 +20,12 @@ else
 fi
 echo "Starting under $MSYSTEM build environment..."
 
+export STOKEN_TAG=v0.92
+
 if [ "$1" == "--head" ]; then
     export OC_TAG=master
-    export STOKEN_TAG=master
 else
     export OC_TAG=v9.12
-    export STOKEN_TAG=v0.92
 fi
 
 export OC_URL=https://gitlab.com/openconnect/openconnect.git
