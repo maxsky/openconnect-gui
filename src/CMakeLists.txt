@@ -20,6 +20,9 @@ set(${PROJECT_NAME}_SRCS
     dialog/VpnProtocolModel.cpp
     dialog/mainwindow.cpp
     dialog/mainwindow.ui
+    dialog/NewProfilePopup.ui
+    dialog/NewProfilePopup.h
+    dialog/NewProfilePopup.cpp
     gtdb.cpp
     key.cpp
     keypair.cpp

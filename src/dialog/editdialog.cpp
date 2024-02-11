@@ -159,7 +159,7 @@ EditDialog::EditDialog(QString server, QWidget* parent)
         ui->tokenEdit->setText(ss->get_token_str());
     }
 
-    ui->protocolComboBox->setCurrentIndex(ss->get_protocol_id());
+    ui->protocolComboBox->setCurrentIndex(model->findIndex(ss->get_protocol_name()));
     ui->interfaceNameEdit->setText(ss->get_interface_name());
     ui->vpncScriptEdit->setText(ss->get_vpnc_script_filename());
 
@@ -257,8 +257,7 @@ void EditDialog::on_buttonBox_accepted()
         ss->set_token_type(-1);
     }
 
-    ss->set_protocol_id(ui->protocolComboBox->currentIndex());
-    ss->set_protocol_name(ui->protocolComboBox->currentData(Qt::UserRole + 1).toString());
+    ss->set_protocol_name(ui->protocolComboBox->currentData(ROLE_PROTOCOL_NAME).toString());
     ss->set_interface_name(ui->interfaceNameEdit->text());
     ss->set_vpnc_script_filename(ui->vpncScriptEdit->text());
 

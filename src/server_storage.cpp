@@ -33,7 +33,6 @@ StoredServer::StoredServer()
     , m_disable_udp{ false }
     , m_reconnect_timeout{ 300 }
     , m_dtls_attempt_period{ 25 }
-    , m_protocol_id(0)
     , m_server_pin_algo(0)
 {
     set_window(nullptr);
@@ -159,15 +158,21 @@ void StoredServer::get_server_pin(QString& hash) const
     }
 }
 
+// Returns: < 0 on error to load
+//          0 if no entry existed
+//          1 if an entry existed
 int StoredServer::load(QString& name)
 {
     this->m_label = name;
     OcSettings settings;
+    int rval = 1;
+
     settings.beginGroup(PREFIX + name);
 
     this->m_servername = settings.value("server").toString();
     if (this->m_servername.isEmpty() == true) {
         this->m_servername = name;
+        rval = 0;
     }
 
     this->m_username = settings.value("username").toString();
@@ -179,7 +184,6 @@ int StoredServer::load(QString& name)
     this->m_dtls_attempt_period = settings.value("dtls_attempt_period", 25).toInt();
 
     bool ret = false;
-    int rval = 0;
 
     if (this->m_batch_mode == true) {
         this->m_groupname = settings.value("groupname").toString();
@@ -233,7 +237,6 @@ int StoredServer::load(QString& name)
 
     this->m_token_type = settings.value("token-type").toInt();
 
-    m_protocol_id = settings.value("protocol-id", 0).toInt();
     m_protocol_name = settings.value("protocol-name").toString();
 
     m_interface_name = settings.value("interface-name").toString();
@@ -280,7 +283,6 @@ int StoredServer::save()
         CryptData::encode(this->m_servername, this->m_token_string));
     settings.setValue("token-type", this->m_token_type);
 
-    settings.setValue("protocol-id", m_protocol_id);
     settings.setValue("protocol-name", m_protocol_name);
 
     settings.setValue("interface-name", m_interface_name);
@@ -438,16 +440,6 @@ int StoredServer::get_token_type()
 void StoredServer::set_token_type(const int type)
 {
     this->m_token_type = type;
-}
-
-int StoredServer::get_protocol_id() const
-{
-    return m_protocol_id;
-}
-
-void StoredServer::set_protocol_id(const int id)
-{
-    m_protocol_id = id;
 }
 
 const QString& StoredServer::get_protocol_name() const
