@@ -12,6 +12,7 @@ environment:
   NSIS: C:\Program Files (x86)\NSIS
   matrix:
   - GENERATOR: '"MinGW Makefiles"'
+    BUILD_DIR: build
     BUILD_TYPE: Debug
     TARGET: package
 #    TARGET: all
@@ -29,24 +30,14 @@ build_script:
 
     set PATH="%NSIS%";%PATH%
 
-    if not exist build md build
+    c:\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where . -c "./contrib/build_deps_mingw@msys2.sh"
 
-    cd .\build
-
-    c:\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where ..\contrib\ -c "./build_mingw-openconnect@msys2.sh"
-
-    cmake -G %GENERATOR% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% ..
-
-    cmake --build . --config %BUILD_TYPE% --target %TARGET%
-
-    move /Y *.exe ..
-
-    move /Y *.exe.sha512 ..
+    c:\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where . -c "./contrib/build_mingw@msys2.sh"
 
 test: off
 artifacts:
-- path: openconnect-gui*.exe
+- path: build/openconnect-gui*.exe
   name: 'Installer'
-- path: openconnect-gui*.exe.sha512
+- path: build/openconnect-gui*.exe.sha512
   name: 'Installer - sha512 hash'
 

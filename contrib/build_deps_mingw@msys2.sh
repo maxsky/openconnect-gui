@@ -8,19 +8,26 @@
 # (c) 2018-2021, Lubomir Carik
 #
 
+BUILD_DIR="${BUILD_DIR:-build-$MSYSTEM}"
+
 if [ "$MSYSTEM" == "MINGW64" ]; then
     export BUILD_ARCH=x86_64
     export MINGW_PREFIX=/mingw64
+    WINTUN_ARCH=amd64
 elif [ "$MSYSTEM" == "MINGW32" ]; then
     export BUILD_ARCH=i686
     export MINGW_PREFIX=/mingw32
+    WINTUN_ARCH=x86
 else
     echo "Unknown MSYS2 build environment..."
     exit -1
 fi
-echo "Starting under $MSYSTEM build environment..."
 
 export STOKEN_TAG=v0.92
+WINTUN_VERSION=0.14.1
+ROOT_DIR=$(pwd)
+
+echo "Starting under $MSYSTEM build environment ($ROOT_DIR)..."
 
 if [ "$1" == "--head" ]; then
     export OC_TAG=master
@@ -28,8 +35,15 @@ else
     export OC_TAG=v9.12
 fi
 
+echo "OpenConnect: $OC_TAG"
+echo "stoken: $STOKEN_TAG"
+echo "wintun: $WINTUN_VERSION"
+echo ""
+
 export OC_URL=https://gitlab.com/openconnect/openconnect.git
 export STOKEN_URL=https://github.com/stoken-dev/stoken
+
+set -e
 
 pacman --needed --noconfirm -S \
     git \
@@ -61,53 +75,71 @@ pacman --needed --noconfirm -S \
 #TODO remove the following line after bumping OC_TAG (hopefully to v9.13)
 pacman --needed --noconfirm -U https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libxml2-2.11.6-1-any.pkg.tar.zst
 
+set +e
 
-[ -d build-oc-$MSYSTEM ] || mkdir build-oc-$MSYSTEM
-cd build-oc-$MSYSTEM
+[ -d "${BUILD_DIR}" ] || mkdir "${BUILD_DIR}"
+cd "${BUILD_DIR}"
 
 #CORES=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu || echo "$NUMBER_OF_PROCESSORS")
 CORES=$(getconf _NPROCESSORS_ONLN)
 
-[ -d stoken ] || git clone ${STOKEN_URL}
+[ -d stoken ] || git clone -b ${STOKEN_TAG} ${STOKEN_URL}
 cd stoken
+
 git clean -fdx
-git reset --hard
-git checkout -f -b ${STOKEN_TAG} ${STOKEN_TAG}
+git reset --hard ${STOKEN_TAG}
+
+set -e
+
 ./autogen.sh
+
+set +e
+
 [ -d build-${BUILD_ARCH} ] || mkdir build-${BUILD_ARCH}
 cd build-${BUILD_ARCH}
+set -e
 ../configure --disable-dependency-tracking --without-tomcrypt --without-gtk
 mingw32-make -j${CORES}
 mingw32-make install
 cd ../../
+set +e
 
-[ -d openconnect ] || git clone ${OC_URL}
+[ -d openconnect ] || git clone -b ${OC_TAG} ${OC_URL}
+
+set -e
 cd openconnect
+set +e
+
 git clean -fdx
-git reset --hard
-git checkout -f -b ${OC_TAG} ${OC_TAG}
+git reset --hard ${OC_TAG}
+
+set -e
 echo "hash:"
 git rev-parse --short HEAD | tee ../openconnect-${OC_TAG}_$MSYSTEM.hash
 
-# For openconnect we need wintun in /opt to avoid downloading
+# For openconnect we need wintun locally to avoid downloading
 # which is unreliable.
-WINTUNFILE=$(cat Makefile.am|grep ^WINTUNDRIVER |cut -d '=' -f 2|sed 's/^\s//')
-echo "Copying ${WINTUNFILE} for openconnect"
-set -e
-cp ../../../wintun/${WINTUNFILE} .
-set +e
+#WINTUNFILE=$(cat Makefile.am|grep ^WINTUNDRIVER |cut -d '=' -f 2|sed 's/^\s//')
+#echo "Copying ${WINTUNFILE} for openconnect"
+#cp ../../wintun/${WINTUNFILE} .
 
 ./autogen.sh
+set +e
+
 [ -d build-${BUILD_ARCH} ] || mkdir build-${BUILD_ARCH}
 cd build-${BUILD_ARCH}
 
+set -e
+
 #disable libproxy since libproxy >= 0.5 has a lot of dependencies that expand the attack surface
 #see https://gitlab.com/openconnect/openconnect-gui/-/merge_requests/259#note_1713843295
-#also libproxy is probably not used by openconnect-gui
 ../configure --disable-dependency-tracking --with-gnutls --without-openssl --without-libpskc --without-libproxy --with-vpnc-script=vpnc-script-win.js
-mingw32-make -j${CORES}
-cd ../../
 
+#Make only openconnect.exe; openconnect 12.x fails when generating the nsis installer and
+#we do not use the installer or other created artifacts.
+mingw32-make -j${CORES} openconnect.exe
+cd ../../
+set +e
 
 #
 # Sample script to create a package from build 'openconnect' project
@@ -142,13 +174,20 @@ cp ${MINGW_PREFIX}/bin/libbrotlidec.dll .
 cp ${MINGW_PREFIX}/bin/libzstd.dll .
 cp ${MINGW_PREFIX}/bin/libbrotlienc.dll .
 cp ../../openconnect/build-${BUILD_ARCH}/.libs/libopenconnect-5.dll .
-cp ../../openconnect/build-${BUILD_ARCH}/.libs/wintun.dll .
+#cp ../../openconnect/build-${BUILD_ARCH}/.libs/wintun.dll .
 cp ../../openconnect/build-${BUILD_ARCH}/.libs/openconnect.exe .
-curl    -o vpnc-script-win.js https://gitlab.com/openconnect/vpnc-scripts/-/raw/master/vpnc-script-win.js
+
+echo "Getting vpnc-script from https://gitlab.com/openconnect/vpnc-scripts/..."
+
+curl --no-progress-meter  -o vpnc-script-win.js https://gitlab.com/openconnect/vpnc-scripts/-/raw/master/vpnc-script-win.js
+
+echo "Extracting wintun.dll..."
+unzip -j ${ROOT_DIR}/wintun/wintun-${WINTUN_VERSION}.zip "wintun/bin/${WINTUN_ARCH}/wintun.dll" -d .
+
+cd ../../
 
 set +e
 
-cd ../../
 
 mkdir -p pkg/lib && cd pkg/lib
 set -e
@@ -166,11 +205,14 @@ cp ${MINGW_PREFIX}/lib/libunistring.dll.a .
 cp ${MINGW_PREFIX}/lib/libidn2.dll.a .
 cp ${MINGW_PREFIX}/lib/liblzma.dll.a .
 cp ../../openconnect/build-${BUILD_ARCH}/.libs/libopenconnect.dll.a .
-set +e
 
 cd ../../
+set +e
 
 mkdir -p pkg/lib/pkgconfig && cd pkg/lib/pkgconfig
+
+set -e
+
 cp ${MINGW_PREFIX}/lib/pkgconfig/gnutls.pc .
 cp ${MINGW_PREFIX}/lib/pkgconfig/hogweed.pc .
 cp ${MINGW_PREFIX}/lib/pkgconfig/libxml-2.0.pc .
@@ -200,11 +242,16 @@ cd ../
 rmdir -v nsis
 7za a -tzip -mx=9 -sdel ../openconnect-devel-${OC_TAG}_$MSYSTEM.zip *
 cd ../
+
+set +e
+
 rmdir -v pkg
 
 
 #cd stoken/build-${BUILD_ARCH}
 #sudo $MSYSTEM-make uninstall
+
+set -e
 
 echo "List of system-wide used packages versions:" \
     > openconnect-${OC_TAG}_$MSYSTEM.txt
@@ -228,4 +275,8 @@ pacman -Q \
 sha512sum.exe openconnect-${OC_TAG}_$MSYSTEM.zip > openconnect-${OC_TAG}_$MSYSTEM.zip.sha512
 sha512sum.exe openconnect-devel-${OC_TAG}_$MSYSTEM.zip > openconnect-devel-${OC_TAG}_$MSYSTEM.zip.sha512
 
-mv -vu openconnect-*.zip openconnect-*.txt openconnect-*.zip.sha512 openconnect-${OC_TAG}_$MSYSTEM.hash ../../external
+mv -vu openconnect-*.zip openconnect-*.txt openconnect-*.zip.sha512 openconnect-${OC_TAG}_$MSYSTEM.hash ../external
+
+set +e
+
+cd ..

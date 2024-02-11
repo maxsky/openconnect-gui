@@ -9,9 +9,8 @@ for detailed description, screen shots and other related projects.
 - macOS 10.12 and newer
 
 ## Development info
-- [Software requirements](docs/sw_requirements.md)
+- [Compilation](docs/dev.md)
 - [Development with QtCreator](docs/dev_QtCreator.md)
-- [Command line compilation](docs/dev_commandLine.md)
 
 ## Other
 - [Creating release package](docs/release.md)
