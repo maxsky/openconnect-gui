@@ -19,7 +19,6 @@
 
 #include "mainwindow.h"
 #include "NewProfileDialog.h"
-#include "NewProfilePopup.h"
 #include "config.h"
 #include "editdialog.h"
 #include "logdialog.h"
@@ -426,7 +425,6 @@ void MainWindow::reload_settings()
             }
         }
     }
-
 }
 
 void MainWindow::blink_ui()
@@ -682,32 +680,42 @@ void MainWindow::on_connectClicked()
     name = ui->serverList->currentText();
     rval = ss->load(name);
     if (rval == 0) { // new entry
-        // eliminate http?:// from string
-        name.replace("https://", "").replace("http://", "");;
-        if (name.compare(ui->serverList->currentText()) != 0) {
-            // user typed https:// to a new entry. Remove the duplicate
-            // https://server.domain entry, and select the server.domain
-            // entry instead.
-            ui->serverList->removeItem(ui->serverList->currentIndex());
-            ui->serverList->setCurrentText(name);
-            rval = ss->load(name);
+        // remove http?:// from string
+        if (name.contains("/")) {
+            turl.setUrl(name);
+            name = NewProfileDialog::urlToName(turl);
+        } else {
+            turl.setUrl("https://" + name);
+        }
+
+        if (turl.isValid() == false) {
+            delete ss;
+            goto fail;
         }
 
         if (rval == 0) { // if a new server ask and set the protocol
-            NewProfilePopup dialog(this);
+            NewProfileDialog dialog(this);
 
-            dialog.setName(name);
+            dialog.setUrl(turl);
+            dialog.setQuickConnect();
             if (dialog.exec() != QDialog::Accepted) {
+                delete ss;
                 return;
             }
-
-            // FIXME: Setting both an index and name. We should set only one of the two
-            ss->set_protocol_name(dialog.getProtocol());
-            Logger::instance().addMessage(tr("Selected protocol \"") + ss->get_protocol_name() +
-                                          tr("\" for ") + name);
+            //dialog saves the host, so we load again
+            name = dialog.getNewProfileName();
+            ss->load(name);
         }
+
+        if (name.compare(ui->serverList->currentText()) != 0) {
+            // user typed https:// to a new entry. Replace the text of it
+            // with the actual name.
+            ui->serverList->setItemText(ui->serverList->currentIndex(), name);
+        }
+    } else {
+        turl.setUrl("https://" + ss->get_servername());
     }
-    turl.setUrl("https://" + ss->get_servername());
+
     query.setUrl(turl);
 
     /* ss is now deallocated by vpninfo */
