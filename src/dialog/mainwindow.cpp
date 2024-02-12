@@ -713,7 +713,12 @@ void MainWindow::on_connectClicked()
             ui->serverList->setItemText(ui->serverList->currentIndex(), name);
         }
     } else {
-        turl.setUrl("https://" + ss->get_servername());
+        name = ss->get_servername();
+        if (name.contains("https://", Qt::CaseInsensitive)) {
+            turl.setUrl(ss->get_servername());
+        } else {
+            turl.setUrl("https://" + ss->get_servername());
+        }
     }
 
     query.setUrl(turl);
