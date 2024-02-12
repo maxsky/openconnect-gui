@@ -1,13 +1,14 @@
 History of user-visible changes.
 
 ## [v1.6.1](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
+- IPv6 improvements (#353)
+- Allow for quick connections to a server; skipping the create new profile forms (#342)
+- Print any banners provided by the server in the password prompt (#302)
 - Allow empty passwords (#288)
-- Alternative vpnc-script can be specified (#350)
-- Use sha256 to PIN certificates
+- Alternative connection script (vpnc-script) can be specified (#350)
 - Fixed issue with certificates on MacOS BigSur (#275)
 - Set the window title on Linux systems
-- Print any banners provided by the server in the password prompt (#302)
-- Allow for quick connections to a server; skipping the create new profile forms (#342)
+- Use sha256 to PIN certificates
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.0..main)
 
