@@ -28,6 +28,8 @@
 #include "server_storage.h"
 
 #include <QDir>
+#include <QCryptographicHash>
+#include <QUrl>
 
 #include <cstdarg>
 #include <cstdio>
@@ -397,6 +399,21 @@ static void setup_tun_vfn(void* privdata)
         interface_name = vpn->ss->get_interface_name().toUtf8();
         ifname = interface_name.constData();
     }
+#ifdef _WIN32
+    else {
+        //generate a "unique" interface name if no interface name was specified.
+        //Normally libopenconnect will use the server name as interface name to force
+        //switching to wintun on windows.
+        //But, if TAP or openvpn's wintun adapters are already present on the system
+        //and no interface name is specified, these are used prior instead.
+        //So, use this "unique" interface name as a workaround to force wintun from openconnect.
+        //See openconnect-gui#357 (comment 1758999655) and openconnect#699
+        interface_name = vpn->generateUniqueInterfaceName();
+        ifname = interface_name.constData();
+
+        Logger::instance().addMessage(QObject::tr("Using generated interface name %1").arg(QString::fromUtf8(interface_name)));
+    }
+#endif
 
     int ret = openconnect_setup_tun_device(vpn->vpninfo, vpncScriptFullPath.constData(), ifname);
     if (ret != 0) {
@@ -668,4 +685,23 @@ void VpnInfo::logVpncScriptOutput()
     } else {
         Logger::instance().addMessage(QLatin1String("Could not open ") + tfile + ": " + QString::number((int)file.error()));
     }
+}
+
+QByteArray VpnInfo::generateUniqueInterfaceName()
+{
+    QUrl url = QUrl::fromUserInput(this->ss->get_servername());
+    QByteArray ret;
+
+    if (url.isValid()) {
+        //generate a hash from servername (as inputed) and username
+        QString input = this->ss->get_servername();
+        input += this->ss->get_username();
+
+        QByteArray hash = QCryptographicHash::hash(input.toLatin1(), QCryptographicHash::Algorithm::Sha1);
+        hash = hash.toHex().left(7);
+
+        ret = url.host().append("_").append(hash).toUtf8();
+    }
+
+    return ret;
 }

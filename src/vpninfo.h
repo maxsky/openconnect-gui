@@ -56,6 +56,7 @@ public:
     unsigned int form_pass_attempt;
 
     void logVpncScriptOutput();
+    QByteArray generateUniqueInterfaceName();
 
 private:
     SOCKET cmd_fd;
