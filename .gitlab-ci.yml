@@ -28,7 +28,7 @@ Fedora:
   stage: testing
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
   script:
-  - dnf -y install dnf-plugins-core qt5-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
+  - dnf -y install dnf-plugins-core qt6-qtscxml-devel qt6-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
   - mkdir -p build && cd build
   - cmake -S .. -B . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - cmake --build . --config $BUILD_TYPE
@@ -41,7 +41,7 @@ Fedora:
     expire_in: 1 week
     when: always
     paths:
-      - bin/openconnect-gui
+      - build/
 
 static-analyzer/Fedora:
   variables:
@@ -49,7 +49,7 @@ static-analyzer/Fedora:
   stage: preliminaries
   image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
   script:
-  - dnf -y install dnf-plugins-core qt5-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
+  - dnf -y install dnf-plugins-core qt6-qtscxml-devel qt6-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
   - scan-build cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - scan-build --status-bugs -o scan-build-src cmake --build . --config $BUILD_TYPE
   tags:
@@ -71,7 +71,7 @@ MinGW32:
   script:
   - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
   - echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
-  - dnf -y install dnf-plugins-core mingw32-qt5-qtbase patch
+  - dnf -y install dnf-plugins-core mingw32-qt6-qtbase patch mingw32-qt6-qtscxml
   - mingw32-cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - cmake --build . --config $BUILD_TYPE
   tags:
@@ -94,7 +94,7 @@ MinGW64:
   - dnf remove -y wine.i686
   - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
   - echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
-  - dnf -y install dnf-plugins-core mingw64-qt5-qtbase patch
+  - dnf -y install dnf-plugins-core mingw64-qt6-qtbase patch mingw64-qt6-qtscxml
   - mingw64-cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - cmake --build . --config $BUILD_TYPE
   tags:
@@ -114,13 +114,18 @@ MinGW64:
   - windows
   - windows-1809
   script:
-    - choco install msys2 patch qt5-default -y --no-progress
+    - Import-Module ${env:ChocolateyInstall}\helpers\chocolateyProfile.psm1
+    - choco install msys2 aqt -y --no-progress
     - $Env:TARGET = "package"
     - $Env:GENERATOR = '"MinGW Makefiles"'
     - $Env:NSIS = 'C:\tools\msys64\mingw64\bin'
-    - $Env:QT5 = 'C:\Qt\5.15.2\mingw81_64'
-    - $Env:MINGW = 'C:\Qt\5.15.2\mingw81_64'
-    - $Env:PATH += "C:\tools\msys64\;C:\Program Files\Git\usr\bin;${Env:QT5}\bin;${Env:NSIS}"
+    - refreshenv
+    - $Env:QT6= "C:\QT"
+    - md -p "c:\qt"
+    - aqt install-qt windows desktop 6.6.0 win64_mingw -O c:\qt --modules qtscxml
+    - $Env:QT6= (Resolve-Path c:\Qt\*\mingw_64).toString()
+    - $Env:MINGW= (Resolve-Path c:\Qt\*\mingw_64).toString()
+    - $Env:PATH += "C:\tools\msys64\;C:\Program Files\Git\usr\bin;${Env:NSIS};${Env:QT6}\bin"
     - cmd.exe /c c:\tools\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where . -c "./contrib/build_deps_mingw@msys2.sh"
     - md -p build
     - cd build
@@ -172,11 +177,11 @@ MacOS14:
   before_script:
   - brew --env
   - brew config
-  - brew install cmake pkg-config qt@5 openconnect
+  - brew install cmake pkg-config qt@6 openconnect
   script:
   - mkdir -p build
   - cd build
-  - cmake .. -DQt5_DIR=$(brew --prefix qt5)/lib/cmake/Qt5 -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
+  - cmake .. -DQt6_DIR=$(brew --prefix qt6)/lib/cmake/Qt6 -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
   - cmake --build . --config "$BUILD_TYPE"
   artifacts:
     expire_in: 1 week

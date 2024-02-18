@@ -127,11 +127,6 @@ int main(int argc, char* argv[])
 
     qputenv("LOG2FILE", "1");
 
-#if !defined(Q_OS_MACOS)
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
-    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
     qRegisterMetaType<Logger::Message>();
 
 #if defined(Q_OS_MACOS) && defined(PROJ_ADMIN_PRIV_ELEVATION)
@@ -146,7 +141,7 @@ int main(int argc, char* argv[])
     QtSingleApplication app(argc, argv);
     if (app.isRunning()) {
         OcSettings settings;
-        if (settings.value(QLatin1Literal("Settings/singleInstanceMode"), true).toBool()) {
+        if (settings.value("Settings/singleInstanceMode", true).toBool()) {
             app.sendMessage("Wake up!");
             return 0;
         }

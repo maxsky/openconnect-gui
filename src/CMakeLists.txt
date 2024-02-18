@@ -149,11 +149,12 @@ target_link_libraries (${PROJECT_NAME}
     spdlog::spdlog
     qt-solutions::qtsingleapplication
 
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::Network
-    #??? Qt5::QMacStylePlugin
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+    Qt6::Network
+    Qt6::StateMachine
+    #??? Qt6::QMacStylePlugin
 )
 
 if(UNIX)
@@ -175,7 +176,7 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 # fixup the bundle
-get_target_property(QT_LIBRARY_DIR Qt5::Core LOCATION)
+get_target_property(QT_LIBRARY_DIR Qt6::Core LOCATION)
 get_filename_component(QT_LIBRARY_DIR ${QT_LIBRARY_DIR} PATH)
 list(APPEND libSearchDirs ${QT_LIBRARY_DIR})
 
@@ -196,7 +197,7 @@ if(MINGW)
     )
 
     set(additionalLib ${_qwindows_dll})
-    if(NOT Qt5Core_VERSION STRLESS "5.10")
+    if(NOT Qt6Core_VERSION STRLESS "6.0")
         install(FILES
             ${_qwinstyle_dylib}
             DESTINATION plugins/styles
@@ -214,7 +215,7 @@ elseif(APPLE)
         COMPONENT App
     )
     set(additionalLib \${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/PlugIns/platforms/libqcocoa.dylib)
-    if(NOT Qt5Core_VERSION STRLESS "5.10")
+    if(NOT Qt6Core_VERSION STRLESS "6.0")
         install(FILES
             ${_qmacstyle_dylib}
             DESTINATION ${PROJECT_NAME}.app/Contents/PlugIns/styles
