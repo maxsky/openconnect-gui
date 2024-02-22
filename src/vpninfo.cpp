@@ -458,9 +458,7 @@ VpnInfo::~VpnInfo()
         openconnect_vpninfo_free(vpninfo);
     }
 
-    if (ss != nullptr) {
-        delete ss;
-    }
+    delete ss;
 }
 
 void VpnInfo::parse_url(const char* url)
