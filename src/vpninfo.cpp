@@ -28,7 +28,7 @@
 #include "server_storage.h"
 
 #include <QDir>
-#include <QCryptographicHash>
+#include <QHash>
 #include <QUrl>
 
 #include <cstdarg>
@@ -400,6 +400,9 @@ static void setup_tun_vfn(void* privdata)
         ifname = interface_name.constData();
     }
 #ifdef _WIN32
+#if ! (OPENCONNECT_API_VERSION_MAJOR == 5 && OPENCONNECT_API_VERSION_MINOR == 9)
+#error "This probably has been fixed in openconnect in API version >= 5.9 and this workaround is not required anymore."
+#endif
     else {
         //generate a "unique" interface name if no interface name was specified.
         //Normally libopenconnect will use the server name as interface name to force
@@ -697,8 +700,8 @@ QByteArray VpnInfo::generateUniqueInterfaceName()
         QString input = this->ss->get_servername();
         input += this->ss->get_username();
 
-        QByteArray hash = QCryptographicHash::hash(input.toLatin1(), QCryptographicHash::Algorithm::Sha1);
-        hash = hash.toHex().left(7);
+        uint uhash = qHash(input.toLatin1(), 0);
+        QByteArray hash = QString::number(uhash,16).toLatin1();
 
         ret = url.host().append("_").append(hash).toUtf8();
     }
