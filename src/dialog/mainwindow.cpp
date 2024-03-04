@@ -47,10 +47,15 @@ extern "C" {
 #include <QSignalTransition>
 #include <QStateMachine>
 #include <QUrl>
+#include <QTimer>
 #include <QtConcurrent/QtConcurrentRun>
 #include <QtNetwork/QNetworkProxy>
 #include <QtNetwork/QNetworkProxyFactory>
 #include <QtNetwork/QNetworkProxyQuery>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QNetworkAccessManager>
+#include <QProgressDialog>
 
 #include <cmath>
 #include <cstdarg>
@@ -74,6 +79,9 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
     timer = new QTimer(this);
     blink_timer = new QTimer(this);
     this->cmd_fd = INVALID_SOCKET;
+
+    downloadProgress = nullptr;
+    manager = new QNetworkAccessManager();
 
     connect(ui->actionQuit, &QAction::triggered,
         [=]() {
@@ -107,6 +115,7 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
 
     ui->iconLabel->setPixmap(OFF_ICON);
     QNetworkProxyFactory::setUseSystemConfiguration(true);
+    last_check_time = 0;
 
     if (useTray) {
         createTrayIcon();
@@ -313,6 +322,9 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
     restoreEvent->setTargetState(s111_normalWindow);
     s112_minimizedWindow->addTransition(restoreEvent);
 
+    // start timer to check latest version
+    QTimer::singleShot(4000, this, &MainWindow::tryCheckLatestVersion);
+
     m_appWindowStateMachine->start();
 }
 
@@ -353,6 +365,67 @@ MainWindow::~MainWindow()
     delete ui;
     delete timer;
     delete blink_timer;
+    delete manager;
+}
+
+void MainWindow::checkLatestVersion() const
+{
+    QNetworkRequest req(QUrl(GITLAB_LATEST_RELEASE_URL));
+
+    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
+
+    connect(manager, &QNetworkAccessManager::finished,
+            this, &MainWindow::gotLatestVersion);
+
+    Logger::instance().addMessage(QObject::tr("Checking for current version"));
+    manager->get(req);
+}
+
+void MainWindow::tryCheckLatestVersion()
+{
+    time_t now = time(0);
+
+    // Check during start up only a time every a few days to avoid
+    // overloading gitlab.
+    if (last_check_time == 0) {
+        OcSettings settings;
+        last_check_time = settings.value("Settings/last-check-time").toLongLong();
+    }
+
+    if (now - last_check_time < 5*86400) {
+        Logger::instance().addMessage(QObject::tr("Skipping automatic check for current version"));
+        return;
+    }
+
+    checkLatestVersion();
+}
+
+void MainWindow::gotLatestVersion(QNetworkReply *reply)
+{
+    QString version;
+    version = reply->rawHeader("Location");
+
+    Logger::instance().addMessage(QObject::tr("Version location: %1").arg(version));
+
+    if (version.isEmpty() != true) {
+        qsizetype n=version.lastIndexOf("/");
+        if (n != -1) {
+            // skip '/v'
+            this->latest_version = version.mid(n+2);
+            Logger::instance().addMessage(QObject::tr("Latest available version is %1, current %2").arg(this->latest_version).arg(INTERNAL_PROJECT_VERSION));
+
+            if (m_trayIcon && m_trayIcon->supportsMessages() && latest_version.compare(INTERNAL_PROJECT_VERSION) != 0) {
+                m_trayIcon->showMessage(tr("New version available"), tr("%1 version %2 is available!").arg(QLatin1String(PRODUCT_NAME_SHORT)).arg(this->latest_version));
+            }
+        } else {
+            Logger::instance().addMessage(QObject::tr("Unable to identify current version from %1").arg(version));
+        }
+    } else {
+        Logger::instance().addMessage(QObject::tr("Unable to identify current version: %1").arg(reply->errorString()));
+    }
+
+    emit version_download_completed_sig();
+    reply->deleteLater();
 }
 
 void MainWindow::vpn_status_changed(int connected)
@@ -834,11 +907,13 @@ void MainWindow::readSettings()
     ui->actionMinimizeToTheNotificationArea->setChecked(settings.value("minimizeToTheNotificationArea", true).toBool());
     ui->actionMinimizeTheApplicationInsteadOfClosing->setChecked(settings.value("minimizeTheApplicationInsteadOfClosing", true).toBool());
     ui->actionStartMinimized->setChecked(settings.value("startMinimized", false).toBool());
+
     ui->actionSingleInstanceMode->setChecked(settings.value("singleInstanceMode", true).toBool());
     connect(ui->actionSingleInstanceMode, &QAction::toggled, [](bool checked) {
         OcSettings settings;
         settings.setValue("Settings/singleInstanceMode", checked);
     });
+
     settings.endGroup();
 }
 
@@ -851,6 +926,8 @@ void MainWindow::writeSettings()
     settings.endGroup();
 
     settings.beginGroup("Settings");
+    if (last_check_time > 0)
+        settings.setValue("last-check-time", qint64(last_check_time));
     settings.setValue("minimizeToTheNotificationArea", ui->actionMinimizeToTheNotificationArea->isChecked());
     settings.setValue("minimizeTheApplicationInsteadOfClosing", ui->actionMinimizeTheApplicationInsteadOfClosing->isChecked());
     settings.setValue("startMinimized", ui->actionStartMinimized->isChecked());
@@ -1013,6 +1090,87 @@ void MainWindow::on_actionAbout_triggered()
     txt += tr("<br>Visit <a href=\"%1\">our community web site</a> for more information, to contribute, file a bug or suggest a new feature.<br>").arg(CMAKE_PROJECT_HOMEPAGE_URL);
 
     QMessageBox::about(this, QLatin1String("About"), txt);
+}
+
+void MainWindow::checkForUpdatesDialog()
+{
+    if (downloadProgress != nullptr) {
+        disconnect(this, &MainWindow::version_download_completed_sig,
+                   this, &MainWindow::checkForUpdatesDialog);
+        this->downloadProgress->setValue(100);
+        downloadProgress->done(0);
+        delete downloadProgress;
+        downloadProgress = nullptr;
+    }
+
+
+    QMessageBox mbox;
+    QUrl getUri;
+    mbox.setStandardButtons(QMessageBox::Ok);
+    mbox.setDefaultButton(QMessageBox::Ok);
+    QString txt = QLatin1String("<h2>") + QLatin1String(PRODUCT_NAME_LONG) + QLatin1String("</h2>");
+
+    txt += tr("<h3>Current version</h3>");
+    if (QLatin1String(PROJECT_VERSION).contains(QLatin1String("-g"))) {
+        txt += tr("Development snapshot <i>%1</i> (%2 bit)<br>").arg(PROJECT_VERSION).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
+        txt += tr("Built at <i>%1</i><br>").arg(QLatin1String(appBuildOn));
+    } else {
+        txt += tr("Version <i>%1</i> (%2 bit)<br>").arg(PROJECT_VERSION).arg(QSysInfo::buildCpuArchitecture() == QLatin1String("i386") ? 32 : 64);
+    }
+
+    txt += tr("<h3>Latest version</h3>");
+    if (latest_version.isEmpty()) {
+        txt += tr("N/A<br>");
+    } else {
+        if (latest_version.compare(INTERNAL_PROJECT_VERSION) != 0) {
+            txt += tr("Latest version is <i>%1</i><br><br>").arg(latest_version);
+#ifdef Q_OS_WIN
+            mbox.addButton(tr("Download %1").arg(latest_version), QMessageBox::AcceptRole);
+            getUri = QUrl(tr(APP_DOWNLOAD_WIN_URL).arg(latest_version));
+#else
+            mbox.addButton(tr("Get %1").arg(latest_version), QMessageBox::AcceptRole);
+            getUri = QUrl(APP_RELEASES_URL);
+#endif
+        } else {
+            txt += tr("You are up to date. Latest version is %1.<br>").arg(latest_version);
+        }
+    }
+
+    mbox.setInformativeText(txt);
+    mbox.setWindowTitle(QLatin1String("Check for updates"));
+
+    if (mbox.exec() == QMessageBox::Ok) {
+        return;
+    } else { // Download
+        QDesktopServices::openUrl(getUri);
+    }
+    mbox.close();
+}
+
+void MainWindow::on_actionCheckForUpdates_triggered()
+{
+    // If we haven't checked the version already, force the check
+    if (latest_version.isEmpty() && downloadProgress == nullptr) {
+        const unsigned progress_max_value = 100;
+
+        downloadProgress = new QProgressDialog("Checking for latest version...", "Abort", 0, progress_max_value, this);
+
+        // ensure that this is called when download is complete
+        connect(this, &MainWindow::version_download_completed_sig,
+                this, &MainWindow::checkForUpdatesDialog,
+                Qt::QueuedConnection);
+
+        downloadProgress->setValue(25);
+        checkLatestVersion();
+        downloadProgress->show();
+        downloadProgress->raise();
+        downloadProgress->grabMouse();
+        downloadProgress->grabKeyboard();
+        return;
+    }
+
+
+    checkForUpdatesDialog();
 }
 
 void MainWindow::on_actionLicense_triggered()

@@ -5,6 +5,7 @@ History of user-visible changes.
 - Allow for quick connections to a server; skipping the create new profile forms (#342)
 - Print any banners provided by the server in the password prompt (#302)
 - Allow empty passwords (#288)
+- Notify when a new version is available (#359)
 - Alternative connection script (vpnc-script) can be specified (#350)
 - Fixed issue with certificates on MacOS BigSur (#275)
 - Set the window title on Linux systems

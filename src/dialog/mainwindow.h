@@ -29,6 +29,8 @@
 #include <QMutex>
 #include <QSystemTrayIcon>
 #include <QTimer>
+#include <QNetworkReply>
+#include <QProgressDialog>
 
 #ifndef _WIN32
 #include <cerrno>
@@ -87,6 +89,7 @@ public slots:
     void closeEvent(QCloseEvent* event) override;
 
     void on_actionAbout_triggered();
+    void on_actionCheckForUpdates_triggered();
 
     void on_actionNewProfile_triggered();
     void on_actionNewProfileAdvanced_triggered();
@@ -102,11 +105,17 @@ signals:
     void vpn_status_changed_sig(int);
     void timeout(void);
     void readyToShutdown();
+    void version_download_completed_sig();
 
 private slots:
     void createLogDialog();
+    void tryCheckLatestVersion();
+    void checkForUpdatesDialog();
 
 private:
+    void gotLatestVersion(QNetworkReply *reply);
+    void checkLatestVersion() const;
+
     static QString normalize_byte_size(uint64_t bytes);
     void createTrayIcon();
 
@@ -127,6 +136,12 @@ private:
     QString ip6;
     QString cstp_cipher;
     QString dtls_cipher;
+
+    QString latest_version;
+    time_t last_check_time;
+    QProgressDialog *downloadProgress;
+
+    QNetworkAccessManager *manager;
 
     QStateMachine* m_appWindowStateMachine;
     QSystemTrayIcon* m_trayIcon;

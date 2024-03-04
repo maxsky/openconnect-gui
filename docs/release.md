@@ -27,9 +27,14 @@ at ~/.gitlab-token as well as the necessary credentials for
 casper.infradead.org.
 
 
-### Release details
+### Release process
 
-The release script takes care of
+The version number in CMakeLists.txt should be updated to the
+next release number at the time of release (this allows users
+using development builds to receive notifications).
+
+After bumping the version and commiting, the `release.sh` script
+should be run and this takes care of:
  - Creating a tag
  - Building released packages on gitlab CI
  - Uploading the packages to casper.infradead.org

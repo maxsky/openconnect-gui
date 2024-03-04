@@ -30,6 +30,12 @@ set(PRODUCT_NAME_COPYRIGHT_FULL "Copyright © 2014-2015 Red Hat Inc.<br>Copyrigh
 
 # The application name / main window title / installer app name
 set(APP_NAME "OpenConnect VPN")
+# The URL for determining the latest release
+set(GITLAB_LATEST_RELEASE_URL "https://gitlab.com/api/v4/projects/12274423/releases/permalink/latest")
+# The URL for the latest release
+set(APP_RELEASES_URL "https://gitlab.com/openconnect/openconnect-gui/-/releases")
+# The URL for downloading the latest release
+set(APP_DOWNLOAD_WIN_URL "https://www.infradead.org/openconnect-gui/download/openconnect-gui-%1-win64.exe")
 
 set(APP_ISSUES_URL "https://gitlab.com/openconnect/openconnect-gui/-/issues")
 
