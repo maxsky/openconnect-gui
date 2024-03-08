@@ -9,7 +9,7 @@ if(MINGW)
     endif()
 endif()
 
-set(vpnc-scripts-TAG 87735c14314c3535d1efdfe254fcac5e558e05af)
+set(vpnc-scripts-TAG 4ed41c21e3857f96ab935b45092bbb07c3ccd5be)
 set(qt-solutions-TAG master)
 
 if(CMAKE_CROSSCOMPILING AND MINGW)
