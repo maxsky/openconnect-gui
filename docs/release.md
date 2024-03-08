@@ -20,7 +20,7 @@ update planned release version in `CMakeLists.txt`, commit and start a release
 process with target tag:
 
     $ git checkout main
-    $ ./release.sh vX.Y.Z
+    $ ./release.sh X.Y.Z
 
 Note that this requires to have a gitlab token with permissions to release
 at ~/.gitlab-token as well as the necessary credentials for
