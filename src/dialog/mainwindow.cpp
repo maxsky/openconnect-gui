@@ -808,7 +808,7 @@ void MainWindow::on_connectClicked()
 
     this->minimize_on_connect = vpninfo->get_minimize();
 
-    vpninfo->parse_url(ss->get_servername().toLocal8Bit().data());
+    vpninfo->setUrl(turl);
 
     this->cmd_fd = vpninfo->get_cmd_fd();
     if (this->cmd_fd == INVALID_SOCKET) {

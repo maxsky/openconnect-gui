@@ -408,7 +408,7 @@ static void setup_tun_vfn(void* privdata)
         //Normally libopenconnect will use the server name as interface name to force
         //switching to wintun on windows.
         //But, if TAP or openvpn's wintun adapters are already present on the system
-        //and no interface name is specified, these are used prior instead.
+        //and no interface name is specified, these are used instead.
         //So, use this "unique" interface name as a workaround to force wintun from openconnect.
         //See openconnect-gui#357 (comment 1758999655) and openconnect#699
         interface_name = vpn->generateUniqueInterfaceName();
@@ -481,9 +481,15 @@ VpnInfo::~VpnInfo()
     delete ss;
 }
 
-void VpnInfo::parse_url(const char* url)
+void VpnInfo::setUrl(const QUrl& url)
 {
-    openconnect_parse_url(this->vpninfo, const_cast<char*>(url));
+    this->mUrl = url;
+
+    if (mUrl.scheme().isEmpty()) {
+        mUrl.setScheme(QStringLiteral("https"));
+    }
+
+    openconnect_parse_url(this->vpninfo, mUrl.url().toUtf8().constData());
 }
 
 int VpnInfo::connect()
@@ -692,19 +698,16 @@ void VpnInfo::logVpncScriptOutput()
 
 QByteArray VpnInfo::generateUniqueInterfaceName()
 {
-    QUrl url = QUrl::fromUserInput(this->ss->get_servername());
     QByteArray ret;
 
-    if (url.isValid()) {
-        //generate a hash from servername (as inputed) and username
-        QString input = this->ss->get_servername();
-        input += this->ss->get_username();
+    //generate a hash from servername (as inputed) and username
+    QString input = this->ss->get_servername();
+    input += this->ss->get_username();
 
-        uint uhash = qHash(input.toLatin1(), 0);
-        QByteArray hash = QString::number(uhash,16).toLatin1();
+    uint uhash = qHash(input.toLatin1(), 0);
+    QByteArray hash = QString::number(uhash,16).toLatin1();
 
-        ret = url.host().append("_").append(hash).toUtf8();
-    }
+    ret = mUrl.host().append("_").append(hash).toUtf8();
 
     return ret;
 }

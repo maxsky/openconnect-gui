@@ -20,6 +20,7 @@
 #pragma once
 
 #include <QString>
+#include <QUrl>
 #ifdef _WIN32
 #include <winsock2.h>
 #else
@@ -37,7 +38,7 @@ public:
     VpnInfo(QString name, StoredServer* ss, MainWindow* m);
     ~VpnInfo();
 
-    void parse_url(const char* url);
+    void setUrl(const QUrl& url);
     int connect();
     void mainloop();
     void get_info(QString& dns, QString& ip, QString& ip6);
@@ -47,6 +48,7 @@ public:
     bool get_minimize() const;
 
     QString last_err;
+    QUrl mUrl;
     MainWindow* m;
     StoredServer* ss;
     struct openconnect_info* vpninfo;
