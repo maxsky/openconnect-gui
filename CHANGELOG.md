@@ -1,9 +1,10 @@
 History of user-visible changes.
 
-## [v1.6.1](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
+## [v1.6.1](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-03-08)
 - IPv6 improvements (#353)
 - Allow for quick connections to a server; skipping the create new profile forms (#342)
 - Print any banners provided by the server in the password prompt (#302)
+- Use wintun on windows even when TAP driver is present (#357)
 - Allow empty passwords (#288)
 - Use consistent encoding in logfile (#277)
 - Notify when a new version is available (#359)
