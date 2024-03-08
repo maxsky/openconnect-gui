@@ -81,7 +81,7 @@ void NewProfileDialog::changeEvent(QEvent* e)
 void NewProfileDialog::on_checkBoxCustomize_toggled(bool checked)
 {
     if (checked == false) {
-        QUrl url(ui->lineEditGateway->text());
+        QUrl url = QUrl::fromUserInput(ui->lineEditGateway->text());
         if (url.isValid()) {
             updateName(url);
         }
