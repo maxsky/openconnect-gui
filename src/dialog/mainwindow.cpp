@@ -786,11 +786,11 @@ void MainWindow::on_connectClicked()
             ui->serverList->setItemText(ui->serverList->currentIndex(), name);
         }
     } else {
-        name = ss->get_servername();
+        name = ss->get_server_gateway();
         if (name.contains("https://", Qt::CaseInsensitive)) {
-            turl.setUrl(ss->get_servername());
+            turl.setUrl(ss->get_server_gateway());
         } else {
-            turl.setUrl("https://" + ss->get_servername());
+            turl.setUrl("https://" + ss->get_server_gateway());
         }
     }
 

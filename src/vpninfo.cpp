@@ -302,7 +302,7 @@ static int validate_peer_cert(void* privdata, const char* reason)
     if (ret == GNUTLS_E_NO_CERTIFICATE_FOUND) {
         Logger::instance().addMessage(QObject::tr("peer is unknown"));
 
-        QString hostInfoStr = QObject::tr("Host: ") + vpn->ss->get_servername() + QObject::tr("\n") + hash;
+        QString hostInfoStr = QObject::tr("Host: ") + vpn->ss->get_server_gateway() + QObject::tr("\n") + hash;
         MyCertMsgBox msgBox(
             vpn->m,
             QObject::tr("You are connecting for the first time to this peer.\n"
@@ -327,7 +327,7 @@ static int validate_peer_cert(void* privdata, const char* reason)
                         "It may be that the server has multiple keys "
                         "or you are (or were in the past) under attack. "
                         "Do you want to proceed?"),
-            QObject::tr("Host: %1\n%2").arg(vpn->ss->get_servername()).arg(hash),
+            QObject::tr("Host: %1\n%2").arg(vpn->ss->get_server_gateway()).arg(hash),
             QObject::tr("The key was changed by the administrator"),
             dstr);
         msgBox.show();
