@@ -68,14 +68,16 @@ static int loglevel_tab(int mode)
 {
     // keep in sync with the indices of the QComboBox items in src/dialog/editdialog.ui
     switch (mode) {
-    case PRG_ERR:
+    case -1: //application default
         return 0;
-    case PRG_INFO:
+    case PRG_ERR:
         return 1;
-    case PRG_DEBUG:
+    case PRG_INFO:
         return 2;
-    case PRG_TRACE:
+    case PRG_DEBUG:
         return 3;
+    case PRG_TRACE:
+        return 4;
     default:
         return -1;
     }
@@ -83,10 +85,11 @@ static int loglevel_tab(int mode)
 
 static int loglevel_rtab[] = {
     // keep in sync with the indices of the QComboBox items in src/dialog/editdialog.ui
-    PRG_ERR,   // [0]
-    PRG_INFO,  // [1]
-    PRG_DEBUG, // [2]
-    PRG_TRACE  // [3]
+    -1,        // [0]
+    PRG_ERR,   // [1]
+    PRG_INFO,  // [2]
+    PRG_DEBUG, // [3]
+    PRG_TRACE  // [4]
 };
 
 void EditDialog::load_win_certs()
@@ -293,7 +296,7 @@ void EditDialog::on_buttonBox_accepted()
 
     type = ui->loglevelBox->currentIndex();
     if (type == -1) {
-        type = PRG_INFO; //sensible default
+        type = 0; //first entry is "application default"
     }
     ss->set_log_level(loglevel_rtab[type]);
 

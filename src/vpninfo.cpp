@@ -446,7 +446,15 @@ VpnInfo::VpnInfo(QString name, StoredServer* ss, MainWindow* m)
         throw std::runtime_error("initial setup fails");
     }
 
-    openconnect_set_loglevel(vpninfo, ss->get_log_level());
+    //get loglevel preference from profile
+    int loglevel = ss->get_log_level();
+
+    if (loglevel == -1) {
+        //-1 means use application default
+        loglevel = m->get_log_level();
+    }
+
+    openconnect_set_loglevel(vpninfo, loglevel);
 
     this->cmd_fd = openconnect_setup_cmd_pipe(vpninfo);
     if (this->cmd_fd == INVALID_SOCKET) {

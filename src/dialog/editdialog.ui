@@ -356,11 +356,16 @@ Leave blank for default.</string>
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="maxVisibleItems">
-        <number>4</number>
+        <number>5</number>
        </property>
+       <item>
+        <property name="text">
+         <string>(Application Default)</string>
+        </property>
+       </item>
        <item>
         <property name="text">
          <string>Error</string>

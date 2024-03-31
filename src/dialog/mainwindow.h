@@ -74,6 +74,8 @@ public:
         QString& cstp_cipher,
         QString& dtls_cipher);
 
+    int get_log_level();
+
 public slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
     void statsChanged(QString, QString, QString);
