@@ -41,7 +41,7 @@ way openconnect gui works is
 
 
 ## Supported Platforms
-- Microsoft Windows 7 and newer
+- Microsoft Windows 10 and newer
 - macOS 10.12 and newer
 
 ## Development info
