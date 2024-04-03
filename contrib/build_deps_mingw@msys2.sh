@@ -8,6 +8,7 @@
 # (c) 2018-2021, Lubomir Carik
 #
 
+SAVE_PWD=$(pwd)
 BUILD_DIR="${BUILD_DIR:-build-$MSYSTEM}"
 
 if [ "$MSYSTEM" == "MINGW64" ]; then
@@ -25,7 +26,15 @@ fi
 
 export STOKEN_TAG=v0.92
 WINTUN_VERSION=0.14.1
-ROOT_DIR=$(pwd)
+
+#root directory is the parent of the directory containing the build script
+ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/.." >/dev/null 2>&1 && pwd )"
+
+#sanity check for root dir
+if [ ! -d ${ROOT_DIR}/external ]; then
+    echo "Root Directory not set correctly: ${ROOT_DIR}"
+    exit 1
+fi
 
 echo "Starting under $MSYSTEM build environment ($ROOT_DIR)..."
 
@@ -275,8 +284,8 @@ pacman -Q \
 sha512sum.exe openconnect-${OC_TAG}_$MSYSTEM.zip > openconnect-${OC_TAG}_$MSYSTEM.zip.sha512
 sha512sum.exe openconnect-devel-${OC_TAG}_$MSYSTEM.zip > openconnect-devel-${OC_TAG}_$MSYSTEM.zip.sha512
 
-mv -vu openconnect-*.zip openconnect-*.txt openconnect-*.zip.sha512 openconnect-${OC_TAG}_$MSYSTEM.hash ../external
+mv -vu openconnect-*.zip openconnect-*.txt openconnect-*.zip.sha512 openconnect-${OC_TAG}_$MSYSTEM.hash ${ROOT_DIR}/external
 
 set +e
 
-cd ..
+cd ${SAVE_PWD}
