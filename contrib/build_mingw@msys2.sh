@@ -11,6 +11,7 @@
 SAVE_PWD=$(pwd)
 BUILD_TYPE="${BUILD_TYPE:-Debug}"
 BUILD_DIR="${BUILD_DIR:-build-$MSYSTEM/openconnect-gui}"
+TARGET="${TARGET:-package}"
 
 #root directory is the parent of the directory containing the build script
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/.." >/dev/null 2>&1 && pwd )"
@@ -62,6 +63,6 @@ cmake --build . --config "$BUILD_TYPE" -- -j${CORES}
 echo "======================================================================="
 echo " Packaging..."
 echo "======================================================================="
-cmake --build . --config "$BUILD_TYPE" --target package -- -j${CORES}
+cmake --build . --config "$BUILD_TYPE" --target ${TARGET} -- -j${CORES}
 
 cd ${SAVE_PWD}
