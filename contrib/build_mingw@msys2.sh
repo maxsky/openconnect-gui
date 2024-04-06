@@ -31,6 +31,10 @@ else
 fi
 
 if [ -z "$QT6" ];then
+    echo "======================================================================="
+    echo " Installing dependencies..."
+    echo "======================================================================="
+
     pacman --needed --noconfirm -S \
         mingw-w64-x86_64-cmake \
         mingw-w64-x86_64-nsis \

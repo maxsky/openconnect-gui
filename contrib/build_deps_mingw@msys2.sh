@@ -52,6 +52,19 @@ echo ""
 export OC_URL=https://gitlab.com/openconnect/openconnect.git
 export STOKEN_URL=https://github.com/stoken-dev/stoken
 
+echo "======================================================================="
+echo " Preparing sandbox..."
+echo "======================================================================="
+
+if [ "$STOKEN_TAG" != "v0.92" ]; then
+    BUILD_STOKEN=yes
+fi
+BUILD_STOKEN=${BUILD_STOKEN:-no}
+
+echo "======================================================================="
+echo " Installing dependencies..."
+echo "======================================================================="
+
 set -e
 
 pacman --needed --noconfirm -S \
@@ -92,27 +105,41 @@ cd "${BUILD_DIR}"
 #CORES=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu || echo "$NUMBER_OF_PROCESSORS")
 CORES=$(getconf _NPROCESSORS_ONLN)
 
-[ -d stoken ] || git clone -b ${STOKEN_TAG} ${STOKEN_URL}
-cd stoken
+if [ "x$BUILD_STOKEN" = "xno" ]; then
+    echo "======================================================================="
+    echo " Installing stoken..."
+    echo "======================================================================="
+    pacman --needed --noconfirm -S \
+        mingw-w64-${BUILD_ARCH}-stoken
+else
+    echo "======================================================================="
+    echo " Building stoken..."
+    echo "======================================================================="
+    [ -d stoken ] || git clone -b ${STOKEN_TAG} ${STOKEN_URL}
+    cd stoken
 
-git clean -fdx
-git reset --hard ${STOKEN_TAG}
+    git clean -fdx
+    git reset --hard ${STOKEN_TAG}
 
-set -e
+    set -e
 
-./autogen.sh
+    ./autogen.sh
 
-set +e
+    set +e
 
-[ -d build-${BUILD_ARCH} ] || mkdir build-${BUILD_ARCH}
-cd build-${BUILD_ARCH}
-set -e
-../configure --disable-dependency-tracking --without-tomcrypt --without-gtk
-mingw32-make -j${CORES}
-mingw32-make install
-cd ../../
-set +e
+    [ -d build-${BUILD_ARCH} ] || mkdir build-${BUILD_ARCH}
+    cd build-${BUILD_ARCH}
+    set -e
+    ../configure --disable-dependency-tracking --without-tomcrypt --without-gtk
+    mingw32-make -j${CORES}
+    mingw32-make install
+    cd ../../
+    set +e
+fi
 
+echo "======================================================================="
+echo " Building openconnect..."
+echo "======================================================================="
 [ -d openconnect ] || git clone -b ${OC_TAG} ${OC_URL}
 
 set -e
@@ -154,6 +181,9 @@ set +e
 # Sample script to create a package from build 'openconnect' project
 # incl. all dependencies (hardcoded paths!)
 #
+echo "======================================================================="
+echo " Packaging..."
+echo "======================================================================="
 
 rm -rf pkg
 mkdir -p pkg/nsis && cd pkg/nsis
@@ -257,8 +287,15 @@ set +e
 rmdir -v pkg
 
 
-#cd stoken/build-${BUILD_ARCH}
-#sudo $MSYSTEM-make uninstall
+if [ "x$BUILD_STOKEN" = "xyes" ]; then
+    echo "======================================================================="
+    echo " Uninstalling system-wide stoken..."
+    echo "======================================================================="
+    #uninstall stoken; we just build it for the library
+    cd stoken/build-${BUILD_ARCH}
+    mingw32-make install
+    cd ../..
+fi
 
 set -e
 
