@@ -305,11 +305,12 @@ static int validate_peer_cert(void* privdata, const char* reason)
         QString hostInfoStr = QObject::tr("Host: ") + vpn->ss->get_servername() + QObject::tr("\n") + hash;
         MyCertMsgBox msgBox(
             vpn->m,
-            QObject::tr("You are connecting for the first time to this peer.\n"
-                        "You have no guarantee that the server is the computer you think it is.\n\n"
+            QObject::tr("This server's certificate cannot be validated with a trusted authority, or you\n"
+                        "are connecting for the first time.<br><br>"
+                        "<b>You have no guarantee that the server is the computer you think it is.</b>\n\n"
                         "If the information provided below is valid and you trust this host, "
                         "hit 'Accurate information' to remember it and to carry on connecting.\n"
-                        "If you do not trust this host, hit Cancel to abandon the connection."),
+                        "If you cannot validate this information, hit <b>Cancel</b> to abandon the connection."),
             hostInfoStr,
             QObject::tr("Accurate information"),
             dstr);
