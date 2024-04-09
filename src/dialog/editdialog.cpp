@@ -27,15 +27,6 @@
 #include <QListWidget>
 #include <QMessageBox>
 
-// FIXME: this include should to into <openconnect.h>
-#ifdef _WIN32
-#include <winsock2.h>
-#endif
-
-extern "C" {
-#include <openconnect.h>
-}
-
 #ifdef USE_SYSTEM_KEYS
 extern "C" {
 #include <gnutls/system-keys.h>

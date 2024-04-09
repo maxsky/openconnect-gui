@@ -1,11 +1,6 @@
 #include "VpnProtocolModel.h"
 
-// FIXME: this include should go into <openconnect.h>
-#ifdef _WIN32
-#include <winsock2.h>
-#endif
-#include <openconnect.h>
-
+#include "common.h"
 #include "logger.h"
 
 VpnProtocolModel::VpnProtocolModel(QObject* parent)

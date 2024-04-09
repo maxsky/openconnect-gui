@@ -19,17 +19,9 @@
 
 #include "server_storage.h"
 #include "cryptdata.h"
+#include "common.h"
 #include <OcSettings.h>
 #include <cstdio>
-
-// FIXME: this include should to into <openconnect.h>
-#ifdef _WIN32
-#include <winsock2.h>
-#endif
-
-extern "C" {
-#include <openconnect.h>
-}
 
 StoredServer::~StoredServer(void)
 {
