@@ -81,7 +81,7 @@ void NewProfileDialog::changeEvent(QEvent* e)
 void NewProfileDialog::on_checkBoxCustomize_toggled(bool checked)
 {
     if (checked == false) {
-        QUrl url(ui->lineEditGateway->text());
+        QUrl url = QUrl::fromUserInput(ui->lineEditGateway->text());
         if (url.isValid()) {
             updateName(url);
         }
@@ -146,7 +146,7 @@ void NewProfileDialog::on_buttonBox_accepted()
 {
     auto ss{ std::make_unique<StoredServer>() };
     ss->set_label(ui->lineEditName->text());
-    ss->set_servername(ui->lineEditGateway->text());
+    ss->set_server_gateway(ui->lineEditGateway->text());
     ss->set_protocol_name(ui->protocolComboBox->currentData(ROLE_PROTOCOL_NAME).toString());
     ss->save();
 

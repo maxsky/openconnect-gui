@@ -38,8 +38,8 @@ public:
     const QString& get_groupname() const;
     void set_groupname(const QString& groupname);
 
-    const QString& get_servername() const;
-    void set_servername(const QString& servername);
+    const QString& get_server_gateway() const;
+    void set_server_gateway(const QString& server_gateway);
 
     const QString& get_label() const;
     void set_label(const QString& label);
@@ -118,7 +118,7 @@ private:
     QString m_username;
     QString m_password;
     QString m_groupname;
-    QString m_servername;
+    QString m_server_gateway;
     QString m_token_string;
     QString m_label;
     int m_token_type;

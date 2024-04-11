@@ -169,9 +169,9 @@ int StoredServer::load(QString& name)
 
     settings.beginGroup(PREFIX + name);
 
-    this->m_servername = settings.value("server").toString();
-    if (this->m_servername.isEmpty() == true) {
-        this->m_servername = name;
+    this->m_server_gateway = settings.value("server").toString();
+    if (this->m_server_gateway.isEmpty() == true) {
+        this->m_server_gateway = name;
         rval = 0;
     }
 
@@ -187,7 +187,7 @@ int StoredServer::load(QString& name)
 
     if (this->m_batch_mode == true) {
         this->m_groupname = settings.value("groupname").toString();
-        ret = CryptData::decode(this->m_servername,
+        ret = CryptData::decode(this->m_server_gateway,
             settings.value("password").toByteArray(),
             this->m_password);
         if (ret == false) {
@@ -210,7 +210,7 @@ int StoredServer::load(QString& name)
     }
 
     QString str;
-    ret = CryptData::decode(this->m_servername,
+    ret = CryptData::decode(this->m_server_gateway,
         settings.value("client-key").toByteArray(), str);
     if (ret == false) {
         m_last_err = "decoding of client keyfailed";
@@ -227,7 +227,7 @@ int StoredServer::load(QString& name)
     this->m_server_pin = settings.value("server-hash").toByteArray();
     this->m_server_pin_algo = settings.value("server-hash-algo").toInt();
 
-    ret = CryptData::decode(this->m_servername,
+    ret = CryptData::decode(this->m_server_gateway,
         settings.value("token-str").toByteArray(),
         this->m_token_string);
     if (ret == false) {
@@ -250,7 +250,7 @@ int StoredServer::save()
 {
     OcSettings settings;
     settings.beginGroup(PREFIX + this->m_label);
-    settings.setValue("server", this->m_servername);
+    settings.setValue("server", this->m_server_gateway);
     settings.setValue("batch", this->m_batch_mode);
     settings.setValue("proxy", this->m_proxy);
     settings.setValue("disable-udp", this->m_disable_udp);
@@ -261,7 +261,7 @@ int StoredServer::save()
 
     if (this->m_batch_mode == true) {
         settings.setValue("password",
-            CryptData::encode(this->m_servername, this->m_password));
+            CryptData::encode(this->m_server_gateway, this->m_password));
         settings.setValue("groupname", this->m_groupname);
     }
 
@@ -274,13 +274,13 @@ int StoredServer::save()
 
     this->m_client.key_export(data);
     QString str = QString::fromLatin1(data);
-    settings.setValue("client-key", CryptData::encode(this->m_servername, str));
+    settings.setValue("client-key", CryptData::encode(this->m_server_gateway, str));
 
     settings.setValue("server-hash", this->m_server_pin);
     settings.setValue("server-hash-algo", this->m_server_pin_algo);
 
     settings.setValue("token-str",
-        CryptData::encode(this->m_servername, this->m_token_string));
+        CryptData::encode(this->m_server_gateway, this->m_token_string));
     settings.setValue("token-type", this->m_token_type);
 
     settings.setValue("protocol-name", m_protocol_name);
@@ -307,9 +307,9 @@ const QString& StoredServer::get_groupname() const
     return this->m_groupname;
 }
 
-const QString& StoredServer::get_servername() const
+const QString& StoredServer::get_server_gateway() const
 {
-    return this->m_servername;
+    return this->m_server_gateway;
 }
 
 const QString& StoredServer::get_label() const
@@ -332,9 +332,9 @@ void StoredServer::set_groupname(const QString& groupname)
     this->m_groupname = groupname;
 }
 
-void StoredServer::set_servername(const QString& servername)
+void StoredServer::set_server_gateway(const QString& server_gateway)
 {
-    this->m_servername = servername;
+    this->m_server_gateway = server_gateway;
 }
 
 void StoredServer::set_label(const QString& label)

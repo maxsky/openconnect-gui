@@ -755,10 +755,10 @@ void MainWindow::on_connectClicked()
     if (rval == 0) { // new entry
         // remove http?:// from string
         if (name.contains("/")) {
-            turl.setUrl(name);
+            turl = QUrl::fromUserInput(name);
             name = NewProfileDialog::urlToName(turl);
         } else {
-            turl.setUrl("https://" + name);
+            turl = QUrl::fromUserInput("https://" + name);
         }
 
         if (turl.isValid() == false) {
@@ -786,11 +786,11 @@ void MainWindow::on_connectClicked()
             ui->serverList->setItemText(ui->serverList->currentIndex(), name);
         }
     } else {
-        name = ss->get_servername();
+        name = ss->get_server_gateway();
         if (name.contains("https://", Qt::CaseInsensitive)) {
-            turl.setUrl(ss->get_servername());
+            turl.setUrl(ss->get_server_gateway());
         } else {
-            turl.setUrl("https://" + ss->get_servername());
+            turl.setUrl("https://" + ss->get_server_gateway());
         }
     }
 
