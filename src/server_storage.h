@@ -108,6 +108,9 @@ public:
     const QString& get_vpnc_script_filename() const;
     void set_vpnc_script_filename(const QString& vpnc_script_filename);
 
+    int get_log_level();
+    void set_log_level(const int log_level);
+
 private:
     bool m_batch_mode;
     bool m_minimize_on_connect;
@@ -129,4 +132,5 @@ private:
     KeyPair m_client;
     QString m_interface_name;
     QString m_vpnc_script_filename;
+    int m_log_level;
 };

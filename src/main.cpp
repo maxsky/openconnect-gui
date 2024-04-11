@@ -29,7 +29,6 @@
 
 extern "C" {
 #include <gnutls/pkcs11.h>
-#include <openconnect.h>
 }
 
 #include <QApplication>

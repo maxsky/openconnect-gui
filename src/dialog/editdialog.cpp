@@ -27,15 +27,6 @@
 #include <QListWidget>
 #include <QMessageBox>
 
-// FIXME: this include should to into <openconnect.h>
-#ifdef _WIN32
-#include <winsock2.h>
-#endif
-
-extern "C" {
-#include <openconnect.h>
-}
-
 #ifdef USE_SYSTEM_KEYS
 extern "C" {
 #include <gnutls/system-keys.h>
@@ -62,6 +53,34 @@ static int token_rtab[] = {
     OC_TOKEN_MODE_HOTP,  // [0]
     OC_TOKEN_MODE_TOTP,  // [1]
     OC_TOKEN_MODE_STOKEN // [2]
+};
+
+static int loglevel_tab(int mode)
+{
+    // keep in sync with the indices of the QComboBox items in src/dialog/editdialog.ui
+    switch (mode) {
+    case -1: //application default
+        return 0;
+    case PRG_ERR:
+        return 1;
+    case PRG_INFO:
+        return 2;
+    case PRG_DEBUG:
+        return 3;
+    case PRG_TRACE:
+        return 4;
+    default:
+        return -1;
+    }
+}
+
+static int loglevel_rtab[] = {
+    // keep in sync with the indices of the QComboBox items in src/dialog/editdialog.ui
+    -1,        // [0]
+    PRG_ERR,   // [1]
+    PRG_INFO,  // [2]
+    PRG_DEBUG, // [3]
+    PRG_TRACE  // [4]
 };
 
 void EditDialog::load_win_certs()
@@ -163,6 +182,11 @@ EditDialog::EditDialog(QString server, QWidget* parent)
     ui->interfaceNameEdit->setText(ss->get_interface_name());
     ui->vpncScriptEdit->setText(ss->get_vpnc_script_filename());
 
+    type = loglevel_tab(ss->get_log_level());
+    if (type != -1) {
+        ui->loglevelBox->setCurrentIndex(type);
+    }
+
     QString hash;
     ss->get_server_pin(hash);
     ui->serverCertHash->setText(hash);
@@ -260,6 +284,12 @@ void EditDialog::on_buttonBox_accepted()
     ss->set_protocol_name(ui->protocolComboBox->currentData(ROLE_PROTOCOL_NAME).toString());
     ss->set_interface_name(ui->interfaceNameEdit->text());
     ss->set_vpnc_script_filename(ui->vpncScriptEdit->text());
+
+    type = ui->loglevelBox->currentIndex();
+    if (type == -1) {
+        type = 0; //first entry is "application default"
+    }
+    ss->set_log_level(loglevel_rtab[type]);
 
     ss->save();
     this->accept();

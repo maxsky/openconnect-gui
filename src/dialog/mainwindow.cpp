@@ -67,6 +67,32 @@ extern "C" {
 #define pipe_write(x, y, z) write(x, y, z)
 #endif
 
+static int app_loglevel_tab(int mode)
+{
+    // keep in sync with the order of the QAction items in src/dialog/mainwindow.ui
+    switch (mode) {
+    case PRG_ERR:
+        return 0;
+    case PRG_INFO:
+        return 1;
+    case PRG_DEBUG:
+        return 2;
+    case PRG_TRACE:
+        return 3;
+    default:
+        return -1;
+    }
+}
+
+static int app_loglevel_rtab[] = {
+    // keep in sync with the order of the QAction items in src/dialog/mainwindow.ui
+    PRG_ERR,   // [0]
+    PRG_INFO,  // [1]
+    PRG_DEBUG, // [2]
+    PRG_TRACE  // [3]
+};
+
+
 MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -914,6 +940,14 @@ void MainWindow::readSettings()
         settings.setValue("Settings/singleInstanceMode", checked);
     });
 
+    int loglevel = settings.value("logLevel", PRG_INFO).toInt();
+    int action_idx = app_loglevel_tab(loglevel);
+
+    if (action_idx == -1 )
+        action_idx = app_loglevel_tab(PRG_INFO); //fallback to default
+
+    ui->LogLevelGroup->actions().at(action_idx)->setChecked(true);
+
     settings.endGroup();
 }
 
@@ -932,6 +966,7 @@ void MainWindow::writeSettings()
     settings.setValue("minimizeTheApplicationInsteadOfClosing", ui->actionMinimizeTheApplicationInsteadOfClosing->isChecked());
     settings.setValue("startMinimized", ui->actionStartMinimized->isChecked());
     settings.setValue("singleInstanceMode", ui->actionSingleInstanceMode->isChecked());
+    settings.setValue("logLevel", this->get_log_level());
     settings.endGroup();
 
     settings.setValue("Profiles/currentIndex", ui->serverList->currentIndex());
@@ -1200,4 +1235,15 @@ void MainWindow::on_actionWebSite_triggered()
 void MainWindow::on_actionReport_an_issue_triggered()
 {
     QDesktopServices::openUrl(QUrl(APP_ISSUES_URL));
+}
+
+int MainWindow::get_log_level()
+{
+    int ret = app_loglevel_tab(PRG_INFO);
+    QAction* checked = ui->LogLevelGroup->checkedAction();
+
+    if (checked != nullptr)
+        ret = ui->LogLevelGroup->actions().indexOf(checked);
+
+    return app_loglevel_rtab[ret];
 }
