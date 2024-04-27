@@ -8,6 +8,7 @@
 # (c) 2018-2021, Lubomir Carik
 #
 
+SAVE_PWD=$(pwd)
 BUILD_DIR="${BUILD_DIR:-build-$MSYSTEM}"
 
 if [ "$MSYSTEM" == "MINGW64" ]; then
@@ -25,7 +26,15 @@ fi
 
 export STOKEN_TAG=v0.92
 WINTUN_VERSION=0.14.1
-ROOT_DIR=$(pwd)
+
+#root directory is the parent of the directory containing the build script
+ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/.." >/dev/null 2>&1 && pwd )"
+
+#sanity check for root dir
+if [ ! -d ${ROOT_DIR}/external ]; then
+    echo "Root Directory not set correctly: ${ROOT_DIR}"
+    exit 1
+fi
 
 echo "Starting under $MSYSTEM build environment ($ROOT_DIR)..."
 
@@ -42,6 +51,19 @@ echo ""
 
 export OC_URL=https://gitlab.com/openconnect/openconnect.git
 export STOKEN_URL=https://github.com/stoken-dev/stoken
+
+echo "======================================================================="
+echo " Preparing sandbox..."
+echo "======================================================================="
+
+if [ "$STOKEN_TAG" != "v0.92" ]; then
+    BUILD_STOKEN=yes
+fi
+BUILD_STOKEN=${BUILD_STOKEN:-no}
+
+echo "======================================================================="
+echo " Installing dependencies..."
+echo "======================================================================="
 
 set -e
 
@@ -83,27 +105,41 @@ cd "${BUILD_DIR}"
 #CORES=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu || echo "$NUMBER_OF_PROCESSORS")
 CORES=$(getconf _NPROCESSORS_ONLN)
 
-[ -d stoken ] || git clone -b ${STOKEN_TAG} ${STOKEN_URL}
-cd stoken
+if [ "x$BUILD_STOKEN" = "xno" ]; then
+    echo "======================================================================="
+    echo " Installing stoken..."
+    echo "======================================================================="
+    pacman --needed --noconfirm -S \
+        mingw-w64-${BUILD_ARCH}-stoken
+else
+    echo "======================================================================="
+    echo " Building stoken..."
+    echo "======================================================================="
+    [ -d stoken ] || git clone -b ${STOKEN_TAG} ${STOKEN_URL}
+    cd stoken
 
-git clean -fdx
-git reset --hard ${STOKEN_TAG}
+    git clean -fdx
+    git reset --hard ${STOKEN_TAG}
 
-set -e
+    set -e
 
-./autogen.sh
+    ./autogen.sh
 
-set +e
+    set +e
 
-[ -d build-${BUILD_ARCH} ] || mkdir build-${BUILD_ARCH}
-cd build-${BUILD_ARCH}
-set -e
-../configure --disable-dependency-tracking --without-tomcrypt --without-gtk
-mingw32-make -j${CORES}
-mingw32-make install
-cd ../../
-set +e
+    [ -d build-${BUILD_ARCH} ] || mkdir build-${BUILD_ARCH}
+    cd build-${BUILD_ARCH}
+    set -e
+    ../configure --disable-dependency-tracking --without-tomcrypt --without-gtk
+    mingw32-make -j${CORES}
+    mingw32-make install
+    cd ../../
+    set +e
+fi
 
+echo "======================================================================="
+echo " Building openconnect..."
+echo "======================================================================="
 [ -d openconnect ] || git clone -b ${OC_TAG} ${OC_URL}
 
 set -e
@@ -145,6 +181,9 @@ set +e
 # Sample script to create a package from build 'openconnect' project
 # incl. all dependencies (hardcoded paths!)
 #
+echo "======================================================================="
+echo " Packaging..."
+echo "======================================================================="
 
 rm -rf pkg
 mkdir -p pkg/nsis && cd pkg/nsis
@@ -248,8 +287,15 @@ set +e
 rmdir -v pkg
 
 
-#cd stoken/build-${BUILD_ARCH}
-#sudo $MSYSTEM-make uninstall
+if [ "x$BUILD_STOKEN" = "xyes" ]; then
+    echo "======================================================================="
+    echo " Uninstalling system-wide stoken..."
+    echo "======================================================================="
+    #uninstall stoken; we just build it for the library
+    cd stoken/build-${BUILD_ARCH}
+    mingw32-make install
+    cd ../..
+fi
 
 set -e
 
@@ -275,8 +321,8 @@ pacman -Q \
 sha512sum.exe openconnect-${OC_TAG}_$MSYSTEM.zip > openconnect-${OC_TAG}_$MSYSTEM.zip.sha512
 sha512sum.exe openconnect-devel-${OC_TAG}_$MSYSTEM.zip > openconnect-devel-${OC_TAG}_$MSYSTEM.zip.sha512
 
-mv -vu openconnect-*.zip openconnect-*.txt openconnect-*.zip.sha512 openconnect-${OC_TAG}_$MSYSTEM.hash ../external
+mv -vu openconnect-*.zip openconnect-*.txt openconnect-*.zip.sha512 openconnect-${OC_TAG}_$MSYSTEM.hash ${ROOT_DIR}/external
 
 set +e
 
-cd ..
+cd ${SAVE_PWD}
