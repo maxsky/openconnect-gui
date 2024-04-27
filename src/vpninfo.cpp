@@ -661,7 +661,7 @@ bool VpnInfo::get_minimize() const
 void VpnInfo::logVpncScriptOutput()
 {
     /* now read %temp%\\vpnc.log and post it to our log */
-    QString tfile = QDir::tempPath() + QDir::separator() + QLatin1String("vpnc.log");
+    QString tfile = QDir::tempPath() + QLatin1String("/vpnc.log");
     QFile file(tfile);
     if (file.open(QIODevice::ReadOnly) == true) {
         QTextStream in(&file);
