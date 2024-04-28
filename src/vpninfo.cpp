@@ -381,24 +381,18 @@ static void setup_tun_vfn(void* privdata)
 {
     VpnInfo* vpn = static_cast<VpnInfo*>(privdata);
 
-    QByteArray vpncScriptFullPath;
-    QByteArray  interface_name;
-    const char * ifname = NULL;
+    QString vpncScriptFullPath;
+    QByteArray interface_name;
 
-    if (! vpn->ss->get_vpnc_script_filename().isEmpty())
-        vpncScriptFullPath = vpn->ss->get_vpnc_script_filename().toUtf8();
-    else {
-        if (!QDir::isAbsolutePath(DEFAULT_VPNC_SCRIPT)) {
-            vpncScriptFullPath.append(QCoreApplication::applicationDirPath().toUtf8());
-            vpncScriptFullPath.append(QString(QDir::separator()).toUtf8());
-        }
-        vpncScriptFullPath.append(DEFAULT_VPNC_SCRIPT); // usually ASCII
-    }
+    if (!vpn->ss->get_vpnc_script_filename().isEmpty())
+        vpncScriptFullPath = vpn->ss->get_vpnc_script_filename();
+    else if (QDir::isAbsolutePath(vpncScriptFullPath))
+        vpncScriptFullPath = QString(DEFAULT_VPNC_SCRIPT);
+    else
+        vpncScriptFullPath = QCoreApplication::applicationDirPath() + "/" + QString(DEFAULT_VPNC_SCRIPT);
 
-    if (! vpn->ss->get_interface_name().isEmpty()) {
+    if (!vpn->ss->get_interface_name().isEmpty())
         interface_name = vpn->ss->get_interface_name().toUtf8();
-        ifname = interface_name.constData();
-    }
 #ifdef _WIN32
 #if ! (OPENCONNECT_API_VERSION_MAJOR == 5 && OPENCONNECT_API_VERSION_MINOR == 9)
 #error "This probably has been fixed in openconnect in API version >= 5.9 and this workaround is not required anymore."
@@ -412,13 +406,14 @@ static void setup_tun_vfn(void* privdata)
         //So, use this "unique" interface name as a workaround to force wintun from openconnect.
         //See openconnect-gui#357 (comment 1758999655) and openconnect#699
         interface_name = vpn->generateUniqueInterfaceName();
-        ifname = interface_name.constData();
 
         Logger::instance().addMessage(QObject::tr("Using generated interface name %1").arg(QString::fromUtf8(interface_name)));
     }
 #endif
 
-    int ret = openconnect_setup_tun_device(vpn->vpninfo, vpncScriptFullPath.constData(), ifname);
+    int ret = openconnect_setup_tun_device(vpn->vpninfo,
+                                           QDir::toNativeSeparators(vpncScriptFullPath).toUtf8().constData(),
+                                           interface_name.constData());
     if (ret != 0) {
         vpn->last_err = QObject::tr("Error setting up the TUN device");
         //FIXME: ???        return ret;
