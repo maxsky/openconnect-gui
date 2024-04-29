@@ -710,7 +710,7 @@ QByteArray VpnInfo::generateUniqueInterfaceName()
 {
     QByteArray ret;
 
-    //generate a hash from server_gateway (as inputed) and username
+    //generate a hash from server_gateway (as inputted) and username
     QString input = this->ss->get_server_gateway();
     input += this->ss->get_username();
 
