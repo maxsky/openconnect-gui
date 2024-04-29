@@ -687,7 +687,7 @@ void VpnInfo::logVpncScriptOutput()
         }
         file.close();
         if (file.remove() != true) {
-            Logger::instance().addMessage(QLatin1String("Could not remove ") + tfile + ": " + QString::number((int)file.error()));
+            Logger::instance().addMessage(QLatin1String("Could not remove ") + QDir::toNativeSeparators(tfile) + ": " + file.errorString());
         }
 
         if (ss->get_batch_mode() != true && bannerMessage.isEmpty() == false) {
@@ -702,7 +702,7 @@ void VpnInfo::logVpncScriptOutput()
             }
         }
     } else {
-        Logger::instance().addMessage(QLatin1String("Could not open ") + tfile + ": " + QString::number((int)file.error()));
+        Logger::instance().addMessage(QLatin1String("Could not open ") + QDir::toNativeSeparators(tfile) + ": " + file.errorString());
     }
 }
 
