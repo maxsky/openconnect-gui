@@ -33,7 +33,7 @@ The version number in CMakeLists.txt should be updated to the
 next release number at the time of release (this allows users
 using development builds to receive notifications).
 
-After bumping the version and commiting, the `release.sh` script
+After bumping the version and committing, the `release.sh` script
 should be run and this takes care of:
  - Creating a tag
  - Building released packages on gitlab CI
