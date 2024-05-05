@@ -50,10 +50,11 @@ if test "$s" != "s" && test "$s" != "skip";then
 	set +e
 
 	status="running"
-	trials=100
+	trials=150
 	while [[ $status != "success" && $trials > 0 ]];do
 		sleep 30
 		status=$(curl -s --header "PRIVATE-TOKEN: $TOKEN" "https://gitlab.com/api/v4/projects/${PROJECT}/repository/commits/${COMMIT_ID}"|jq '.last_pipeline.status'|tr -d '"')
+		trials=$((trials-1))
 		echo "Status: $status"
 	done
 fi
@@ -163,7 +164,7 @@ if test "$s" != "s" && test "$s" != "skip";then
 		else
 			echo ""
 			sleep 15
-			let trials=trials-1
+			trials=$((trials-1))
 			[[ $trials > 0 ]] && echo "Retrying release push"
 		fi
 	done
