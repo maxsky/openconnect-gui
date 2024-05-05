@@ -1,5 +1,10 @@
 History of user-visible changes.
 
+## [v1.6.2](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
+- Display paths with the OS path separator (#297)
+
+[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.1..main)
+
 ## [v1.6.1](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-03-08)
 - IPv6 improvements (#353)
 - Allow for quick connections to a server; skipping the create new profile forms (#342)
@@ -13,7 +18,7 @@ History of user-visible changes.
 - Set the window title on Linux systems
 - Use sha256 to PIN certificates
 
-[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.0..main)
+[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.0..v1.6.1)
 
 
 ## [v1.6.0](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-01-24)
@@ -27,7 +32,7 @@ History of user-visible changes.
 - The VPN interface name can be set (#344)
 
 
-[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.5.3...main)
+[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.5.3...v1.6.0)
 
 
 ## [v1.5.3](https://gitlab.com/openconnect/openconnect-gui/-/tags/v1.5.3) (2018-03-25)
