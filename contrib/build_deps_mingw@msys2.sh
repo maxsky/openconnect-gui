@@ -169,7 +169,7 @@ set -e
 
 #disable libproxy since libproxy >= 0.5 has a lot of dependencies that expand the attack surface
 #see https://gitlab.com/openconnect/openconnect-gui/-/merge_requests/259#note_1713843295
-../configure --disable-dependency-tracking --with-gnutls --without-openssl --without-libpskc --without-libproxy --with-vpnc-script=vpnc-script-win.js
+CFLAGS="${CFLAGS} -O2 -g -Wno-error=incompatible-pointer-types" ../configure --disable-dependency-tracking --with-gnutls --without-openssl --without-libpskc --without-libproxy --with-vpnc-script=vpnc-script-win.js
 
 #Make only openconnect.exe; openconnect 12.x fails when generating the nsis installer and
 #we do not use the installer or other created artifacts.
