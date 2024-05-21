@@ -33,7 +33,7 @@ Fedora:
   - cmake -S .. -B . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - cmake --build . --config $BUILD_TYPE
   tags:
-  - shared
+  - saas-linux-small-amd64
   except:
   - tags
   - schedules
@@ -53,7 +53,7 @@ static-analyzer/Fedora:
   - scan-build cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - scan-build --status-bugs -o scan-build-src cmake --build . --config $BUILD_TYPE
   tags:
-  - shared
+  - saas-linux-small-amd64
   except:
   - tags
   - schedules
@@ -75,7 +75,7 @@ MinGW32:
   - mingw32-cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - cmake --build . --config $BUILD_TYPE
   tags:
-  - shared
+  - saas-linux-small-amd64
   except:
   - tags
   - schedules
@@ -98,7 +98,7 @@ MinGW64:
   - mingw64-cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - cmake --build . --config $BUILD_TYPE
   tags:
-  - shared
+  - saas-linux-small-amd64
   except:
   - tags
   - schedules
@@ -110,9 +110,7 @@ MinGW64:
 
 .WindowsTemplate:
   tags:
-  - shared-windows
-  - windows
-  - windows-1809
+  - saas-windows-medium-amd64
   script:
     - Import-Module ${env:ChocolateyInstall}\helpers\chocolateyProfile.psm1
     - choco install msys2 aqt -y --no-progress
