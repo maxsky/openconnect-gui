@@ -30,9 +30,20 @@ else
     export OC_TAG=v9.12
 fi
 
+echo "======================================================================="
+echo " Installing Signing dependencies..."
+echo "======================================================================="
+
+pacman --needed --noconfirm -S \
+	zip \
+	unzip \
+	coreutils \
+	mingw-w64-x86_64-jq \
+	mingw-w64-x86_64-curl
+
 if [ -z "$QT6" ];then
     echo "======================================================================="
-    echo " Installing dependencies..."
+    echo " Installing CMake / QT6 dependencies..."
     echo "======================================================================="
 
     pacman --needed --noconfirm -S \
