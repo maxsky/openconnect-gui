@@ -42,6 +42,8 @@ set(APP_ISSUES_URL "https://gitlab.com/openconnect/openconnect-gui/-/issues")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Includes/")
 
+set(SIGN_EXE "false" CACHE STRING "When set to true the executable will be signed")
+
 include(ProjectSettings)
 include(ProjectDependencies)
 

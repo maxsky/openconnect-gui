@@ -13,6 +13,10 @@ BUILD_TYPE="${BUILD_TYPE:-Debug}"
 BUILD_DIR="${BUILD_DIR:-build-$MSYSTEM/openconnect-gui}"
 TARGET="${TARGET:-package}"
 
+if [ -n "${SIGN_EXE}" ];then
+EXTRA_BUILD_OPTS="${EXTRA_BUILD_OPTS} -DSIGN_EXE=${SIGN_EXE}"
+fi
+
 #root directory is the parent of the directory containing the build script
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/.." >/dev/null 2>&1 && pwd )"
 
@@ -67,6 +71,7 @@ echo "======================================================================="
 cmake -G "MinGW Makefiles" \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
     -Dopenconnect-TAG=${OC_TAG} \
+    ${EXTRA_BUILD_OPTS} \
     -S ${ROOT_DIR} -B .
 
 echo "======================================================================="
@@ -79,5 +84,14 @@ echo "======================================================================="
 echo " Packaging..."
 echo "======================================================================="
 cmake --build . --config "$BUILD_TYPE" --target ${TARGET} -- -j${CORES}
+
+if [ "${SIGN_EXE}" = "true" ];then
+	set -e
+	for file in openconnect-gui*.exe;do
+		${ROOT_DIR}/contrib/sign.sh "${file}"
+		sha512sum "${file}" > "${file}.sha512"
+	done
+	set +e
+fi
 
 cd ${SAVE_PWD}

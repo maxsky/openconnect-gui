@@ -51,7 +51,7 @@ hash=$( cat $file | sha256sum | cut -d " " -f 1 -s )
 #    {"status":"failed","error":{"message":"Hash does not match."}}
 
 submit_response=$(
-  (echo -n '{"file": "'; base64 -w 0 $file; echo '", "hash": "'${hash}'", "description": "test application", "url": "https://my.application.com"}') | 
+  (echo -n '{"file": "'; base64 -w 0 $file; echo '", "hash": "'${hash}'", "description": "-", "url": "-"}') | 
    curl -s ${CURL_AUTH[@]} -H "${CONT_JSON}" -d @-  ${SERVER_URL}/
 )
 submit_status=$?
@@ -132,12 +132,27 @@ cd $cwd
 
 if [ $ret -ne 0 ]; then
     echo "Unzip failed. Exit code $ret"
-    exit 4;
+    exit 4
 fi
 
 if [ ! -f "$input" ]; then
     echo "Output file \"$input\" not found"
-    exit 5;
+    exit 5
+fi
+
+echo "Comparing $backup with signed"
+
+objdump -s ${input} |tail -n +3 > out.signed
+objdump -s ${backup} |tail -n +3 > out.orig
+cmp out.signed out.orig
+ret=$?
+rm -f out.signed out.orig
+
+if [ $ret -ne 0 ]; then
+    echo "The signed executable sections differ from the original"
+    exit 6
 fi
 
 touch $input
+
+exit 0

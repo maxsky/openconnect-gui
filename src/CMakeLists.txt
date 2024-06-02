@@ -103,16 +103,14 @@ if(MINGW)
 endif()
 
 #code signing
-#if(BUILD_TYPE STREQUAL "Release")
-    if(MINGW AND NOT CMAKE_CROSSCOMPILING)
-        add_custom_command(
-            TARGET ${PROJECT_NAME} POST_BUILD
-	    COMMAND sh -c "${CMAKE_SOURCE_DIR}/contrib/sign.sh \"$<TARGET_FILE:${PROJECT_NAME}>\""
-            COMMENT "Signing executable ..."
-            VERBATIM
-        )
-    endif()
-#endif()
+if(SIGN_EXE STREQUAL "true")
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND sh -c "${CMAKE_SOURCE_DIR}/contrib/sign.sh \"$<TARGET_FILE:${PROJECT_NAME}>\""
+        COMMENT "Signing executable ..."
+        VERBATIM
+    )
+endif()
 
 if(WIN32 AND NOT CMAKE_CROSSCOMPILING)
     add_dependencies(${PROJECT_NAME}
