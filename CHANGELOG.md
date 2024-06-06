@@ -1,10 +1,10 @@
 History of user-visible changes.
 
-## [v1.6.2](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
+## [v1.6.2](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-03-08)
 - Display paths with the OS path separator (#297)
 - Code sign the executable (#163)
 
-[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.1..main)
+[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.1..v1.6.2)
 
 
 ## [v1.6.1](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-03-08)
