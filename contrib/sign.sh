@@ -27,7 +27,7 @@ fi
 backup=$(dirname $input)/$(basename -s ${EXEEXT} $input).unsigned${EXEEXT}
 
 if [ -f $backup ]; then
-    rm -f $backup || exit 3
+    rm -f $backup || exit 2
 fi
 
 echo Keeping backup of $input to $backup
@@ -54,11 +54,11 @@ submit_response=$(
   (echo -n '{"file": "'; base64 -w 0 $file; echo '", "hash": "'${hash}'", "description": "-", "url": "-"}') | 
    curl -s ${CURL_AUTH[@]} -H "${CONT_JSON}" -d @-  ${SERVER_URL}/
 )
-submit_status=$?
+curl_status=$?
 
-if [ $submit_status -ne 0 ]; then
-    echo "Failed to submit file for signing, exit code $submit_status"
-    exit 4;
+if [ $curl_status -ne 0 ]; then
+    echo "Failed to submit file for signing, curl exited with code $curl_status"
+    exit 3
 fi
 
 request_status=$( echo $submit_response| jq ".status" | tr -d '"' )
@@ -67,25 +67,32 @@ request_error=$(  echo $submit_response| jq ".error.message" | tr -d '"' )
 
 if [ "$request_status" != "queued" ] ; then
     echo Failed to submit file for signing. $request_status: $request_error
-    exit 4
+    echo Submit response $submit_response
+    exit 3
 fi
 
 echo Submitted request with id $request_id. Current status $request_status
 
 #poll the server until processing completes
-request_status="processing"
 trials=20
+interval=10
 
-while [[ ${request_status} = "processing" && $trials > 0 ]];
+while [[ ${request_status} = "processing" || $request_status = "queued" ]] && [[ $trials > 0 ]];
 do
-    echo "Sign Server Processing. Waiting 10 seconds"
-    sleep 10
+    echo "Sign Server Processing. Waiting $interval seconds"
+    sleep $interval
     #sample responses
     #   {"status":"processing"}
     #   {"status":"completed","hash":"96b874b2ff868ed8afc280330cb9008c61c3191b2e6090051318f3752e47d590"} 
     #   {"status":"failed","error: { "message":"Unable to create directory structure"} }
     status_response=$( curl -s ${CURL_AUTH[@]} -H "${CONT_JSON}" ${SERVER_URL}/${request_id}/status )
+    curl_status=$?
     request_status=$( echo $status_response | jq ".status" | tr -d '"' )
+
+    if [ $curl_status -ne 0 ]; then
+        echo "Failed to get server status, curl exited with code $curl_status"
+        exit 4
+    fi
 
     #echo $status_response
     let trials=trials-1
@@ -93,7 +100,7 @@ done;
 
 if [ "${request_status}" != "completed" ]; then
     echo "Server returned: ${status_response}"
-    exit 4;
+    exit 5
 else
     outfile=${cwd}/signed.zip
     rm -f ${outfile}
@@ -103,7 +110,7 @@ else
 
     if [ "x${expected_hash}" = "xnull" ]; then
         echo "Hash not found in output: ${status_response}"
-	exit 4
+	exit 6
     fi
 
     http_response_code=$(curl -s ${CURL_AUTH[@]} -H "${ACPT_JSON}" -w "%{response_code}" -o $outfile ${SERVER_URL}/${request_id}/result)
@@ -112,12 +119,14 @@ else
         echo "Server returned:" $http_response_code
         cat $outfile
         rm $outfile
+	exit 6
     else
         echo Retrieved $outfile
 	actual_hash=$(sha256sum $outfile | cut -d " " -f 1 -s)
 
 	if [ $actual_hash != $expected_hash ]; then
 	    echo "Hash verification failed: expected hash $expected_hash ; computed hash $actual_hash"
+	    exit 6
 	else
 	    echo "Hash verification succeeded: ${expected_hash}"
 	fi
@@ -132,12 +141,12 @@ cd $cwd
 
 if [ $ret -ne 0 ]; then
     echo "Unzip failed. Exit code $ret"
-    exit 4
+    exit 6
 fi
 
 if [ ! -f "$input" ]; then
     echo "Output file \"$input\" not found"
-    exit 5
+    exit 6
 fi
 
 echo "Comparing $backup with signed"
@@ -150,7 +159,7 @@ rm -f out.signed out.orig
 
 if [ $ret -ne 0 ]; then
     echo "The signed executable sections differ from the original"
-    exit 6
+    exit 7
 fi
 
 touch $input

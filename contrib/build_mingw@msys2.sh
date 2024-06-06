@@ -86,12 +86,14 @@ echo "======================================================================="
 cmake --build . --config "$BUILD_TYPE" --target ${TARGET} -- -j${CORES}
 
 if [ "${SIGN_EXE}" = "true" ];then
-	set -e
-	for file in openconnect-gui*.exe;do
-		${ROOT_DIR}/contrib/sign.sh "${file}"
-		sha512sum "${file}" > "${file}.sha512"
-	done
-	set +e
+    set -e
+    for file in openconnect-gui*.exe;do
+	if [[ $file != openconnect-gui*signed*.exe ]]; then
+            ${ROOT_DIR}/contrib/sign.sh "${file}"
+            sha512sum "${file}" > "${file}.sha512"
+        fi
+    done
+    set +e
 fi
 
 cd ${SAVE_PWD}
