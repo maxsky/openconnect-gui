@@ -140,7 +140,8 @@ WindowsNative:
     expire_in: 1 week
     when: always
     paths:
-      - build/CMakeFiles/*.log
+      - build/CMakeCache.txt
+      - build/CPack*
       - build/openconnect-gui*.exe
       - build/openconnect-gui*.exe.sha512
 
@@ -149,12 +150,15 @@ WindowsRelease:
   extends: .WindowsTemplate
   variables:
     BUILD_TYPE: "Release"
+    SIGN_EXE: "true"
   only:
   - tags
   artifacts:
     expire_in: 1 week
     when: always
     paths:
+      - build/CMakeCache.txt
+      - build/CPack*
       - build/openconnect-gui*.exe
       - build/openconnect-gui*.exe.sha512
 

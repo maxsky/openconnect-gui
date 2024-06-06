@@ -78,6 +78,7 @@ add_executable(${PROJECT_NAME}
     ${${PROJECT_NAME}_SRCS}
     ${${PROJECT_NAME}_RESOURCES}
 )
+
 if(MINGW)
     add_definitions(-DSPDLOG_WCHAR_FILENAMES)
 
@@ -98,6 +99,16 @@ if(MINGW)
     target_link_libraries (${PROJECT_NAME}
         # system libraries
         wsock32
+    )
+endif()
+
+#code signing
+if(SIGN_EXE STREQUAL "true")
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND sh -c "${CMAKE_SOURCE_DIR}/contrib/sign.sh \"$<TARGET_FILE:${PROJECT_NAME}>\""
+        COMMENT "Signing executable ..."
+        VERBATIM
     )
 endif()
 

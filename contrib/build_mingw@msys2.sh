@@ -13,6 +13,10 @@ BUILD_TYPE="${BUILD_TYPE:-Debug}"
 BUILD_DIR="${BUILD_DIR:-build-$MSYSTEM/openconnect-gui}"
 TARGET="${TARGET:-package}"
 
+if [ -n "${SIGN_EXE}" ];then
+EXTRA_BUILD_OPTS="${EXTRA_BUILD_OPTS} -DSIGN_EXE=${SIGN_EXE}"
+fi
+
 #root directory is the parent of the directory containing the build script
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/.." >/dev/null 2>&1 && pwd )"
 
@@ -30,9 +34,20 @@ else
     export OC_TAG=v9.12
 fi
 
+echo "======================================================================="
+echo " Installing Signing dependencies..."
+echo "======================================================================="
+
+pacman --needed --noconfirm -S \
+	zip \
+	unzip \
+	coreutils \
+	mingw-w64-x86_64-jq \
+	mingw-w64-x86_64-curl
+
 if [ -z "$QT6" ];then
     echo "======================================================================="
-    echo " Installing dependencies..."
+    echo " Installing CMake / QT6 dependencies..."
     echo "======================================================================="
 
     pacman --needed --noconfirm -S \
@@ -56,6 +71,7 @@ echo "======================================================================="
 cmake -G "MinGW Makefiles" \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
     -Dopenconnect-TAG=${OC_TAG} \
+    ${EXTRA_BUILD_OPTS} \
     -S ${ROOT_DIR} -B .
 
 echo "======================================================================="
@@ -68,5 +84,16 @@ echo "======================================================================="
 echo " Packaging..."
 echo "======================================================================="
 cmake --build . --config "$BUILD_TYPE" --target ${TARGET} -- -j${CORES}
+
+if [ "${SIGN_EXE}" = "true" ];then
+    set -e
+    for file in openconnect-gui*.exe;do
+	if [[ $file != openconnect-gui*signed*.exe ]]; then
+            ${ROOT_DIR}/contrib/sign.sh "${file}"
+            sha512sum "${file}" > "${file}.sha512"
+        fi
+    done
+    set +e
+fi
 
 cd ${SAVE_PWD}
