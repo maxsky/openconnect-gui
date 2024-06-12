@@ -72,8 +72,8 @@ echo "Downloaded ${OUTFILE}"
 
 unzip ${OUTFILE} && rm -f ${OUTFILE}
 
-shafile=$(ls build/openconnect-gui*.sha512)
-file=$(ls build/openconnect-gui*.exe)
+shafile=$(ls build/openconnect-gui-[0-9]*.[0-9]*.[0-9]*-win64.sha512)
+file=$(ls build/openconnect-gui-[0-9]*.[0-9]*.[0-9]*-win64.exe)
 if test -z "${file}";then
 	echo "No exe file detected"
 	exit 1
@@ -83,8 +83,6 @@ if test -z "${shafile}";then
 	echo "No checksum file detected"
 	exit 1
 fi
-
-shafile=$(ls build/openconnect-gui*.sha512)
 
 echo "Project ID: $PROJECT"
 echo "Release file: $file"
