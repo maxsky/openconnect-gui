@@ -141,6 +141,10 @@ EditDialog::EditDialog(QString server, QWidget* parent)
 {
     ui->setupUi(this);
 
+#ifdef _WIN32
+    ui->interfaceNameEdit->setMaxLength(OC_IFNAME_MAX_LENGTH);
+#endif
+
     VpnProtocolModel* model = new VpnProtocolModel(this);
     ui->protocolComboBox->setModel(model);
 

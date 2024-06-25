@@ -21,14 +21,7 @@
 
 #include <QString>
 #include <QUrl>
-#ifdef _WIN32
-#include <winsock2.h>
-#else
 #include "common.h"
-#endif
-#if defined(__linux__) || defined(__FreeBSD__)
-#define SOCKET int
-#endif
 
 class MainWindow;
 class StoredServer;
