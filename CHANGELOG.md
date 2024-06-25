@@ -1,10 +1,15 @@
 History of user-visible changes.
 
-## [v1.6.2](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-03-08)
+## [v1.6.3](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
+- Limit the auto-generated and user-supplied interface name to the maximum length allowed by libopenconnect (#365, #378)
+
+[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.2...main)
+
+## [v1.6.2](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-06-06)
 - Display paths with the OS path separator (#297)
 - Code sign the executable (#163)
 
-[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.1..v1.6.2)
+[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.1...v1.6.2)
 
 
 ## [v1.6.1](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-03-08)
@@ -20,7 +25,7 @@ History of user-visible changes.
 - Set the window title on Linux systems
 - Use sha256 to PIN certificates
 
-[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.0..v1.6.1)
+[Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.0...v1.6.1)
 
 
 ## [v1.6.0](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-01-24)
