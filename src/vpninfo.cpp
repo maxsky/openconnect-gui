@@ -377,19 +377,24 @@ static int unlock_token_vfn(void* privdata, const char* newtok)
     return 0;
 }
 
+static QByteArray native_path(const QString& path) {
+    return QDir::toNativeSeparators(path).toUtf8();
+}
+
 static void setup_tun_vfn(void* privdata)
 {
     VpnInfo* vpn = static_cast<VpnInfo*>(privdata);
 
-    QString vpncScriptFullPath;
+    QByteArray vpncScriptFullPath;
     QByteArray interface_name;
 
     if (!vpn->ss->get_vpnc_script_filename().isEmpty())
-        vpncScriptFullPath = vpn->ss->get_vpnc_script_filename();
-    else if (QDir::isAbsolutePath(vpncScriptFullPath))
-        vpncScriptFullPath = QString(DEFAULT_VPNC_SCRIPT);
+        vpncScriptFullPath = native_path(vpn->ss->get_vpnc_script_filename());
+    else if (QDir::isAbsolutePath(DEFAULT_VPNC_SCRIPT))
+        vpncScriptFullPath = native_path(QString(DEFAULT_VPNC_SCRIPT));
     else
-        vpncScriptFullPath = QCoreApplication::applicationDirPath() + "/" + QString(DEFAULT_VPNC_SCRIPT);
+        vpncScriptFullPath = native_path(QCoreApplication::applicationDirPath()
+                                         + "/" + QString(DEFAULT_VPNC_SCRIPT));
 
     if (!vpn->ss->get_interface_name().isEmpty())
         interface_name = vpn->ss->get_interface_name().toUtf8();
@@ -412,7 +417,7 @@ static void setup_tun_vfn(void* privdata)
 #endif
 
     int ret = openconnect_setup_tun_device(vpn->vpninfo,
-                                           QDir::toNativeSeparators(vpncScriptFullPath).toUtf8().constData(),
+                                           vpncScriptFullPath.constData(),
                                            interface_name.constData());
     if (ret != 0) {
         vpn->last_err = QObject::tr("Error setting up the TUN device");
