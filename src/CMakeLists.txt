@@ -214,7 +214,7 @@ if(MINGW)
     )
 
     set(additionalLib ${_qwindows_dll})
-    if(NOT Qt6Core_VERSION STRLESS "6.0")
+    if(Qt6Core_VERSION VERSION_GREATER_EQUAL "6.0")
         install(FILES
             ${_qwinstyle_dylib}
             DESTINATION plugins/styles
@@ -232,7 +232,7 @@ elseif(APPLE)
         COMPONENT App
     )
     set(additionalLib \${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/PlugIns/platforms/libqcocoa.dylib)
-    if(NOT Qt6Core_VERSION STRLESS "6.0")
+    if(Qt6Core_VERSION VERSION_GREATER_EQUAL "6.0")
         install(FILES
             ${_qmacstyle_dylib}
             DESTINATION ${PROJECT_NAME}.app/Contents/PlugIns/styles
