@@ -1075,15 +1075,8 @@ void MainWindow::on_actionEditSelectedProfile_triggered()
         return;
     }
 
-    int idx = ui->serverList->currentIndex();
     reload_settings();
-    // TODO: may be signal/slot?
-    if (idx < ui->serverList->maxVisibleItems() && idx >= 0) {
-        ui->serverList->setCurrentIndex(idx);
-    } else if (ui->serverList->maxVisibleItems() == 0) {
-        ui->serverList->setCurrentIndex(0);
-    }
-    // LCA: else ???
+    ui->serverList->setCurrentText(dialog.getEditedProfileName());
 }
 
 #define PREFIX "server:" // LCA: remote this...
