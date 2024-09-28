@@ -242,6 +242,12 @@ int StoredServer::load(QString& name)
     m_protocol_name = settings.value("protocol-name").toString();
 
     m_interface_name = settings.value("interface-name").toString();
+#ifdef _WIN32
+    /* truncate interface name to OC_IFNAME_MAX_LENGTH in case it was saved by a previous version
+     * that did not impose the length constraint in the text edit
+     */
+    m_interface_name.truncate(OC_IFNAME_MAX_LENGTH);
+#endif
     m_vpnc_script_filename = settings.value("vpnc-script").toString();
 
     m_log_level = settings.value("log-level", -1).toInt();

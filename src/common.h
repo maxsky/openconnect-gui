@@ -40,7 +40,9 @@
 //and that choice needs to be made before including openconnect.h
 #include <winsock2.h>
 
-#else
+#include <iphlpapi.h>
+
+#else /* ! _WIN32 */
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -49,12 +51,24 @@
 #define SOCKET int
 #define closesocket close
 #define net_errno errno
-#endif
+#endif /* _WIN32 */
 
 extern "C" {
 #include <gnutls/gnutls.h>
 #include <openconnect.h>
 }
+
+#ifdef _WIN32
+
+#if OPENCONNECT_CHECK_VER(5, 10)
+/* openconnect >=9.13 (hopefully, api ver 5.10) supports interface name length up to MAX_ADAPTER_NAME - 1 characters. */
+#define OC_IFNAME_MAX_LENGTH (MAX_ADAPTER_NAME - 1)
+#else
+/* openconnect 9.12 supports interface name length up to 39 characters. */
+#define OC_IFNAME_MAX_LENGTH (40 - 1)
+#endif
+
+#endif /* _WIN32 */
 
 #if !defined(__MACH__) && GNUTLS_VERSION_NUMBER >= 0x030400
 #define USE_SYSTEM_KEYS

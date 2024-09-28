@@ -716,8 +716,14 @@ QByteArray VpnInfo::generateUniqueInterfaceName()
 
     uint uhash = qHash(input.toLatin1(), 0);
     QByteArray hash = QString::number(uhash,16).toLatin1();
+    QString host = mUrl.host();
 
-    ret = mUrl.host().append("_").append(hash).toUtf8();
+#ifdef _WIN32
+    /* Reduce host so the total length (host + underscore + hash) fits in openconnect's buffer size */
+    qsizetype maxHostLen = OC_IFNAME_MAX_LENGTH - 1 - hash.length();
+    host.truncate(maxHostLen);
+#endif /* _WIN32 */
+    ret = host.append("_").append(hash).toUtf8();
 
     return ret;
 }
