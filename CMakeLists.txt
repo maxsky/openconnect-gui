@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
-if(APPLE)
-     if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
-        set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "" FORCE)
-    endif()
+if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "" FORCE)
 endif()
 
 project(openconnect-gui

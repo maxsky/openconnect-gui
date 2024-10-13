@@ -1,6 +1,7 @@
 History of user-visible changes.
 
 ## [v1.6.3](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
+- Bump the default target macOS version, to align with Qt 6 (#347).
 - Limit the auto-generated and user-supplied interface name to the maximum length allowed by libopenconnect (#365, #378)
 - Store username and password for GlobalProtect profiles (#390)
 
