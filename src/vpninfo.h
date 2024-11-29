@@ -39,6 +39,8 @@ public:
     SOCKET get_cmd_fd() const;
     void reset_vpn();
     bool get_minimize() const;
+    bool is_username_form_option(struct oc_auth_form* form, struct oc_form_opt* opt);
+    bool is_password_form_option(struct oc_auth_form* form, struct oc_form_opt* opt);
 
     QString last_err;
     QUrl mUrl;
