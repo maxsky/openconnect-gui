@@ -112,6 +112,7 @@ MinGW64:
   tags:
   - saas-windows-medium-amd64
   script:
+    - Push-Location \
     - Import-Module ${env:ChocolateyInstall}\helpers\chocolateyProfile.psm1
     - choco install msys2 aqt -y --no-progress
     - $Env:TARGET = "package"
@@ -121,6 +122,7 @@ MinGW64:
     - $Env:QT6= "C:\QT"
     - md -p "c:\qt"
     - aqt install-qt windows desktop 6.6.0 win64_mingw -O c:\qt --modules qtscxml
+    - Pop-Location
     - $Env:QT6= (Resolve-Path c:\Qt\*\mingw_64).toString()
     - $Env:MINGW= (Resolve-Path c:\Qt\*\mingw_64).toString()
     - $Env:PATH += "C:\tools\msys64\;C:\Program Files\Git\usr\bin;${Env:NSIS};${Env:QT6}\bin"
