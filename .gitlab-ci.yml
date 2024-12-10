@@ -111,6 +111,9 @@ MinGW64:
 .WindowsTemplate:
   tags:
   - saas-windows-medium-amd64
+  hooks:
+    pre_get_sources_script:
+      - git config --system core.autocrlf false
   script:
     - Push-Location \
     - Import-Module ${env:ChocolateyInstall}\helpers\chocolateyProfile.psm1
