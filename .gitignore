@@ -6,8 +6,9 @@
 /*.pro.user
 /CMakeLists.txt.user
 
-# temporary build folder
+# temporary build folders
 build-release*/
+build*/
 
 
 # temporary...
