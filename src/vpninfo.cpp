@@ -34,6 +34,9 @@
 #include <cstdarg>
 #include <cstdio>
 
+static const char* OCG_PROTO_GLOBALPROTECT = "gp";
+static const char* OCG_PROTO_FORTINET = "fortinet";
+
 static int last_form_empty;
 
 static void stats_vfn(void* privdata, const struct oc_stats* stats)
@@ -184,7 +187,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
 
             if (vpn->form_attempt == 0
                 && vpn->ss->get_username().isEmpty() == false
-                && strcasecmp(opt->name, "username") == 0) {
+                && vpn->is_username_form_option(form, opt)) {
                 openconnect_set_option_value(opt,
                     vpn->ss->get_username().toUtf8().data());
                 empty = 0;
@@ -205,7 +208,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
                     goto fail;
             } while (text.isEmpty());
 
-            if (strcasecmp(opt->name, "username") == 0) {
+            if (vpn->is_username_form_option(form, opt)) {
                 vpn->ss->set_username(text);
             }
 
@@ -217,7 +220,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
 
             if (vpn->form_pass_attempt == 0
                 && vpn->ss->get_password().isEmpty() == false
-                && (strcasecmp(opt->name, "password") == 0 || strcasecmp(opt->name, "credential") == 0)
+                && vpn->is_password_form_option(form, opt)
                ) {
                 openconnect_set_option_value(opt,
                     vpn->ss->get_password().toUtf8().data());
@@ -237,7 +240,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
             if (!ok)
                 goto fail;
 
-            if ((strcasecmp(opt->name, "password") == 0 || strcasecmp(opt->name, "credential") == 0)
+            if (vpn->is_password_form_option(form, opt)
                 && (vpn->password_set == 0 || vpn->form_pass_attempt != 0)) {
                 vpn->ss->set_password(text);
                 vpn->password_set = 1;
@@ -724,6 +727,43 @@ QByteArray VpnInfo::generateUniqueInterfaceName()
     host.truncate(maxHostLen);
 #endif /* _WIN32 */
     ret = host.append("_").append(hash).toUtf8();
+
+    return ret;
+}
+
+bool VpnInfo::is_username_form_option(struct oc_auth_form* form, struct oc_form_opt* opt)
+{
+    bool ret = false;
+    QByteArray protocolName = this->ss->get_protocol_name().toLatin1();
+
+    if (form && opt && opt->name) {
+        if (strcasecmp(OCG_PROTO_GLOBALPROTECT, protocolName.constData()) == 0) {
+            ret = ( (strcasecmp(form->auth_id, "_login") == 0) && (strcasecmp(opt->name, "user") == 0) );
+        }
+        else {
+            ret = ( strcasecmp(opt->name, "username") == 0 );
+        }
+    }
+
+    return ret;
+}
+
+bool VpnInfo::is_password_form_option(struct oc_auth_form* form, struct oc_form_opt* opt)
+{
+    bool ret = false;
+    QByteArray protocolName = this->ss->get_protocol_name().toLatin1();
+
+    if (form && opt && opt->name) {
+        if (strcasecmp(OCG_PROTO_GLOBALPROTECT, protocolName.constData()) == 0) {
+            ret = ( (strcasecmp(form->auth_id, "_login") == 0) && (strcasecmp(opt->name, "passwd") == 0) );
+        }
+        else if (strcasecmp(OCG_PROTO_FORTINET, protocolName.constData()) == 0) {
+            ret = ( (strcasecmp(form->auth_id, "_login") == 0) && (strcasecmp(opt->name, "credential") == 0) );
+        }
+        else {
+            ret = ( strcasecmp(opt->name, "password") == 0 );
+        }
+    }
 
     return ret;
 }
