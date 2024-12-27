@@ -3,8 +3,10 @@ History of user-visible changes.
 ## [v1.6.3](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (unreleased)
 - Limit the auto-generated and user-supplied interface name to the maximum length allowed by libopenconnect (#365, #378)
 - Store username and password for GlobalProtect profiles (#390)
+- update spdlog (1.15.0)
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.2...main)
+
 
 ## [v1.6.2](https://gitlab.com/openconnect/openconnect-gui/-/tree/main) (released 2024-06-06)
 - Display paths with the OS path separator (#297)
@@ -38,7 +40,6 @@ History of user-visible changes.
 - Don't forget to set all default vpn profile settings on quick connect setup
 - Dynamically load VPN protocol list; add GlobalProtect protocol (#158)
 - The VPN interface name can be set (#344)
-
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.5.3...v1.6.0)
 
