@@ -182,14 +182,23 @@ MacOS14:
   before_script:
   - brew --env
   - brew config
-  - brew install cmake pkg-config qt@6 openconnect
+  - brew install cmake pkg-config qt@6 openconnect go@1.23 create-dmg
+  - go install github.com/machinebox/appify@latest
   script:
   - mkdir -p build
   - cd build
   - cmake .. -DQt6_DIR=$(brew --prefix qt6)/lib/cmake/Qt6 -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
   - cmake --build . --config "$BUILD_TYPE"
+
+  - appify -name "Openconnect" openconnect
+  - cp build/macos/Info.plist Openconnect.app/Contents/Info.plist
+  - mkdir dmg
+  - mv Openconnect.app dmg/Openconnect.app
+  - ln -s /Applications dmg/Applications
+  - create-dmg Openconnect.dmg dmg
+
   artifacts:
     expire_in: 1 week
     when: always
     paths:
-      - build/bin/
+      - dmg
