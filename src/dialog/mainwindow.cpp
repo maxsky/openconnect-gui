@@ -866,7 +866,7 @@ void MainWindow::on_connectClicked()
 
                 Logger::instance().addMessage(tr("Setting proxy to: %1").arg(str));
 
-                int ret = openconnect_set_http_proxy(vpninfo->vpninfo, str.toLatin1().data());
+                int ret = openconnect_set_http_proxy(vpninfo->vpninfo, str.toUtf8().data());
                 if (ret != 0) {
                     Logger::instance().addMessage(tr("Unexpected error setting proxy"));
                 }

@@ -4,6 +4,7 @@ History of user-visible changes.
 - Limit the auto-generated and user-supplied interface name to the maximum length allowed by libopenconnect (#365, #378)
 - Store username and password for GlobalProtect profiles (#390)
 - update spdlog (1.15.0)
+- Fix the encoding of strings passed to OpenConnect and GnuTLS functions (#393)
 
 [Full Changelog](https://gitlab.com/openconnect/openconnect-gui/-/compare/v1.6.2...main)
 
