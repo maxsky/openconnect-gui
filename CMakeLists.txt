@@ -6,6 +6,10 @@ if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "" FORCE)
 endif()
 
+if(POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)
+endif()
+
 project(openconnect-gui
     VERSION 1.6.2
     HOMEPAGE_URL https://gui.openconnect-vpn.net/
