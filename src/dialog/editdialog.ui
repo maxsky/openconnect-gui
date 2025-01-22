@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>EditDialog</class>
  <widget class="QDialog" name="EditDialog">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +20,7 @@
    <item>
     <layout class="QFormLayout" name="settingsProfileLayout">
      <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
      </property>
      <item row="0" column="0">
       <widget class="QLabel" name="nameLabel">
@@ -410,7 +413,7 @@ Leave blank for default.</string>
        <item>
         <layout class="QFormLayout" name="formLayout_2">
          <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
          </property>
          <item row="1" column="0">
           <widget class="QLabel" name="userCertificateLabel">
@@ -569,56 +572,140 @@ Leave blank for default.</string>
     <widget class="QGroupBox" name="settingsGroupBox">
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <layout class="QFormLayout" name="formLayout_4">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::ExpandingFieldsGrow</enum>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="reconnectTimeoutLabel">
-          <property name="text">
-           <string>Reconnect timeout</string>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QFormLayout" name="formLayout_4">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::FieldGrowthPolicy::FieldsStayAtSizeHint</enum>
           </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QSpinBox" name="reconnectTimeoutSpinBox">
-          <property name="toolTip">
-           <string>Keep reconnect attempts until so much seconds are elapsed.
+          <item row="0" column="0">
+           <widget class="QLabel" name="reconnectTimeoutLabel">
+            <property name="text">
+             <string>Reconnect timeout</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="reconnectTimeoutSpinBox">
+            <property name="toolTip">
+             <string>Keep reconnect attempts until so much seconds are elapsed.
 The default timeout is 300 seconds, which means that openconnect can recover VPN connection after a temporary network down time of 300 seconds.</string>
-          </property>
-          <property name="suffix">
-           <string>s</string>
-          </property>
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>1000</number>
-          </property>
-          <property name="value">
-           <number>300</number>
-          </property>
-         </widget>
+            </property>
+            <property name="suffix">
+             <string>s</string>
+            </property>
+            <property name="minimum">
+             <number>-1</number>
+            </property>
+            <property name="maximum">
+             <number>1000000</number>
+            </property>
+            <property name="value">
+             <number>300</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="dtlsAttemptPeriodLabel">
+            <property name="text">
+             <string>DTLS attempt period</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="dtlsAttemptPeriodSpinBox">
+            <property name="suffix">
+             <string>s</string>
+            </property>
+            <property name="maximum">
+             <number>1000000</number>
+            </property>
+            <property name="value">
+             <number>30</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="dpdIntervalLabel">
+            <property name="text">
+             <string>DPD interval</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="dpdIntervalSpinBox">
+            <property name="suffix">
+             <string>s</string>
+            </property>
+            <property name="maximum">
+             <number>1000000</number>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="dtlsAttemptPeriodLabel">
-          <property name="text">
-           <string>DTLS attempt period</string>
+        <item>
+         <layout class="QFormLayout" name="formLayout_8">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::FieldGrowthPolicy::FieldsStayAtSizeHint</enum>
           </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QSpinBox" name="dtlsAttemptPeriodSpinBox">
-          <property name="suffix">
-           <string>s</string>
-          </property>
-          <property name="maximum">
-           <number>1000</number>
-          </property>
-          <property name="value">
-           <number>30</number>
-          </property>
-         </widget>
+          <item row="0" column="0">
+           <widget class="QLabel" name="trojanIntervalLabel">
+            <property name="text">
+             <string>Trojan interval</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="trojanIntervalSpinBox">
+            <property name="suffix">
+             <string>s</string>
+            </property>
+            <property name="maximum">
+             <number>1000000</number>
+            </property>
+            <property name="value">
+             <number>60</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="autoReconnectIntervalCheckBox">
+            <property name="text">
+             <string>Auto reconnect interval</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="reconnectIntervalSpinBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="suffix">
+             <string>s</string>
+            </property>
+            <property name="maximum">
+             <number>1000000</number>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="reconnectIntervalLabel">
+            <property name="text">
+             <string>Reconnect interval</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -669,10 +756,10 @@ The default timeout is 300 seconds, which means that openconnect can recover VPN
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Save</set>
      </property>
     </widget>
    </item>
@@ -707,5 +794,22 @@ The default timeout is 300 seconds, which means that openconnect can recover VPN
  <resources>
   <include location="../openconnect-gui.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>autoReconnectIntervalCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>reconnectIntervalSpinBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>603</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>386</x>
+     <y>639</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -33,7 +33,11 @@ StoredServer::StoredServer()
     , m_proxy{ false }
     , m_disable_udp{ false }
     , m_reconnect_timeout{ 300 }
+    , m_dpd_interval{ 10 }
+    , m_trojan_interval{ 60 }
     , m_dtls_attempt_period{ 25 }
+    , m_reconnect_interval{ 10 }
+    , m_is_auto_reconnect_interval{ true }
     , m_server_pin_algo(0)
     , m_log_level (-1)
 {
@@ -183,7 +187,11 @@ int StoredServer::load(QString& name)
     this->m_disable_udp = settings.value("disable-udp", false).toBool();
     this->m_minimize_on_connect = settings.value("minimize-on-connect", false).toBool();
     this->m_reconnect_timeout = settings.value("reconnect-timeout", 300).toInt();
+    this->m_dpd_interval = settings.value("dpd-interval", 10).toInt();
+    this->m_trojan_interval = settings.value("trojan-interval", 60).toInt();
     this->m_dtls_attempt_period = settings.value("dtls_attempt_period", 25).toInt();
+    this->m_reconnect_interval = settings.value("reconnect-interval", 60).toInt();
+    this->m_is_auto_reconnect_interval = settings.value("is-auto-reconnect-interval", true).toBool();
 
     bool ret = false;
 
@@ -266,8 +274,12 @@ int StoredServer::save()
     settings.setValue("disable-udp", this->m_disable_udp);
     settings.setValue("minimize-on-connect", this->m_minimize_on_connect);
     settings.setValue("reconnect-timeout", this->m_reconnect_timeout);
+    settings.setValue("dpd-interval", this->m_dpd_interval);
+    settings.setValue("trojan-interval", this->m_trojan_interval);
     settings.setValue("dtls_attempt_period", this->m_dtls_attempt_period);
     settings.setValue("username", this->m_username);
+    settings.setValue("reconnect-interval", this->m_reconnect_interval);
+    settings.setValue("is-auto-reconnect-interval", this->m_is_auto_reconnect_interval);
 
     if (this->m_batch_mode == true) {
         settings.setValue("password",
@@ -426,6 +438,26 @@ void StoredServer::set_reconnect_timeout(const int timeout)
     m_reconnect_timeout = timeout;
 }
 
+int StoredServer::get_dpd_interval() const
+{
+    return m_dpd_interval;
+}
+
+void StoredServer::set_dpd_interval(const int interval)
+{
+    m_dpd_interval = interval;
+}
+
+int StoredServer::get_trojan_interval() const
+{
+    return m_trojan_interval;
+}
+
+void StoredServer::set_trojan_interval(const int interval)
+{
+    m_trojan_interval = interval;
+}
+
 int StoredServer::get_dtls_reconnect_timeout() const
 {
     return m_dtls_attempt_period;
@@ -434,6 +466,26 @@ int StoredServer::get_dtls_reconnect_timeout() const
 void StoredServer::set_dtls_reconnect_timeout(const int timeout)
 {
     m_dtls_attempt_period = timeout;
+}
+
+int StoredServer::get_reconnect_interval() const
+{
+    return m_reconnect_interval;
+}
+
+void StoredServer::set_reconnect_interval(const int interval)
+{
+    m_reconnect_interval = interval;
+}
+
+bool StoredServer::is_auto_reconnect_interval() const
+{
+    return m_is_auto_reconnect_interval;
+}
+
+void StoredServer::set_auto_reconnect_interval(const bool value)
+{
+    m_is_auto_reconnect_interval = value;
 }
 
 QString StoredServer::get_token_str()
