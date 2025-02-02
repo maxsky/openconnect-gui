@@ -727,6 +727,13 @@ static void main_loop(VpnInfo* vpninfo, MainWindow* m)
     vpninfo->ss->save();
     vpninfo->mainloop();
 
+    if (vpninfo->ss->get_reconnect_timeout() == -1 /* infinite reconnect */) {
+        m->vpn_status_changed(STATUS_DISCONNECTED);
+        delete vpninfo;
+        m->on_connect(true);
+        return;
+    }
+
 fail: // LCA: drop this 'goto' and optimize values...
     m->vpn_status_changed(STATUS_DISCONNECTED);
 
@@ -735,6 +742,7 @@ fail: // LCA: drop this 'goto' and optimize values...
 
 void MainWindow::on_disconnectClicked()
 {
+    disconnectClicked = true;
     if (this->timer->isActive()) {
         this->timer->stop();
     }
@@ -744,6 +752,21 @@ void MainWindow::on_disconnectClicked()
 
 void MainWindow::on_connectClicked()
 {
+    disconnectClicked = false;
+    on_connect(false);
+}
+
+
+void MainWindow::on_connect(bool reconnect)
+{
+    if (disconnectClicked == true) {
+        return;
+    }
+    if (reconnect == true) {
+        Logger::instance().addMessage(QObject::tr("Reconnecting after 5 seconds..."));
+        ms_sleep(5000);
+    }
+
     VpnInfo* vpninfo = nullptr;
     StoredServer* ss = nullptr;
     QFuture<void> future;
@@ -760,7 +783,7 @@ void MainWindow::on_connectClicked()
         return;
     }
 
-    if (this->futureWatcher.isRunning() == true) {
+    if (reconnect == false && this->futureWatcher.isRunning() == true) {
         QMessageBox::information(this,
             qApp->applicationName(),
             tr("A previous VPN instance is still running"));
