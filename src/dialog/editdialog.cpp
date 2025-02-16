@@ -177,6 +177,13 @@ EditDialog::EditDialog(QString server, QWidget* parent)
     ui->autoReconnectIntervalCheckBox->setChecked(ss->is_auto_reconnect_interval());
     ui->reconnectIntervalSpinBox->setValue(ss->get_reconnect_interval());
 
+#if (OPENCONNECT_API_VERSION_MAJOR < 6 && OPENCONNECT_API_VERSION_MINOR < 10)
+    ss->set_auto_reconnect_interval(true);
+    ui->autoReconnectIntervalCheckBox->setVisible(false);
+    ui->reconnectIntervalLabel->setVisible(false);
+    ui->reconnectIntervalSpinBox->setVisible(false);
+#endif
+
     // Load the windows certificates
     load_win_certs();
 
@@ -281,8 +288,10 @@ void EditDialog::on_buttonBox_accepted()
     ss->set_dpd_interval(ui->dpdIntervalSpinBox->value());
     ss->set_trojan_interval(ui->trojanIntervalSpinBox->value());
     ss->set_dtls_reconnect_timeout(ui->dtlsAttemptPeriodSpinBox->value());
+#if (OPENCONNECT_API_VERSION_MAJOR >= 6 || OPENCONNECT_API_VERSION_MINOR >= 10)
     ss->set_auto_reconnect_interval(ui->autoReconnectIntervalCheckBox->isChecked());
     ss->set_reconnect_interval(ui->reconnectIntervalSpinBox->value());
+#endif
 
     int type = ui->tokenBox->currentIndex();
     if (type != -1 && ui->tokenEdit->text().isEmpty() == false) {

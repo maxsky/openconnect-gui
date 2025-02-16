@@ -403,8 +403,8 @@ static void setup_tun_vfn(void* privdata)
         interface_name = vpn->ss->get_interface_name().toUtf8();
 #ifdef _WIN32
 /* TODO please check the actual API version here */
-#if ! (OPENCONNECT_API_VERSION_MAJOR == 5 && OPENCONNECT_API_VERSION_MINOR == 10)
-#error "This probably has been fixed in openconnect in API version >= 5.10 and this workaround is not required anymore."
+#if (OPENCONNECT_API_VERSION_MAJOR >= 6 || OPENCONNECT_API_VERSION_MINOR >= 11)
+#error "This probably has been fixed in openconnect in API version >= 5.11 and this workaround is not required anymore."
 #endif
     else {
         //generate a "unique" interface name if no interface name was specified.
@@ -461,11 +461,14 @@ VpnInfo::VpnInfo(QString name, StoredServer* ss, MainWindow* m)
 
     openconnect_set_dpd(vpninfo, ss->get_dpd_interval());
     openconnect_set_trojan_interval(vpninfo, ss->get_trojan_interval());
+
+#if (OPENCONNECT_API_VERSION_MAJOR >= 6 || OPENCONNECT_API_VERSION_MINOR >= 10)
     if (ss->is_auto_reconnect_interval()) {
         openconnect_set_progressive_reconnect_interval(vpninfo, 1);
     } else {
         openconnect_set_progressive_reconnect_interval(vpninfo, 0);
     }
+#endif
 
     this->cmd_fd = openconnect_setup_cmd_pipe(vpninfo);
     if (this->cmd_fd == INVALID_SOCKET) {
