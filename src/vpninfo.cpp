@@ -112,7 +112,7 @@ static int process_auth_form(void* privdata, struct oc_auth_form* form)
                 select_opt->choices[0]->name);
         } else if (gitems.contains(vpn->ss->get_groupname())) {
             openconnect_set_option_value(&select_opt->form,
-                vpn->ss->get_groupname().toLatin1().data());
+                vpn->ss->get_groupname().toUtf8().data());
         } else {
             {
                 MyInputDialog dialog(vpn->m,
@@ -366,7 +366,7 @@ static int lock_token_vfn(void* privdata)
 
     openconnect_set_token_mode(vpn->vpninfo,
         (oc_token_mode_t)vpn->ss->get_token_type(),
-        vpn->ss->get_token_str().toLatin1().data());
+        vpn->ss->get_token_str().toUtf8().data());
 
     return 0;
 }
@@ -442,7 +442,7 @@ static inline int set_sock_block(int fd)
 
 VpnInfo::VpnInfo(QString name, StoredServer* ss, MainWindow* m)
 {
-    this->vpninfo = openconnect_vpninfo_new(name.toLatin1().data(), validate_peer_cert, nullptr,
+    this->vpninfo = openconnect_vpninfo_new(name.toUtf8().data(), validate_peer_cert, nullptr,
         process_auth_form, progress_vfn, this);
     if (this->vpninfo == nullptr) {
         throw std::runtime_error("initial setup fails");
@@ -477,10 +477,11 @@ VpnInfo::VpnInfo(QString name, StoredServer* ss, MainWindow* m)
         openconnect_set_token_callbacks(this->vpninfo, this, lock_token_vfn, unlock_token_vfn);
         openconnect_set_token_mode(this->vpninfo,
             (oc_token_mode_t)ss->get_token_type(),
-            ss->get_token_str().toLatin1().data());
+            ss->get_token_str().toUtf8().data());
     }
 
-    openconnect_set_protocol(vpninfo, ss->get_protocol_name().toLatin1().data());
+    //openconnect_set_protocol() checks the token with UTF8CHECK
+    openconnect_set_protocol(vpninfo, ss->get_protocol_name().toUtf8().data());
 
     openconnect_set_setup_tun_handler(vpninfo, setup_tun_vfn);
 }
@@ -528,13 +529,13 @@ int VpnInfo::connect()
         key_file = cert_file;
 
     if (cert_file.isEmpty() != true) {
-        openconnect_set_client_cert(vpninfo, cert_file.toLatin1().data(),
-            key_file.toLatin1().data());
+        openconnect_set_client_cert(vpninfo, cert_file.toUtf8().data(),
+            key_file.toUtf8().data());
     }
 
     if (ca_file.isEmpty() != true) {
         openconnect_set_system_trust(vpninfo, 0);
-        openconnect_set_cafile(vpninfo, ca_file.toLatin1().data());
+        openconnect_set_cafile(vpninfo, ca_file.toUtf8().data());
     }
 
 #ifdef Q_OS_WIN32
@@ -711,14 +712,9 @@ void VpnInfo::logVpncScriptOutput()
 
 QByteArray VpnInfo::generateUniqueInterfaceName()
 {
-    QByteArray ret;
-
     //generate a hash from server_gateway (as input) and username
-    QString input = this->ss->get_server_gateway();
-    input += this->ss->get_username();
-
-    uint uhash = qHash(input.toLatin1(), 0);
-    QByteArray hash = QString::number(uhash,16).toLatin1();
+    size_t uhash = qHash(this->ss->get_server_gateway() + this->ss->get_username(), 0);
+    QString hash = QString::number(uhash, 16);
     QString host = mUrl.host();
 
 #ifdef _WIN32
@@ -726,15 +722,13 @@ QByteArray VpnInfo::generateUniqueInterfaceName()
     qsizetype maxHostLen = OC_IFNAME_MAX_LENGTH - 1 - hash.length();
     host.truncate(maxHostLen);
 #endif /* _WIN32 */
-    ret = host.append("_").append(hash).toUtf8();
-
-    return ret;
+    return host.append("_").append(hash).toUtf8();
 }
 
 bool VpnInfo::is_username_form_option(struct oc_auth_form* form, struct oc_form_opt* opt)
 {
     bool ret = false;
-    QByteArray protocolName = this->ss->get_protocol_name().toLatin1();
+    QByteArray protocolName = this->ss->get_protocol_name().toUtf8();
 
     if (form && opt && opt->name) {
         if (strcasecmp(OCG_PROTO_GLOBALPROTECT, protocolName.constData()) == 0) {
@@ -751,7 +745,7 @@ bool VpnInfo::is_username_form_option(struct oc_auth_form* form, struct oc_form_
 bool VpnInfo::is_password_form_option(struct oc_auth_form* form, struct oc_form_opt* opt)
 {
     bool ret = false;
-    QByteArray protocolName = this->ss->get_protocol_name().toLatin1();
+    QByteArray protocolName = this->ss->get_protocol_name().toUtf8();
 
     if (form && opt && opt->name) {
         if (strcasecmp(OCG_PROTO_GLOBALPROTECT, protocolName.constData()) == 0) {

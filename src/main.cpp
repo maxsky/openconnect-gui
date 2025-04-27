@@ -116,7 +116,7 @@ int pin_callback(void* userdata, int attempt, const char* token_url,
         return -1;
     }
 
-    snprintf(pin, pin_max, "%s", text.toLatin1().data());
+    snprintf(pin, pin_max, "%s", text.toUtf8().data());
     return 0;
 }
 

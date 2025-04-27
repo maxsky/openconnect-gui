@@ -128,10 +128,10 @@ int Cert::import_file(const QString& File)
     if (is_url(File)) {
         gnutls_x509_crt_init(&this->crt);
 
-        int ret = gnutls_x509_crt_import_pkcs11_url(this->crt, File.toLatin1().data(), 0);
+        int ret = gnutls_x509_crt_import_pkcs11_url(this->crt, File.toUtf8().data(), 0);
         if (ret < 0) {
             ret = gnutls_x509_crt_import_pkcs11_url(this->crt,
-                File.toLatin1().data(),
+                File.toUtf8().data(),
                 GNUTLS_PKCS11_OBJ_FLAG_LOGIN);
         }
 
@@ -145,7 +145,7 @@ int Cert::import_file(const QString& File)
 
     /* normal file */
     gnutls_datum_t contents = { nullptr, 0 };
-    int ret = gnutls_load_file(File.toLatin1().data(), &contents);
+    int ret = gnutls_load_file(File.toUtf8().data(), &contents);
     if (ret < 0) {
         this->last_err = gnutls_strerror(ret);
         return -1;
