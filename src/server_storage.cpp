@@ -222,7 +222,7 @@ int StoredServer::load(QString& name)
     if (is_url(str) == true) {
         this->m_client.key.import_file(str);
     } else {
-        data = str.toLatin1();
+        data = str.toUtf8();
         this->m_client.key.import_pem(data);
     }
 
