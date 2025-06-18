@@ -32,7 +32,7 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/external/include)
 
 if(NOT spdlog_FOUND)
     message(STATUS "Using local spdlog build")
-    set(spdlog-TAG v1.15.0)
+    set(spdlog-TAG v1.15.3)
     include(ProjectExternals_spdlog)
 endif()
 
