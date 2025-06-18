@@ -182,14 +182,21 @@ MacOS14:
   before_script:
   - brew --env
   - brew config
-  - brew install cmake pkg-config qt@6 openconnect
+  - brew install cmake pkgconf qt@6 openconnect create-dmg
   script:
   - mkdir -p build
   - cd build
-  - cmake .. -DQt6_DIR=$(brew --prefix qt6)/lib/cmake/Qt6 -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
+  - cmake .. -DQt6_DIR=$(brew --prefix qt6)/lib/cmake/Qt6 -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15 -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations"
   - cmake --build . --config "$BUILD_TYPE"
+  - QT_VERSION=$(brew list qt@6 --versions | awk '{print $2}')
+  - /opt/homebrew/opt/qt/bin/macdeployqt ./bin/OpenConnect-GUI.app -verbose=2
+  - curl -OL https://raw.githubusercontent.com/arl/macdeployqtfix/refs/heads/master/macdeployqtfix.py
+  - python3 macdeployqtfix.py ./bin/OpenConnect-GUI.app /opt/homebrew/Cellar/qt/$QT_VERSION/
+  - codesign --deep --force -s - bin/OpenConnect-GUI.app
+  - create-dmg --volname "OpenConnect-GUI" --volicon "../src/Resources/mono_lock.icns" --window-pos 200 120 --window-size 800 400 --icon-size 100 --icon "OpenConnect-GUI.app" 200 190 --hide-extension "OpenConnect-GUI.app" --app-drop-link 600 185 "OpenConnect-GUI.dmg" "bin/OpenConnect-GUI.app"
   artifacts:
     expire_in: 1 week
     when: always
     paths:
-      - build/bin/
+      - build/bin/OpenConnect-GUI.app
+      - build/OpenConnect-GUI.dmg
