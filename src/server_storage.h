@@ -76,9 +76,21 @@ public:
 
     int get_reconnect_timeout() const;
     void set_reconnect_timeout(const int timeout);
+    
+    int get_dpd_interval() const;
+    void set_dpd_interval(const int interval);
+    
+    int get_trojan_interval() const;
+    void set_trojan_interval(const int interval);
 
     int get_dtls_reconnect_timeout() const;
     void set_dtls_reconnect_timeout(const int timeout);
+
+    int get_reconnect_interval() const;
+    void set_reconnect_interval(const int interval);
+
+    bool is_auto_reconnect_interval() const;
+    void set_auto_reconnect_interval(const bool value);
 
     QString get_token_str();
     void set_token_str(const QString& str);
@@ -117,7 +129,11 @@ private:
     bool m_proxy;
     bool m_disable_udp;
     int m_reconnect_timeout;
+    int m_dpd_interval;
+    int m_trojan_interval;
     int m_dtls_attempt_period;
+    int m_reconnect_interval;
+    bool m_is_auto_reconnect_interval;
     QString m_username;
     QString m_password;
     QString m_groupname;

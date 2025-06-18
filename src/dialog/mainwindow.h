@@ -86,6 +86,7 @@ public slots:
     void request_update_stats();
 
     void on_connectClicked();
+    void on_connect(bool reconnect);
     void on_disconnectClicked();
 
     void closeEvent(QCloseEvent* event) override;
@@ -153,4 +154,6 @@ private:
     QAction* m_minimizeAction;
     QAction* m_restoreAction;
     QAction* m_quitAction;
+
+    bool disconnectClicked = false;
 };

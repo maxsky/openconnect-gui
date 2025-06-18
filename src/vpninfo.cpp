@@ -402,8 +402,9 @@ static void setup_tun_vfn(void* privdata)
     if (!vpn->ss->get_interface_name().isEmpty())
         interface_name = vpn->ss->get_interface_name().toUtf8();
 #ifdef _WIN32
-#if ! (OPENCONNECT_API_VERSION_MAJOR == 5 && OPENCONNECT_API_VERSION_MINOR == 9)
-#error "This probably has been fixed in openconnect in API version >= 5.9 and this workaround is not required anymore."
+/* TODO please check the actual API version here */
+#if (OPENCONNECT_API_VERSION_MAJOR >= 6 || OPENCONNECT_API_VERSION_MINOR >= 11)
+#error "This probably has been fixed in openconnect in API version >= 5.11 and this workaround is not required anymore."
 #endif
     else {
         //generate a "unique" interface name if no interface name was specified.
@@ -457,6 +458,17 @@ VpnInfo::VpnInfo(QString name, StoredServer* ss, MainWindow* m)
     }
 
     openconnect_set_loglevel(vpninfo, loglevel);
+
+    openconnect_set_dpd(vpninfo, ss->get_dpd_interval());
+    openconnect_set_trojan_interval(vpninfo, ss->get_trojan_interval());
+
+#if (OPENCONNECT_API_VERSION_MAJOR >= 6 || OPENCONNECT_API_VERSION_MINOR >= 10)
+    if (ss->is_auto_reconnect_interval()) {
+        openconnect_set_progressive_reconnect_interval(vpninfo, 1);
+    } else {
+        openconnect_set_progressive_reconnect_interval(vpninfo, 0);
+    }
+#endif
 
     this->cmd_fd = openconnect_setup_cmd_pipe(vpninfo);
     if (this->cmd_fd == INVALID_SOCKET) {
@@ -586,10 +598,16 @@ int VpnInfo::connect()
 
 void VpnInfo::mainloop()
 {
+    int reconnect_interval;
+    if (ss->is_auto_reconnect_interval()) {
+        reconnect_interval = RECONNECT_INTERVAL_MIN;
+    } else {
+        reconnect_interval = ss->get_reconnect_interval();
+    }
     while (true) {
         int ret = openconnect_mainloop(vpninfo,
             ss->get_reconnect_timeout(),
-            RECONNECT_INTERVAL_MIN);
+            reconnect_interval);
         if (ret != 0) {
             this->last_err = QObject::tr("Disconnected");
             logVpncScriptOutput();
