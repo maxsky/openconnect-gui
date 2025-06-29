@@ -169,6 +169,8 @@ EditDialog::EditDialog(QString server, QWidget* parent)
     ui->batchModeBox->setChecked(ss->get_batch_mode());
     ui->minimizeBox->setChecked(ss->get_minimize());
     ui->useProxyBox->setChecked(ss->get_proxy());
+    ui->useSystemProxyBox->setChecked(ss->get_use_system_proxy());
+    ui->proxyAddressPortEdit->setText(ss->get_proxy_address());
     ui->disableUdpBox->setChecked(ss->get_disable_udp());
     ui->reconnectTimeoutSpinBox->setValue(ss->get_reconnect_timeout());
     ui->dpdIntervalSpinBox->setValue(ss->get_dpd_interval());
@@ -283,6 +285,8 @@ void EditDialog::on_buttonBox_accepted()
     ss->set_batch_mode(ui->batchModeBox->isChecked());
     ss->set_minimize(ui->minimizeBox->isChecked());
     ss->set_proxy(ui->useProxyBox->isChecked());
+    ss->set_use_system_proxy(ui->useSystemProxyBox->isChecked());
+    ss->set_proxy_address(ui->proxyAddressPortEdit->text());
     ss->set_disable_udp(ui->disableUdpBox->isChecked());
     ss->set_reconnect_timeout(ui->reconnectTimeoutSpinBox->value());
     ss->set_dpd_interval(ui->dpdIntervalSpinBox->value());

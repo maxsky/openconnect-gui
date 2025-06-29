@@ -74,6 +74,12 @@ public:
     bool get_proxy() const;
     void set_proxy(const bool t);
 
+    bool get_use_system_proxy() const;
+    void set_use_system_proxy(const bool t);
+
+    QString get_proxy_address();
+    void set_proxy_address(const QString& address);
+
     int get_reconnect_timeout() const;
     void set_reconnect_timeout(const int timeout);
     
@@ -127,6 +133,8 @@ private:
     bool m_batch_mode;
     bool m_minimize_on_connect;
     bool m_proxy;
+    bool m_use_system_proxy;
+    QString m_proxy_address;
     bool m_disable_udp;
     int m_reconnect_timeout;
     int m_dpd_interval;

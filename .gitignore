@@ -16,3 +16,5 @@ _xxx/
 *.zip
 *.exe
 *.exe.sha512
+
+/external/

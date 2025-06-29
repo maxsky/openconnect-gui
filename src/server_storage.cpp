@@ -31,6 +31,8 @@ StoredServer::StoredServer()
     : m_batch_mode{ false }
     , m_minimize_on_connect{ false }
     , m_proxy{ false }
+    , m_use_system_proxy{ false }
+    , m_proxy_address { "127.0.0.1:10808" }
     , m_disable_udp{ false }
     , m_reconnect_timeout{ 300 }
     , m_dpd_interval{ 10 }
@@ -184,6 +186,8 @@ int StoredServer::load(QString& name)
     this->m_username = settings.value("username").toString();
     this->m_batch_mode = settings.value("batch", false).toBool();
     this->m_proxy = settings.value("proxy", false).toBool();
+    this->m_use_system_proxy = settings.value("use-system-proxy", false).toBool();
+    this->m_proxy_address = settings.value("proxy-address", "127.0.0.1:10808").toString();
     this->m_disable_udp = settings.value("disable-udp", false).toBool();
     this->m_minimize_on_connect = settings.value("minimize-on-connect", false).toBool();
     this->m_reconnect_timeout = settings.value("reconnect-timeout", 300).toInt();
@@ -271,6 +275,8 @@ int StoredServer::save()
     settings.setValue("server", this->m_server_gateway);
     settings.setValue("batch", this->m_batch_mode);
     settings.setValue("proxy", this->m_proxy);
+    settings.setValue("use_system_proxy", this->m_use_system_proxy);
+    settings.setValue("proxy-address", this->m_proxy_address);
     settings.setValue("disable-udp", this->m_disable_udp);
     settings.setValue("minimize-on-connect", this->m_minimize_on_connect);
     settings.setValue("reconnect-timeout", this->m_reconnect_timeout);
@@ -413,6 +419,16 @@ bool StoredServer::get_proxy() const
     return this->m_proxy;
 }
 
+bool StoredServer::get_use_system_proxy() const
+{
+    return this->m_use_system_proxy;
+}
+
+QString StoredServer::get_proxy_address()
+{
+    return this->m_proxy_address;
+}
+
 bool StoredServer::client_is_complete() const
 {
     return m_client.is_complete();
@@ -426,6 +442,16 @@ void StoredServer::set_minimize(const bool t)
 void StoredServer::set_proxy(const bool t)
 {
     this->m_proxy = t;
+}
+
+void StoredServer::set_use_system_proxy(const bool t)
+{
+    this->m_use_system_proxy = t;
+}
+
+void StoredServer::set_proxy_address(const QString& address)
+{
+    this->m_proxy_address = address;
 }
 
 int StoredServer::get_reconnect_timeout() const
