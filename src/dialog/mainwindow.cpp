@@ -151,7 +151,11 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
 
         QFileSelector selector;
         QIcon icon(selector.select(QStringLiteral(":/images/network-disconnected.png")));
+#ifdef Q_OS_MACOS // On macOS, don't use mask mode to prevent white shadow
+        icon.setIsMask(false);
+#else
         icon.setIsMask(true);
+#endif
         m_trayIcon->setIcon(icon);
         m_trayIcon->show();
     } else {
@@ -340,6 +344,10 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
         Qt::WindowState m_state;
     };
 
+#ifdef Q_OS_MAC
+    // On macOS, we need to handle window state changes differently
+    // The state changes will be handled in changeEvent
+#else
     MinimizeEventTransition* minimizeEvent = new MinimizeEventTransition(this, Qt::WindowMinimized);
     minimizeEvent->setTargetState(s112_minimizedWindow);
     s111_normalWindow->addTransition(minimizeEvent);
@@ -347,6 +355,7 @@ MainWindow::MainWindow(QWidget* parent, bool useTray, const QString profileName)
     RestoreEventTransition* restoreEvent = new RestoreEventTransition(this, Qt::WindowNoState);
     restoreEvent->setTargetState(s111_normalWindow);
     s112_minimizedWindow->addTransition(restoreEvent);
+#endif
 
     // start timer to check latest version
     QTimer::singleShot(4000, this, &MainWindow::tryCheckLatestVersion);
@@ -558,7 +567,12 @@ void MainWindow::changeStatus(int val)
         QFileSelector selector;
         if (m_trayIcon) {
             QIcon icon(selector.select(QStringLiteral(":/images/network-connected.png")));
+#ifdef Q_OS_MACOS
+            // On macOS, don't use mask mode to prevent white shadow
+            icon.setIsMask(false);
+#else
             icon.setIsMask(true);
+#endif
             m_trayIcon->setIcon(icon);
         }
 
@@ -589,7 +603,12 @@ void MainWindow::changeStatus(int val)
         if (m_trayIcon) {
             QFileSelector selector;
             QIcon icon(selector.select(QStringLiteral(":/images/network-disconnected.png")));
+#ifdef Q_OS_MACOS
+            // On macOS, don't use mask mode to prevent white shadow
+            icon.setIsMask(false);
+#else
             icon.setIsMask(true);
+#endif
             m_trayIcon->setIcon(icon);
             m_trayIcon->setToolTip(QLatin1String("Connecting to ") + ui->serverList->currentText());
         }
@@ -642,7 +661,12 @@ void MainWindow::changeStatus(int val)
         if (m_trayIcon) {
             QFileSelector selector;
             QIcon icon(selector.select(QStringLiteral(":/images/network-disconnected.png")));
+#ifdef Q_OS_MACOS
+            // On macOS, don't use mask mode to prevent white shadow
+            icon.setIsMask(false);
+#else
             icon.setIsMask(true);
+#endif
             m_trayIcon->setIcon(icon);
 
             if (this->isHidden() == true)
@@ -885,6 +909,13 @@ fail: // LCA: remote 'fail' label :/
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
+#ifdef Q_OS_MAC
+    // On macOS, just close the window but keep the app running
+    ui->actionRestore->setEnabled(true);
+    ui->actionMinimize->setEnabled(false);
+    event->accept();
+    return;
+#else
     if (m_trayIcon && m_trayIcon->isVisible() && ui->actionMinimizeTheApplicationInsteadOfClosing->isChecked()) {
         this->showMinimized();
         event->ignore();
@@ -899,6 +930,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
             qApp->quit();
         }
     }
+#endif
     QMainWindow::closeEvent(event);
 }
 
@@ -1239,4 +1271,19 @@ int MainWindow::get_log_level()
         ret = ui->LogLevelGroup->actions().indexOf(checked);
 
     return app_loglevel_rtab[ret];
+}
+
+void MainWindow::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::WindowStateChange) {
+        Qt::WindowStates states = windowState();
+        if (states & Qt::WindowMinimized) {
+            ui->actionRestore->setEnabled(true);
+            ui->actionMinimize->setEnabled(false);
+        } else {
+            ui->actionRestore->setEnabled(false);
+            ui->actionMinimize->setEnabled(true);
+        }
+    }
+    QMainWindow::changeEvent(event);
 }

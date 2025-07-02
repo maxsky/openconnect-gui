@@ -34,6 +34,17 @@
 #include <cstdarg>
 #include <cstdio>
 
+#ifdef Q_OS_MACOS
+#include <fcntl.h>
+#include <unistd.h>
+#include <net/if.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <net/if_utun.h>
+#include <net/if_dl.h>
+#include <net/route.h>
+#endif
+
 static const char* OCG_PROTO_GLOBALPROTECT = "gp";
 static const char* OCG_PROTO_FORTINET = "fortinet";
 
@@ -384,6 +395,25 @@ static QByteArray native_path(const QString& path) {
     return QDir::toNativeSeparators(path).toUtf8();
 }
 
+#ifdef Q_OS_MACOS
+QByteArray findAvailableUtunInterface() {
+    struct if_nameindex *if_ni = if_nameindex();
+    if (!if_ni) return QByteArray();
+
+    int max_utun = -1;
+    for (struct if_nameindex *i = if_ni; i->if_index != 0 || i->if_name != nullptr; i++) {
+        QString name = QString::fromUtf8(i->if_name);
+        if (name.startsWith("utun")) {
+            int num = name.mid(4).toInt();
+            max_utun = qMax(max_utun, num);
+        }
+    }
+
+    if_freenameindex(if_ni);
+    return QString("utun%1").arg(max_utun + 1).toUtf8();
+}
+#endif
+
 static void setup_tun_vfn(void* privdata)
 {
     VpnInfo* vpn = static_cast<VpnInfo*>(privdata);
@@ -416,6 +446,16 @@ static void setup_tun_vfn(void* privdata)
         interface_name = vpn->generateUniqueInterfaceName();
 
         Logger::instance().addMessage(QObject::tr("Using generated interface name %1").arg(QString::fromUtf8(interface_name)));
+    }
+#elif defined(Q_OS_MACOS)
+    else {
+        // On macOS, find an available utun interface
+        interface_name = findAvailableUtunInterface();
+        if (!interface_name.isEmpty()) {
+            Logger::instance().addMessage(QObject::tr("Using interface %1").arg(QString::fromUtf8(interface_name)));
+        } else {
+            Logger::instance().addMessage(QObject::tr("No available utun interface found"));
+        }
     }
 #endif
 
@@ -540,7 +580,7 @@ int VpnInfo::connect()
 
 #ifdef Q_OS_WIN32
     const QString osName{ "win" };
-#elif defined Q_OS_OSX
+#elif defined Q_OS_MACOS
     const QString osName{ "mac-intel" };
 #elif defined Q_OS_LINUX
     const QString osName = QString("linux%1").arg(QSysInfo::buildCpuArchitecture() == "i386" ? "" : "-64").toStdString().c_str();

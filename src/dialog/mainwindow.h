@@ -89,6 +89,7 @@ public slots:
     void on_disconnectClicked();
 
     void closeEvent(QCloseEvent* event) override;
+    void changeEvent(QEvent* event) override;
 
     void on_actionAbout_triggered();
     void on_actionCheckForUpdates_triggered();
