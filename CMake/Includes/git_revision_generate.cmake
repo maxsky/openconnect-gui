@@ -9,8 +9,10 @@ if(IS_DIRECTORY ${GIT_ROOT_DIR}/.git)
         RESULT_VARIABLE res_var
         OUTPUT_VARIABLE GIT_COM_ID
     )
+    message(WARNING "res_var: " $(res_var))
     if(NOT ${res_var} EQUAL 0)
         set(GIT_COMMIT_ID "?.?.?-unknown")
+        message(WARNING "GIT_COMMIT_ID: " $(GIT_COMMIT_ID))
         message(WARNING "Git failed (not a repo, or no tags). Build will not contain git revision info.")
     endif()
     string(REGEX REPLACE "\n$" "" GIT_COMMIT_ID ${GIT_COM_ID})

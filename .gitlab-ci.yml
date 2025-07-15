@@ -21,6 +21,26 @@ Signoff:
   - 'git log 7abb6359ce8be9952f768b643f96094e057f8a07.. --grep "(^Signed-off-by)|(^Merge branch)|(^This reverts commit)" --extended-regexp --invert-grep --exit-code'
   - echo "None (good)"
 
+Clang-Static-Analyzer:
+  variables:
+    BUILD_TYPE: "Debug"
+  stage: preliminaries
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
+  script:
+  - dnf -y install dnf-plugins-core qt6-qtscxml-devel qt6-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
+  - scan-build cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - scan-build --status-bugs -o scan-build-src cmake --build . --config $BUILD_TYPE
+  tags:
+  - saas-linux-small-amd64
+  except:
+  - tags
+  - schedules
+  artifacts:
+    expire_in: 1 week
+    when: on_failure
+    paths:
+      - scan-build-src/*
+
 # This tests intentionally an out-of-tree build
 Fedora:
   variables:
@@ -42,26 +62,6 @@ Fedora:
     when: always
     paths:
       - build/
-
-static-analyzer/Fedora:
-  variables:
-    BUILD_TYPE: "Debug"
-  stage: preliminaries
-  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
-  script:
-  - dnf -y install dnf-plugins-core qt6-qtscxml-devel qt6-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
-  - scan-build cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-  - scan-build --status-bugs -o scan-build-src cmake --build . --config $BUILD_TYPE
-  tags:
-  - saas-linux-small-amd64
-  except:
-  - tags
-  - schedules
-  artifacts:
-    expire_in: 1 week
-    when: on_failure
-    paths:
-      - scan-build-src/*
 
 MinGW32:
   variables:
