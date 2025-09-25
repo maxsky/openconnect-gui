@@ -76,7 +76,7 @@ endif()
 
 add_executable(${PROJECT_NAME}
     ${${PROJECT_NAME}_SRCS}
-    ${${PROJECT_NAME}_RESOURCES}
+#    ${${PROJECT_NAME}_RESOURCES}
 )
 
 if(MINGW)
@@ -244,7 +244,7 @@ elseif(APPLE)
         )
     endif()
     install(FILES
-        ${CMAKE_SOURCE_DIR}/bundle/qt.conf
+        ${CMAKE_SOURCE_DIR}/bundle/qt.conf ${OPENCONNECT_VPNC_SCRIPT}
         DESTINATION ${PROJECT_NAME}.app/Contents/Resources
         COMPONENT App
     )

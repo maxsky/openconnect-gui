@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 if(APPLE)
      if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
-        set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "" FORCE)
-    endif()
+        set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "" FORCE)
+     endif()
+
+     add_compile_options(-Wno-error=nonnull -Wno-error=unused-lambda-capture -Wno-error=deprecated-declarations)
 endif()
 
 project(openconnect-gui
@@ -68,4 +70,3 @@ include(git_revision_main)
 include(build_timestamp_main)
 
 include(ProjectPackage)
-
