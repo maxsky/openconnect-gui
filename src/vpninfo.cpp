@@ -386,7 +386,7 @@ static QByteArray native_path(const QString& path) {
 
 static void setup_tun_vfn(void* privdata)
 {
-    VpnInfo* vpn = static_cast<VpnInfo*>(privdata);
+    const auto vpn = static_cast<VpnInfo*>(privdata);
 
     QByteArray vpncScriptFullPath;
     QByteArray interface_name;
@@ -541,7 +541,11 @@ int VpnInfo::connect()
 #ifdef Q_OS_WIN32
     const QString osName{ "win" };
 #elif defined Q_OS_MACOS
-    const QString osName{ "mac-intel" };
+    #if defined(Q_PROCESSOR_ARM_64)
+        const QString osName{ "mac-arm" };
+    #else
+        const QString osName{ "mac-intel" };
+    #endif
 #elif defined Q_OS_LINUX
     const QString osName = QString("linux%1").arg(QSysInfo::buildCpuArchitecture() == "i386" ? "" : "-64").toStdString().c_str();
 #elif defined Q_OS_FREEBSD
@@ -587,7 +591,7 @@ int VpnInfo::connect()
 void VpnInfo::mainloop()
 {
     while (true) {
-        int ret = openconnect_mainloop(vpninfo,
+        const int ret = openconnect_mainloop(vpninfo,
             ss->get_reconnect_timeout(),
             RECONNECT_INTERVAL_MIN);
         if (ret != 0) {
@@ -628,7 +632,6 @@ void VpnInfo::get_info(QString& dns, QString& ip, QString& ip6)
             dns += info->dns[2];
         }
     }
-    return;
 }
 
 void VpnInfo::get_cipher_info(QString& cstp, QString& dtls)
@@ -662,7 +665,7 @@ bool VpnInfo::get_minimize() const
     return ss->get_minimize();
 }
 
-void VpnInfo::logVpncScriptOutput()
+void VpnInfo::logVpncScriptOutput() const
 {
     /* now read %temp%\\vpnc.log and post it to our log */
     QString tfile = QDir::tempPath() + QLatin1String("/vpnc.log");

@@ -52,7 +52,7 @@ public:
     unsigned int form_attempt;
     unsigned int form_pass_attempt;
 
-    void logVpncScriptOutput();
+    void logVpncScriptOutput() const;
     QByteArray generateUniqueInterfaceName();
 
 private:
