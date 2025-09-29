@@ -113,11 +113,6 @@ if(SIGN_EXE STREQUAL "true")
 endif()
 
 if(WIN32 AND NOT CMAKE_CROSSCOMPILING)
-    add_dependencies(${PROJECT_NAME}
-        openconnect-devel-${openconnect-TAG}
-        openconnect-${openconnect-TAG}
-    )
-
     target_link_libraries (${PROJECT_NAME}
         # 3rd party dependencies
         openconnect::gmp
